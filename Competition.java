@@ -3,7 +3,6 @@
  * Student ID: YYY
  * LMS username: ZZZ
  */
-
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
