@@ -11,6 +11,11 @@ public abstract class Competition {
     private String name; //competition name
     private int id; //competition identifier
 
+    public Competition(String compName, int compID){
+        id = compID;
+        name = compName;
+    }
+
     public abstract void addEntries();
 
     public abstract void drawWinners();
