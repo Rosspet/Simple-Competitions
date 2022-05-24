@@ -12,6 +12,12 @@ public class RandomPickCompetition extends Competition {
 	
     private final int MAX_WINNING_ENTRIES = 3;
 	
+    public RandomPickCompetition(String compName, int compID){
+        super(compName, compID);
+        
+    }
+
+
     public void drawWinners() {
         Random randomGenerator = null;
         if (this.getIsTestingMode()) {

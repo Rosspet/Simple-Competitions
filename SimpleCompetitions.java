@@ -16,7 +16,7 @@ public class SimpleCompetitions {
     private String memberFileName;
     private String billFileName;
     private static final int INIT_COMP_ID = 1;
-    private int nextCompID = INIT_COMP_ID;
+    private int nextCompID = INIT_COMP_ID; // to keep track of all the IDs - increment for each new comp!
     private static final int NUM_OPTIONS = 5;
     private static final int NEW_COMP = 1;
     private static final int NEW_ENTRIES = 2;
@@ -44,6 +44,7 @@ public class SimpleCompetitions {
     public Competition addNewCompetition() { // call if 1 entered.
         //add a new competition using the given competition type and competition name. (these into constructors)
         // only gets called if their isnt already an active competition.
+        // called after user enters 1. in main menu.
         String compType = getCompType();
         String compName = getCompName();
         int compID = nextCompID;
@@ -52,9 +53,14 @@ public class SimpleCompetitions {
         if (compType.equalsIgnoreCase("L")){
             return new LuckyNumbersCompetition(compName, compID);
         }
-        // else, of type rnadom
-        return new RandomPickCompetition(compName, compID);
-
+        else if (compType.equalsIgnoreCase("R")){
+            return new RandomPickCompetition(compName, compID);
+        }
+        else {
+            System.out.println("ERROR: should have made 1 of the two types!!!!!");
+            return new RandomPickCompetition(compName, compID);
+        }
+        
     }
     
     private String getCompName(){
