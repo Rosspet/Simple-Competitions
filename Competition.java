@@ -12,6 +12,9 @@ public abstract class Competition {
     private int id; //competition identifier
     private String type;
     private DataProvider data;
+    private static final int INVALID_INT_RESPONSE = -1;
+    //private ArrayList<Bill> bills;
+    //private ArrayList<Member> members;
 
     // all comps get the same copy of members and bills form main!
     public Competition(String compName, int compID, String type){
@@ -19,6 +22,8 @@ public abstract class Competition {
         name = compName;
         this.type = type;
         //this.data = data;
+        //this.bills = bills;
+        //this.members = members;
     }
 
     public abstract void addEntries();
@@ -37,16 +42,39 @@ public abstract class Competition {
 
 
 
-    public int getBillIDFromInput(){
+    public int getBillIDFromInputForEntry(){
         System.out.println("Bill ID:");
         Scanner scanner = SimpleCompetitions.getScanner();
         boolean validResponse = false;
-        String response=null;
+        String billID=null;
+        int int_billID=-1;
+
         while (!validResponse){
-            response = scanner.nextLine();
-            validResponse = (Bill.validBillID(response)); // && billHasValidMemberID(response) going to chek in higher level. just want to get the valid numerical bill.
+            billID = (scanner.nextLine());
+            if(!Bill.validBillID(billID)){ // && billHasValidMemberID(response) going to chek in higher level. just want to get the valid numerical bill.
+                continue;
+            }
+            int_billID = Integer.parseInt(billID);
+            if  (!data.billExists(int_billID)){
+                System.out.println("Bill does not exist. Enter a different Bill ID");
+                continue;
+            }
+            if (!data.billHasMember(int_billID)){
+                System.out.println("This bill has no member id. Please try again.");
+                continue;
+            }
+            if (data.billHasBeenUsed(int_billID)){
+                continue;
+            }
+            
+            validResponse = true;
+            data.setBillToUsed(int_billID);
         }
-        return Integer.parseInt(response);
+        if (int_billID==INVALID_INT_RESPONSE){
+            System.out.print("FAILED TO GET PROPER BILL ID");
+            System.exit(1);
+        }
+        return int_billID;
         
     }
 

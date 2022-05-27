@@ -32,10 +32,7 @@ public class Bill {
     }
 
     public boolean hasBeenUsed(){
-        if (used==true){
-            return true;
-        }
-        return false; // has not been used.
+        return used;
     }
 
     public int getNumEntries(){

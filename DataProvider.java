@@ -83,7 +83,32 @@ public class DataProvider {
         }
         return false;
     }
+    
+    // bill getter helper func for this class only, hence private but returning actual object.
+    private Bill getActualBillObject(int billID){
+        Iterator<Bill> iter = bills.iterator();
+        Bill thisBill;
+        while(iter.hasNext()){
+            thisBill = iter.next();
+            if (thisBill.hasID(billID)){
+                return thisBill; // not returning copy as this is a private helper for this class only
+            }
+        }
+        System.out.println("failed to find bill that was assumed to exist. existing 1.")
+        System.exit(1);
+        //return thisBill;
+    }
 
+
+    public void setBillToUsed(int billID){
+        Bill bill = getActualBillObject(billID);
+        bill.useBill();
+    }
+
+    public boolean billHasBeenUsed(int billID){
+        Bill bill = getBillThatExists(billID);
+        return bill.hasBeenUsed();
+    }
 
     private void getMembersFromFile() throws DataAccessException, DataFormatException{
         Scanner memberStream;
@@ -167,17 +192,23 @@ public class DataProvider {
     //get member
     // altermember
 
-    public Bill getBill(int BillID) throws BillDoesNotExist{
+    public Bill getBillThatExists(int billID){
+        Bill bill = getActualBillObject(billID);
+        return new Bill(bill);
+    }
+
+
+    public Bill getBill(int billID) throws BillDoesNotExist{
         Iterator<Bill> iter = bills.iterator();
         Bill thisBill;
         while(iter.hasNext()){
             thisBill = iter.next();
-            if (thisBill.hasID(BillID)){
+            if (thisBill.hasID(billID)){
                 return new Bill(thisBill); // return a copy for security reasons.
             }
         }
         // member doesnt exist if still here
-        throw new BillDoesNotExist(BillID);
+        throw new BillDoesNotExist(billID);
     }
     
     public boolean billHasMember(int billID){
@@ -209,17 +240,4 @@ public class DataProvider {
         }
         return members_copy;
     }
-    
 }
-
-// old unused code. 
-
-/**
- * for (String str : billData){
-
-                // if any empty fields
-                if (str.equals("")){
-                    throw new DataFormatException("Empty field recieved in bill entry." + 
-                    "full entry is:" + billLine);
-                }
- */
