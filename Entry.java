@@ -9,4 +9,23 @@ public class Entry {
     private String billId;
     private String memberId;
     
+
+    public Entry(int entryId, String billId, String memberId){
+        this.entryId = entryId;
+        this.billId = billId;
+        this.memberId = memberId;
+
+    }
+
+    public int getEntryiD(){
+        return entryId;
+    }
+    public String getBillId(){
+        return billId;
+    }
+    public String getMemberId(){
+        return memberId;
+    }
+
+
 }

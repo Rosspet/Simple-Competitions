@@ -12,7 +12,7 @@ public class Bill {
     private static final int COST_PER_ENTRY = 50;
     private static final int BILL_ID_LENGTH = 6;
 
-    public Bill(String billID, String memberID, Float totalBillAmount, boolean used){
+    public Bill(String billID, String memberID, float totalBillAmount, boolean used){
         this.billID=billID;
         this.memberID=memberID;
         this.totalBillAmount=totalBillAmount;
@@ -29,6 +29,10 @@ public class Bill {
 
     public void useBill(){
         used=true;
+    }
+
+    public float getTotalAmount(){
+        return totalBillAmount;
     }
 
     public boolean hasBeenUsed(){

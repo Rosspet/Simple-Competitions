@@ -12,7 +12,7 @@ public abstract class Competition {
     private int id; //competition identifier
     private String type;
     private DataProvider data;
-    private static final int INVALID_INT_RESPONSE = -1;
+    private static final String INVALID_INT_RESPONSE = "-1";
     //private ArrayList<Bill> bills;
     //private ArrayList<Member> members;
 
@@ -42,12 +42,12 @@ public abstract class Competition {
 
 
 
-    public int getBillIDFromInputForEntry(){
+    public String getBillIDFromInputForEntry(){
         System.out.println("Bill ID:");
         Scanner scanner = SimpleCompetitions.getScanner();
         boolean validResponse = false;
-        String billID=null;
-        int int_billID=-1;
+        String billID=INVALID_INT_RESPONSE;
+        //int int_billID=-1;
 
         while (!validResponse){
             billID = (scanner.nextLine());
@@ -71,11 +71,11 @@ public abstract class Competition {
             data.setBillToUsed(billID);
 
         }
-        if (int_billID==INVALID_INT_RESPONSE){
+        if (billID==INVALID_INT_RESPONSE){
             System.out.print("FAILED TO GET PROPER BILL ID");
             System.exit(1);
         }
-        return int_billID;
+        return billID;
         
     }
 
