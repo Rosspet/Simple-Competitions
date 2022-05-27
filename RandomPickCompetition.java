@@ -13,7 +13,7 @@ public class RandomPickCompetition extends Competition {
     private final int MAX_WINNING_ENTRIES = 3;
 	
     public RandomPickCompetition(String compName, int compID){
-        super(compName, compID);
+        super(compName, compID, "RandomPickCompetition");
         
     }
 

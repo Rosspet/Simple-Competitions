@@ -7,7 +7,11 @@
 public class LuckyNumbersCompetition extends Competition {
 
         public LuckyNumbersCompetition(String compName, int compID){
-            super(compName, compID);
+            super(compName, compID, "LuckyNumbersCompetition");
             
+        }
+
+        public void addEntries(){
+            String billID = getBillID();
         }
 }

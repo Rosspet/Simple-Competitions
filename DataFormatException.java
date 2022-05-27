@@ -5,5 +5,10 @@
  */
 
 public class DataFormatException extends Exception {
-
+    public DataFormatException(){
+        super("File in unparsable format - Aborting!!\n");
+    }
+    public DataFormatException(String message){
+        super(message);
+    }
 }

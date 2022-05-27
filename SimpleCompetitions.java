@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class SimpleCompetitions {
 
-    private Scanner sc = new Scanner(System.in);
+    private static Scanner sc = new Scanner(System.in);
     private boolean fromFile; // true if reading from file.
     private boolean normalMode; // true if running normal mode.
     private String loadFileName; // possibly ununsed. if not loading from a file  
@@ -122,12 +122,22 @@ public class SimpleCompetitions {
                 case NEW_COMP:
                     if (activeComp!=null){ // make sure to reset to null once done.
                         activeComp = addNewCompetition();
+                        System.out.println("A new competition has been created!");
+                        System.out.println(activeComp);
                     }
                     else {
                         System.out.println("There is an active competition. SimpleCompetitions does not support concurrent competitions!");
                     }
                     break;
                 case NEW_ENTRIES:
+                    if (activeComp==null){
+                        System.out.println("There is no active competition. Please create one!");
+                        break;
+                    }
+                    // else have active competition.
+                    activeComp.addEntries();
+                    break;
+                    
                     break;
                 case DRAW_WINNERS:
                     break;
@@ -210,5 +220,9 @@ public class SimpleCompetitions {
 
     public void report() {
     	
+    }
+
+    public static Scanner getScanner(){
+        return sc;
     }
 }
