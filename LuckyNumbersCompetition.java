@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
-
+import java.util.Random;
 /*
  * Student name: XXX
  * Student ID: YYY
@@ -17,13 +17,15 @@ public class LuckyNumbersCompetition extends Competition {
 	// private ArrayList<Bill> bills;
 	// private ArrayList<Member> members;
 	private static final int MIN_NUM_MANUAL = 1;
-	private static final int NUM_ALLOWED_ENTRIES = 7;
-	private static final int MAX_RANGE = 35;
-	private static final int MIN_RANGE = 1;
+	private boolean testingMode;
 
-	public LuckyNumbersCompetition(String compName, int compID, DataProvider data) {
+
+	public LuckyNumbersCompetition(String compName, int compID, DataProvider data, boolean testingMode) {
 		super(compName, compID, "LuckyNumbersCompetition");
 		this.data = data;
+		this.testingMode = testingMode;
+		 // use compID as seed for generating lucky entry and the number of entries in the currently active competition 
+		// to generate automated customers' entries.
 		// this.bills = bills;
 		// this.members = members;
 	}
@@ -32,116 +34,73 @@ public class LuckyNumbersCompetition extends Competition {
 
 		boolean finishedAddingEntries = false;
 		String billId;
-		int entryID = 1;
+		int entryId = 1;
 		Bill bill;
 		String memberId;
+		Random random = new Random();
 		while (!finishedAddingEntries) {
-
+			ArrayList<NumbersEntry> theseEntries = new ArrayList<NumbersEntry>(); // arrList for this batch of entrys
 			billId = getBillIDFromInputForEntry();
 			// have a bill id that is valid and in the list of bill_ids and has a member!.
 			
 			bill = data.getBillThatExists(billId); // returns a copy of the bill
 			memberId = bill.getMemberId();
 			int numEntries = bill.getNumEntries();
-			int numManualEntries = getManualNumEntries(bill);
+			
+			int numManualEntries = getNumManualEntries(bill);
 			int numAutoEntires = numEntries - numManualEntries;
 			// now do each manual entry
 			for (int i = 0; i < numManualEntries; i++) {
-				entries.add(new NumbersEntry(entryID, billId, memberId, getManualEntryNumbers(), false)); 
+				theseEntries.add(new NumbersEntry(entryId, billId, memberId, false)); 
+				entryId+=1;
 			}
 
 			for (int i = 0; i <numAutoEntires; i++){
-				//entries.add(new AutoNumbersEntry());
+				if (testingMode){
+					theseEntries.add(new AutoNumbersEntry(entryId, billId, memberId, entries.size()+theseEntries.size())); 
+					
+				}
+				else {
+					theseEntries.add(new AutoNumbersEntry(entryId, billId, memberId, random.nextInt())); // random seed 
+				}
+				entryId+=1;
+				//  the number of entries in the currently active competition to generate automated customers' entries.
 			}
-			// now do automatic entries.
+			entries.addAll(theseEntries); // added all entries
+			System.out.println("The following entries have been added:");
+			displayEntries(theseEntries);
 
-		}
-	}
-
-	private ArrayList<Integer> getManualEntryNumbers(){
+			if (!moreEntries()){
+				finishedAddingEntries=true;
+			}
 			
-			boolean validResponse = false;
-			String entryNumbersStr;
-			String[] entryNumbersStrArr;
-			int[] entryNumbers=null;
-			Scanner scanner = SimpleCompetitions.getScanner();
-
-			while(!validResponse){
-				System.out.println("Please enter 7 different numbers (from the range 1 to" +
-				" "+ MAX_RANGE+ ") separated by whitespace.");
-				entryNumbersStr = scanner.nextLine().trim();
-				if (!entryNumbersStr.matches("[0-9 ]+")){ //numbers seperate by white space
-					System.out.println("Invalid input! Non numerical input detected!");
-					continue;
-				}
-				entryNumbersStrArr = entryNumbersStr.split("\\s+"); // split by white space.
-				if (entryNumbersStrArr.length<NUM_ALLOWED_ENTRIES){
-					System.out.println("Invalid Iput! Fewer than 7 number are provided. Please try again!");
-					continue;
-				}
-				if (entryNumbersStrArr.length>NUM_ALLOWED_ENTRIES){
-					System.out.println("Invalid Iput! More than 7 numbers are provided. Please try again!");
-					continue;
-				} 
-				
-				entryNumbers = convertStringIntArrayToIntArray(entryNumbersStrArr);
-				
-				if (notAllDifferent(entryNumbers)){
-					System.out.println("Invalid input! All numbers must be different!");
-					continue;
-				}
-				if (notAllInRange(entryNumbers, MIN_RANGE, MAX_RANGE)){
-					System.out.println("Invalid input! All numbers must be in the range from 1 to 35!");
-					continue;
-				}
-				// done all checks
-				validResponse=true;
-			}
-			return arrayToArrayList(entryNumbers);
 
 		}
-
-		private ArrayList<Integer> arrayToArrayList(int[] arr){
-			ArrayList<Integer> arrList = new ArrayList<Integer>();
-			
-			for(int i : arr){
-				arrList.add(i);
-			}
-			return arrList;
-		}
-
-	private boolean notAllInRange(int[] numbers, int min, int max){
-		for (int num : numbers){
-			if(num<min || num > max){
-				return false; // a number not in range
-			}
-		}
-		return true;
-
 	}
 
-	private boolean notAllDifferent(int[] numbers){
-		ArrayList<Integer> currentNumbers = new ArrayList<Integer>();
+	
 
-		for (int num : numbers){
-			if (currentNumbers.contains(num)){
-				return false;
-			}
-			currentNumbers.add(num);
+	private boolean moreEntries(){
+		System.out.println("Add more entries? (Y/N)?");
+		Scanner sc = SimpleCompetitions.getScanner();
+		String cmd = sc.nextLine();
+		while(!SimpleCompetitions.validYesNoResponse(cmd)){
+			System.out.println("valid responses: Y,y,N,n. Try again.");
+            cmd = sc.nextLine(); // mebbe change to next.
+        }
+		return cmd.equalsIgnoreCase("Y");
+	} 
+
+	
+
+
+	private void displayEntries(ArrayList<NumbersEntry> entries){
+		for(NumbersEntry entry : entries){
+			System.out.print(entry);
 		}
-		return true;
-
 	}
 
-	private int[] convertStringIntArrayToIntArray(String[] strArr){
-		int[] intArr = new int[strArr.length];
-		for (int i=0; i<strArr.length; i++){
-			intArr[i] = Integer.parseInt(strArr[i]);
-		}
-		return intArr;
-	}
-
-	private int getManualNumEntries(Bill bill) {
+	private int getNumManualEntries(Bill bill) {
 		System.out.println("This bill ($" + bill.getTotalAmount() + ") is elidgible for " +
 				bill.getNumEntries() + "entires. How many manual entries did the customer fill up?:");
 		Scanner scanner = SimpleCompetitions.getScanner();
@@ -154,14 +113,15 @@ public class LuckyNumbersCompetition extends Competition {
 				intResp = Integer.parseInt(resp);
 				if (MIN_NUM_MANUAL <= intResp && intResp <= bill.getNumEntries()) { // digits in acceptable range.
 					validResponse = true; // can return anyway.
+					return intResp;
 				}
 			}
+			System.out.println(inputErrMsg);
 		}
-		return intResp;
-
+		return -1; // should never get here.
 	}
 
-	public void drawWinners() {
+	public void drawWinners() { // use compID as seed for generating the lucky entry.
 
 	}
 }

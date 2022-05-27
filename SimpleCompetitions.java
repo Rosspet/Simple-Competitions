@@ -55,7 +55,7 @@ public class SimpleCompetitions {
         nextCompID+=1;
 
         if (compType.equalsIgnoreCase("L")){
-            return new LuckyNumbersCompetition(compName, compID, data);
+            return new LuckyNumbersCompetition(compName, compID, data, !normalMode);
         }
         else if (compType.equalsIgnoreCase("R")){
             return new RandomPickCompetition(compName, compID, data);
@@ -234,9 +234,9 @@ public class SimpleCompetitions {
         
     }
 
-    private boolean validYesNoResponse(String cmd){
+    public static boolean validYesNoResponse(String cmd){
         return cmd.equalsIgnoreCase("Y") || cmd.equalsIgnoreCase("n");
-    }
+    } 
 
     private boolean validModeResponse(String cmd){
         return cmd.equalsIgnoreCase("N") || cmd.equalsIgnoreCase("T"); 

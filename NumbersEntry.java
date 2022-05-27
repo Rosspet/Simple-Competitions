@@ -5,36 +5,144 @@
  */
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.Scanner;
 
 public class NumbersEntry extends Entry {
-    
+
     private ArrayList<Integer> numbers;
     private boolean auto;
-    public NumbersEntry(int entryId, String billId, String memberId, ArrayList<Integer> numbers, boolean auto){
-        super(entryId, billId, memberId);
-        this.numbers = numbers;
+    private static final int NUM_ALLOWED_ENTRIES = 7;
+	private static final int MAX_RANGE = 35;
+	private static final int MIN_RANGE = 1;
 
+    public NumbersEntry(
+            int entryId,
+            String billId,
+            String memberId,
+            //ArrayList<Integer> numbers,
+            boolean auto) {
+        // can this be same method for the auto LuckyNumbers and then the Auto class is
+        // for the random nu bers comp?
+        super(entryId, billId, memberId);
+        if(!auto){
+            this.numbers = getManualEntryNumbers();
+        } // else, numbers will be set in the constructor for AutoNumbersEntry
+        //this.numbers = numbers;
+        this.auto = auto;
+                    
     }
 
-    public String toString(){
+    public void setNumbers(ArrayList<Integer> numbers){
+        this.numbers = numbers;
+    }
+
+    public String toString() {
         String returnString = String.format("Entry ID: %6d Numbers: ", getEntryiD()) + getEntriesString();
+        
         if (auto){
-            returnString+="[Auto]";
+        returnString+="[Auto]";
         }
+         
         return returnString;
     }
 
-    private String getEntriesString(){
-        String numbs="";
-        Iterator<Integer> iter = getNumbers().iterator(); 
-        while (iter.hasNext()){
+    private String getEntriesString() {
+        String numbs = "";
+        Iterator<Integer> iter = getNumbers().iterator();
+        while (iter.hasNext()) {
             numbs += String.format("%2d ", iter.next());
         }
         return numbs;
     }
 
-    public ArrayList<Integer> getNumbers(){
+    public ArrayList<Integer> getNumbers() {
         return new ArrayList<Integer>(numbers);
+    }
+
+    private ArrayList<Integer> getManualEntryNumbers() {
+
+        boolean validResponse = false;
+        String entryNumbersStr;
+        String[] entryNumbersStrArr;
+        int[] entryNumbers = null;
+        Scanner scanner = SimpleCompetitions.getScanner();
+
+        while (!validResponse) {
+            System.out.println("Please enter 7 different numbers (from the range 1 to" +
+                    " " + MAX_RANGE + ") separated by whitespace.");
+            entryNumbersStr = scanner.nextLine().trim();
+            if (!entryNumbersStr.matches("[0-9 ]+")) { // numbers seperate by white space
+                System.out.println("Invalid input! Non numerical input detected!");
+                continue;
+            }
+            entryNumbersStrArr = entryNumbersStr.split("\\s+"); // split by white space.
+            if (entryNumbersStrArr.length < NUM_ALLOWED_ENTRIES) {
+                System.out.println("Invalid Iput! Fewer than 7 number are provided. Please try again!");
+                continue;
+            }
+            if (entryNumbersStrArr.length > NUM_ALLOWED_ENTRIES) {
+                System.out.println("Invalid Iput! More than 7 numbers are provided. Please try again!");
+                continue;
+            }
+
+            entryNumbers = convertStringIntArrayToIntArray(entryNumbersStrArr);
+
+            if (notAllDifferent(entryNumbers)) {
+                System.out.println("Invalid input! All numbers must be different!");
+                continue;
+            }
+            if (notAllInRange(entryNumbers, MIN_RANGE, MAX_RANGE)) {
+                System.out.println("Invalid input! All numbers must be in the range from 1 to 35!");
+                continue;
+            }
+            // done all checks
+            validResponse = true;
+        }
+        ArrayList<Integer> arrList = arrayToArrayList(entryNumbers);
+        Collections.sort(arrList); // inplace sorting.
+        return arrList;
+
+    }
+
+    public ArrayList<Integer> arrayToArrayList(int[] arr) {
+        ArrayList<Integer> arrList = new ArrayList<Integer>();
+
+        for (int i : arr) {
+            arrList.add(i);
+        }
+        return arrList;
+    }
+
+    private boolean notAllInRange(int[] numbers, int min, int max) {
+        for (int num : numbers) {
+            if (num < min || num > max) {
+                return false; // a number not in range
+            }
+        }
+        return true;
+
+    }
+
+    private boolean notAllDifferent(int[] numbers) {
+        ArrayList<Integer> currentNumbers = new ArrayList<Integer>();
+
+        for (int num : numbers) {
+            if (currentNumbers.contains(num)) {
+                return false;
+            }
+            currentNumbers.add(num);
+        }
+        return true;
+
+    }
+
+    private int[] convertStringIntArrayToIntArray(String[] strArr) {
+        int[] intArr = new int[strArr.length];
+        for (int i = 0; i < strArr.length; i++) {
+            intArr[i] = Integer.parseInt(strArr[i]);
+        }
+        return intArr;
     }
 }
