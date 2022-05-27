@@ -25,8 +25,7 @@ public class DataProvider {
      * @throws DataAccessException If a file cannot be opened/read
      * @throws DataFormatException If the format of the the content is incorrect
      */
-     public DataProvider(String memberFile, String billFile) 
-                        throws DataAccessException, DataFormatException {
+     public DataProvider(String memberFile, String billFile) {
          //Add your code here
         this.memberFile = memberFile;
         this.billFile = billFile;
@@ -84,8 +83,6 @@ public class DataProvider {
         // member doesnt exist if still here
         throw new BillDoesNotExist(BillID);
     }
-
-
 
     private void getMembersFromFile() throws DataAccessException, DataFormatException{
         Scanner memberStream;

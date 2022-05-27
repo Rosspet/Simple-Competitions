@@ -14,4 +14,9 @@ public class LuckyNumbersCompetition extends Competition {
         public void addEntries(){
             String billID = getBillID();
         }
+
+
+        public void drawWinners(){
+            
+        }
 }

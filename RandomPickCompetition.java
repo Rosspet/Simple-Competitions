@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /*
  * Student name: XXX
  * Student ID: YYY
@@ -17,8 +19,12 @@ public class RandomPickCompetition extends Competition {
         
     }
 
+    public void addEntries(){
+        
+    }
 
     public void drawWinners() {
+        /*
         Random randomGenerator = null;
         if (this.getIsTestingMode()) {
             randomGenerator = new Random(this.getId());
@@ -32,16 +38,18 @@ public class RandomPickCompetition extends Competition {
 	
             Entry winningEntry = entries.get(winningEntryIndex);
 		    
-            /*
-             * Ensure that once an entry has been selected,
-             * it will not be selected again.
-             */
+            
+            //Ensure that once an entry has been selected,
+            //it will not be selected again.
+            
             if (winningEntry.getPrize() == 0) {
                 int currentPrize = prizes[winningEntryCount];
                 winningEntry.setPrize(currentPrize);
                 winningEntryCount++;
             }
         }
+        */
+        
 		
         /*
          * Note that the above piece of code does not ensure that

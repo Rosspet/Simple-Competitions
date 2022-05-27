@@ -11,7 +11,6 @@ public abstract class Competition {
     private String name; //competition name
     private int id; //competition identifier
     private String type;
-    
 
     public Competition(String compName, int compID, String type){
         id = compID;
@@ -37,10 +36,10 @@ public abstract class Competition {
         System.out.println("Bill ID:");
         Scanner scanner = SimpleCompetitions.getScanner();
         boolean validResponse = false;
-        String response;
+        String response=null;
         while (!validResponse){
             response = scanner.nextLine();
-            validResponse = (Bill.validBillID(response) && billHasValidMemberID(response));
+            validResponse = (Bill.validBillID(response)); // && billHasValidMemberID(response) going to chek in higher level. just want to get the valid numerical bill.
         }
         return response;
         

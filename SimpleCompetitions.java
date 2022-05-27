@@ -23,6 +23,7 @@ public class SimpleCompetitions {
     private static final int DRAW_WINNERS = 3;
     private static final int SUMMARY = 4;
     private static final int EXIT = 5;
+    private DataProvider data;
     private ArrayList<Competition> competitions; // list of all competitions. Only 1 can be active
     private Competition activeComp = null; // the 1 active competition.// for quick access, store here too.
     // We can have multiple competitions. But only 1 "active" competitions.
@@ -36,15 +37,16 @@ public class SimpleCompetitions {
     */
     public static void main(String[] args) {
     //Create an object of the SimpleCompetitions class
-    SimpleCompetitions sc = new SimpleCompetitions();
+    SimpleCompetitions simpleComp = new SimpleCompetitions();
     //Add your code to complete the task
-    sc.startApp();
+    simpleComp.startApp();
 }
 
     public Competition addNewCompetition() { // call if 1 entered.
         //add a new competition using the given competition type and competition name. (these into constructors)
         // only gets called if their isnt already an active competition.
         // called after user enters 1. in main menu.
+
         String compType = getCompType();
         String compName = getCompName();
         int compID = nextCompID;
@@ -106,7 +108,8 @@ public class SimpleCompetitions {
         }
         // get remainding mandatory files.
         getMemberAndBillFileNames();
-        
+        // read data from mandatory files.
+        readData();
         /* not sure if we are meant to read in the contents of the member and bill file
          just yet */
         int selectedOption;
@@ -120,7 +123,7 @@ public class SimpleCompetitions {
             
             switch (selectedOption){
                 case NEW_COMP:
-                    if (activeComp!=null){ // make sure to reset to null once done.
+                    if (activeComp==null){ // make sure to reset to null once done.
                         activeComp = addNewCompetition();
                         System.out.println("A new competition has been created!");
                         System.out.println(activeComp);
@@ -150,21 +153,38 @@ public class SimpleCompetitions {
         } while(selectedOption!=EXIT); // come back and change this
     }
 
+    private void readData(){
+        data = new DataProvider(memberFileName, billFileName);
+        return;
+    }
+
+
+
     /**
      * Returns only once valid integer command has been entered.
      * @return the selected integer input command
      */
     private int getSelectedOption(){
         int option=-1;
-        while (option<1 && option>NUM_OPTIONS){
-            while (!sc.hasNextInt()) {
-                System.out.println("Please enter an integer number between 1 and "+ NUM_OPTIONS);
-                sc.next();
+        String input;
+        boolean validInput=false;
+         // System.out.println("Please enter an integer number between 1 and "+ NUM_OPTIONS);
+
+        while (!validInput)  {
+            input = sc.nextLine().trim();
+            if (input.matches("[0-9]+")){
+                option = Integer.parseInt(input);
+                if (option>=1 && option <= NUM_OPTIONS){
+                    validInput=true;
+                    break;
+                }
             }
-            option=sc.nextInt(); // whats this do with the new line?
+            // not broken, invalid INput
+            System.out.println("Please enter an integer number between 1 and "+ NUM_OPTIONS);
         }
         return option;
     }
+    
 
     private void displayMenu(){
         System.out.println(
@@ -189,6 +209,7 @@ public class SimpleCompetitions {
         String cmd = sc.nextLine();
         while(!validModeResponse(cmd)){
             System.out.println("valid responses: T,t,N,n"); 
+            cmd = sc.nextLine();
         }
         return cmd.equalsIgnoreCase("N"); // return true if running normal mode. 
     }
