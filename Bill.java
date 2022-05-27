@@ -6,7 +6,7 @@
 
 public class Bill {
     private String billID;
-    private String memberID; // by keeping string, can avoid errors of parsing into Int '""' and also might want t use chars in id also nothing in spec about memberID being on numerical.
+    private String memberId; // by keeping string, can avoid errors of parsing into Int '""' and also might want t use chars in id also nothing in spec about memberID being on numerical.
     private float totalBillAmount;
     private boolean used;
     private static final int COST_PER_ENTRY = 50;
@@ -14,7 +14,7 @@ public class Bill {
 
     public Bill(String billID, String memberID, float totalBillAmount, boolean used){
         this.billID=billID;
-        this.memberID=memberID;
+        this.memberId=memberID;
         this.totalBillAmount=totalBillAmount;
         this.used=used;
     }
@@ -22,9 +22,13 @@ public class Bill {
     // copy constructor
     public Bill(Bill bill){
         this.billID = bill.billID;
-        this.memberID = bill.memberID;
+        this.memberId = bill.memberId;
         this.totalBillAmount = bill.totalBillAmount;
         this.used = bill.used;
+    }
+
+    public String getMemberId(){
+        return memberId;
     }
 
     public void useBill(){
@@ -50,7 +54,7 @@ public class Bill {
     }
 
     public String toString(){
-        return ("BillID: "+billID+", memberID: "+memberID+", totalBillAmount: " + totalBillAmount +
+        return ("BillID: "+billID+", memberID: "+memberId+", totalBillAmount: " + totalBillAmount +
             ", used: "+ used);
     }
     /**
@@ -68,7 +72,7 @@ public class Bill {
     }
 
     public boolean hasMember(){
-        return (!memberID.equals(""));
+        return (!memberId.equals(""));
     }
 
     public boolean hasID(String ID){
