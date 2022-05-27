@@ -13,7 +13,7 @@ public class LuckyNumbersCompetition extends Competition {
 	private ArrayList<Integer> billIDs = new ArrayList<Integer>(); // list of bill IDs in this particular comp (not all
 																	// bills ever which is in data)
 	private DataProvider data;
-	private ArrayList<NumbersEntry> entries;
+	private ArrayList<NumbersEntry> entries = new ArrayList<NumbersEntry>();
 	// private ArrayList<Bill> bills;
 	// private ArrayList<Member> members;
 	private static final int MIN_NUM_MANUAL = 1;
@@ -21,7 +21,7 @@ public class LuckyNumbersCompetition extends Competition {
 
 
 	public LuckyNumbersCompetition(String compName, int compID, DataProvider data, boolean testingMode) {
-		super(compName, compID, "LuckyNumbersCompetition");
+		super(compName, compID, "LuckyNumbersCompetition", data);
 		this.data = data;
 		this.testingMode = testingMode;
 		 // use compID as seed for generating lucky entry and the number of entries in the currently active competition 
@@ -96,13 +96,13 @@ public class LuckyNumbersCompetition extends Competition {
 
 	private void displayEntries(ArrayList<NumbersEntry> entries){
 		for(NumbersEntry entry : entries){
-			System.out.print(entry);
+			System.out.println(entry);
 		}
 	}
 
 	private int getNumManualEntries(Bill bill) {
 		System.out.println("This bill ($" + bill.getTotalAmount() + ") is elidgible for " +
-				bill.getNumEntries() + "entires. How many manual entries did the customer fill up?:");
+				bill.getNumEntries() + " entires. How many manual entries did the customer fill up?:");
 		Scanner scanner = SimpleCompetitions.getScanner();
 		boolean validResponse = false;
 		String inputErrMsg = "Please enter a number between 1 and " + bill.getNumEntries() + ".";

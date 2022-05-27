@@ -39,7 +39,7 @@ public class NumbersEntry extends Entry {
     }
 
     public String toString() {
-        String returnString = String.format("Entry ID: %6d Numbers: ", getEntryiD()) + getEntriesString();
+        String returnString = String.format("Entry ID: %-6d Numbers: ", getEntryiD()) + getEntriesString();
         
         if (auto){
         returnString+="[Auto]";
@@ -88,6 +88,7 @@ public class NumbersEntry extends Entry {
             }
 
             entryNumbers = convertStringIntArrayToIntArray(entryNumbersStrArr);
+            //printArray(entryNumbers);
 
             if (notAllDifferent(entryNumbers)) {
                 System.out.println("Invalid input! All numbers must be different!");
@@ -118,10 +119,10 @@ public class NumbersEntry extends Entry {
     private boolean notAllInRange(int[] numbers, int min, int max) {
         for (int num : numbers) {
             if (num < min || num > max) {
-                return false; // a number not in range
+                return true; // a number not in range, i.e. they are not all in range.
             }
         }
-        return true;
+        return false;
 
     }
 
@@ -130,11 +131,11 @@ public class NumbersEntry extends Entry {
 
         for (int num : numbers) {
             if (currentNumbers.contains(num)) {
-                return false;
+                return true; // found a duplciate num. i.e., they are not all different.
             }
             currentNumbers.add(num);
         }
-        return true;
+        return false;
 
     }
 
@@ -144,5 +145,13 @@ public class NumbersEntry extends Entry {
             intArr[i] = Integer.parseInt(strArr[i]);
         }
         return intArr;
+    }
+
+    private void printArray(int[] entryNumbers){
+        System.out.println("------ARRAY------");
+        for (int i : entryNumbers){
+            System.out.println(i);
+        }
+        System.out.println("------ARRAY DONE------");
     }
 }

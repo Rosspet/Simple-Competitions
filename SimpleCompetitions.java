@@ -44,7 +44,7 @@ public class SimpleCompetitions {
     simpleComp.startApp();
 }
 
-    public Competition addNewCompetition() { // call if 1 entered.
+    public Competition makeNewCompetition() { // call if 1 entered.
         //add a new competition using the given competition type and competition name. (these into constructors)
         // only gets called if their isnt already an active competition.
         // called after user enters 1. in main menu.
@@ -77,6 +77,7 @@ public class SimpleCompetitions {
         String cmd = sc.nextLine();
         while(!validCompTypeResponse(cmd)){
             System.out.println("Valid responses: L,l,R,r");
+            cmd = sc.nextLine();
         }
         return cmd; //cmd is one of the valid types. now return it.
     }
@@ -94,7 +95,7 @@ public class SimpleCompetitions {
  */
 
     private void startApp(){
-        
+        competitions = new ArrayList<Competition>();
         fromFile = obtainFilePrefernce();
 
         if (fromFile){ // only loading from file if atleast one game has gone which would mean the mode has been selected.
@@ -126,7 +127,7 @@ public class SimpleCompetitions {
             switch (selectedOption){
                 case NEW_COMP:
                     if (activeComp==null){ // make sure to reset to null once done.
-                        activeComp = addNewCompetition();
+                        activeComp = makeNewCompetition();
                         competitions.add(activeComp);
                         System.out.println("A new competition has been created!");
                         System.out.println(activeComp);

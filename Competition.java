@@ -17,11 +17,11 @@ public abstract class Competition {
     //private ArrayList<Member> members;
 
     // all comps get the same copy of members and bills form main!
-    public Competition(String compName, int compID, String type){
+    public Competition(String compName, int compID, String type, DataProvider data){
         id = compID;
         name = compName;
         this.type = type;
-        //this.data = data;
+        this.data = data;
         //this.bills = bills;
         //this.members = members;
     }
@@ -50,7 +50,8 @@ public abstract class Competition {
         //int int_billID=-1;
 
         while (!validResponse){
-            billID = (scanner.nextLine());
+            billID = (scanner.nextLine().trim());
+            System.out.println(billID);
             if(!Bill.validBillID(billID)){ // && billHasValidMemberID(response) going to chek in higher level. just want to get the valid numerical bill.
                 continue;
             }
@@ -64,6 +65,7 @@ public abstract class Competition {
                 continue;
             }
             if (data.billHasBeenUsed(billID)){
+                System.out.println("This bill has already been used for a competition. Please try again.");
                 continue;
             }
             

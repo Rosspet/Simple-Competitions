@@ -18,7 +18,7 @@ public class RandomPickCompetition extends Competition {
     //private ArrayList<Member> members;
 	
     public RandomPickCompetition(String compName, int compID, DataProvider data){
-        super(compName, compID, "RandomPickCompetition");
+        super(compName, compID, "RandomPickCompetition", data);
         this.data = data;
         //this.bills = bills;
         //this.members = members;    
