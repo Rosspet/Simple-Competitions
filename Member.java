@@ -15,4 +15,12 @@ public class Member {
         this.name=name;
         this.address=address;
     }
+
+    public String toString(){
+        return ("Member ID: " +ID+ ", Member Name: "+ name);
+    }
+
+    public boolean hasID(String ID){
+        return (this.ID.equals(ID));
+    }
 }

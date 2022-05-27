@@ -11,7 +11,7 @@ public abstract class Competition {
     private String name; //competition name
     private int id; //competition identifier
     private String type;
-    private static final int BILL_ID_LENGTH = 6;
+    
 
     public Competition(String compName, int compID, String type){
         id = compID;
@@ -40,23 +40,13 @@ public abstract class Competition {
         String response;
         while (!validResponse){
             response = scanner.nextLine();
-            validResponse = (validBillID(response) && billHasValidMemberID(response);
+            validResponse = (Bill.validBillID(response) && billHasValidMemberID(response));
         }
         return response;
         
     }
 
-    private boolean billHasValidMemberID(String resposne){
-        
-    }
-
-    private boolean validBillID(String billID){
-        if (billID.length()!=BILL_ID_LENGTH || !billID.matches("[0-9]+")){
-            System.out.println("Invalid bill id! It must be a 6-digit number. Please try again.");
-            return false;
-        }
-        return true;
-
-    }
+    
+    
 
 }

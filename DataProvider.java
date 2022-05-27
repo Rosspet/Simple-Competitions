@@ -1,6 +1,7 @@
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Scanner;
 
 /*
@@ -16,6 +17,7 @@ public class DataProvider {
     private ArrayList<Member> members;
     private ArrayList<Bill> bills; 
     private static final int NUM_MEMBER_DATA = 3; 
+    private static final int NUM_BILL_DATA = 4;
     /**
      * 
      * @param memberFile A path to the member file (e.g., members.csv)
@@ -29,7 +31,7 @@ public class DataProvider {
         this.memberFile = memberFile;
         this.billFile = billFile;
         try {
-            getMembers();   
+            getMembersFromFile();   
         }
         catch (DataAccessException e) {
             System.out.println(e.getMessage());
@@ -43,7 +45,7 @@ public class DataProvider {
         
         
         try {
-            getBills(); 
+            getBillsFromFile(); 
         }
         catch (DataAccessException e) {
             System.out.println(e.getMessage());
@@ -55,10 +57,38 @@ public class DataProvider {
             System.out.println(e.getMessage());
         }
 
-     }
+    }
 
-     private void getMembers() throws DataAccessException, DataFormatException{
-         Scanner memberStream;
+    public Member getMember(String memberID) throws MemberDoesNotExist{
+        Iterator<Member> iter = members.iterator();
+        Member thisMember;
+        while(iter.hasNext()){
+            thisMember = iter.next();
+            if (thisMember.hasID(memberID)){
+                return thisMember;
+            }
+        }
+        // member doesnt exist if still here
+        throw new MemberDoesNotExist(memberID);
+    }
+
+    public Bill getBill(int BillID) throws BillDoesNotExist{
+        Iterator<Bill> iter = bills.iterator();
+        Bill thisBill;
+        while(iter.hasNext()){
+            thisBill = iter.next();
+            if (thisBill.hasID(BillID)){
+                return thisBill;
+            }
+        }
+        // member doesnt exist if still here
+        throw new BillDoesNotExist(BillID);
+    }
+
+
+
+    private void getMembersFromFile() throws DataAccessException, DataFormatException{
+        Scanner memberStream;
         try {
              memberStream = new Scanner(new FileInputStream(memberFile));
         }
@@ -89,9 +119,9 @@ public class DataProvider {
         }
 
         memberStream.close();
-     }
+    }
 
-     private void getBills() throws DataAccessException, DataFormatException{
+    private void getBillsFromFile() throws DataAccessException, DataFormatException{
         
         Scanner billStream;
         try {
@@ -103,8 +133,47 @@ public class DataProvider {
         
         //read and parse bills
         bills = new ArrayList<Bill>();
+        String billLine;
+        String[] billData;
+        while (billStream.hasNextLine()){
+            billLine = billStream.nextLine();
+            billData = billLine.split(","); 
+            
+            if (billData.length!=NUM_BILL_DATA){
+                throw new DataFormatException("Expecting exactly " + NUM_BILL_DATA + 
+                "piececs of information per bill. Got " + billData.length);
+            }
 
-        
+            try { // try parse entry to make a bill.
+                bills.add(
+                    new Bill(
+                        Integer.parseInt(billData[0]),
+                        billData[1], // by keeping string, can avoid errors of parsing into Int '""' and also might want t use chars in id
+                        Float.parseFloat(billData[2]),
+                        Boolean.parseBoolean(billData[3])
+                    )
+                );
+            }
+            catch (Exception e){
+                throw new DataFormatException("Error parsing Bill data. BillLine = "+billLine+"\nError:" + e.getMessage());
+            }
+        }
+
+
         billStream.close();
     }
+
+    
 }
+
+// old unused code. 
+
+/**
+ * for (String str : billData){
+
+                // if any empty fields
+                if (str.equals("")){
+                    throw new DataFormatException("Empty field recieved in bill entry." + 
+                    "full entry is:" + billLine);
+                }
+ */

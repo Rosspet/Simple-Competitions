@@ -137,8 +137,6 @@ public class SimpleCompetitions {
                     // else have active competition.
                     activeComp.addEntries();
                     break;
-                    
-                    break;
                 case DRAW_WINNERS:
                     break;
                 case SUMMARY:
