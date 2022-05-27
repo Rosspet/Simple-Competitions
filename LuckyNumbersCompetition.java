@@ -13,7 +13,7 @@ public class LuckyNumbersCompetition extends Competition {
 	private ArrayList<Integer> billIDs = new ArrayList<Integer>(); // list of bill IDs in this particular comp (not all
 																	// bills ever which is in data)
 	private DataProvider data;
-	private ArrayList<LuckyNumbersEntry> entries;
+	private ArrayList<NumbersEntry> entries;
 	// private ArrayList<Bill> bills;
 	// private ArrayList<Member> members;
 	private static final int MIN_NUM_MANUAL = 1;
@@ -33,21 +33,26 @@ public class LuckyNumbersCompetition extends Competition {
 		boolean finishedAddingEntries = false;
 		String billId;
 		int entryID = 1;
+		Bill bill;
+		String memberId;
 		while (!finishedAddingEntries) {
 
 			billId = getBillIDFromInputForEntry();
 			// have a bill id that is valid and in the list of bill_ids and has a member!.
 			
-			Bill bill = data.getBillThatExists(billId); // returns a copy of the bill
-			String memberId = bill.getMemberId();
+			bill = data.getBillThatExists(billId); // returns a copy of the bill
+			memberId = bill.getMemberId();
 			int numEntries = bill.getNumEntries();
 			int numManualEntries = getManualNumEntries(bill);
 			int numAutoEntires = numEntries - numManualEntries;
 			// now do each manual entry
 			for (int i = 0; i < numManualEntries; i++) {
-				entries.add(new LuckyNumbersEntry(entryID, billId, memberId, getManualEntryNumbers(), false)); 
+				entries.add(new NumbersEntry(entryID, billId, memberId, getManualEntryNumbers(), false)); 
 			}
 
+			for (int i = 0; i <numAutoEntires; i++){
+				//entries.add(new AutoNumbersEntry());
+			}
 			// now do automatic entries.
 
 		}
