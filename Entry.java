@@ -8,4 +8,5 @@ public class Entry {
     private int entryId;
     private String billId;
     private String memberId;
+    
 }

@@ -54,21 +54,22 @@ public abstract class Competition {
             if(!Bill.validBillID(billID)){ // && billHasValidMemberID(response) going to chek in higher level. just want to get the valid numerical bill.
                 continue;
             }
-            int_billID = Integer.parseInt(billID);
-            if  (!data.billExists(int_billID)){
+            
+            if  (!data.billExists(billID)){
                 System.out.println("Bill does not exist. Enter a different Bill ID");
                 continue;
             }
-            if (!data.billHasMember(int_billID)){
+            if (!data.billHasMember(billID)){
                 System.out.println("This bill has no member id. Please try again.");
                 continue;
             }
-            if (data.billHasBeenUsed(int_billID)){
+            if (data.billHasBeenUsed(billID)){
                 continue;
             }
             
             validResponse = true;
-            data.setBillToUsed(int_billID);
+            data.setBillToUsed(billID);
+
         }
         if (int_billID==INVALID_INT_RESPONSE){
             System.out.print("FAILED TO GET PROPER BILL ID");

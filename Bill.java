@@ -5,14 +5,14 @@
  */
 
 public class Bill {
-    private int billID;
+    private String billID;
     private String memberID; // by keeping string, can avoid errors of parsing into Int '""' and also might want t use chars in id also nothing in spec about memberID being on numerical.
     private float totalBillAmount;
     private boolean used;
     private static final int COST_PER_ENTRY = 50;
     private static final int BILL_ID_LENGTH = 6;
 
-    public Bill(int billID, String memberID, Float totalBillAmount, boolean used){
+    public Bill(String billID, String memberID, Float totalBillAmount, boolean used){
         this.billID=billID;
         this.memberID=memberID;
         this.totalBillAmount=totalBillAmount;
@@ -67,7 +67,7 @@ public class Bill {
         return (!memberID.equals(""));
     }
 
-    public boolean hasID(int ID){
-        return (billID == ID);
+    public boolean hasID(String ID){
+        return (billID.equals(ID));
     }
 }

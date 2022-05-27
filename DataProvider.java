@@ -73,7 +73,7 @@ public class DataProvider {
 
     
 
-    public boolean billExists(int billID){
+    public boolean billExists(String billID){
 
         Iterator<Bill> iter = bills.iterator();
         while(iter.hasNext()){
@@ -85,27 +85,27 @@ public class DataProvider {
     }
     
     // bill getter helper func for this class only, hence private but returning actual object.
-    private Bill getActualBillObject(int billID){
+    private Bill getActualBillObject(String billID){
         Iterator<Bill> iter = bills.iterator();
-        Bill thisBill;
+        Bill thisBill=null;
         while(iter.hasNext()){
             thisBill = iter.next();
             if (thisBill.hasID(billID)){
                 return thisBill; // not returning copy as this is a private helper for this class only
             }
         }
-        System.out.println("failed to find bill that was assumed to exist. existing 1.")
+        System.out.println("failed to find bill that was assumed to exist. existing 1.");
         System.exit(1);
-        //return thisBill;
+        return thisBill;
     }
 
 
-    public void setBillToUsed(int billID){
+    public void setBillToUsed(String billID){
         Bill bill = getActualBillObject(billID);
         bill.useBill();
     }
 
-    public boolean billHasBeenUsed(int billID){
+    public boolean billHasBeenUsed(String billID){
         Bill bill = getBillThatExists(billID);
         return bill.hasBeenUsed();
     }
@@ -170,7 +170,7 @@ public class DataProvider {
             try { // try parse entry to make a bill.
                 bills.add(
                     new Bill(
-                        Integer.parseInt(billData[0]),
+                        billData[0],
                         billData[1], // by keeping string, can avoid errors of parsing into Int '""' and also might want t use chars in id
                         Float.parseFloat(billData[2]),
                         Boolean.parseBoolean(billData[3])
@@ -192,13 +192,13 @@ public class DataProvider {
     //get member
     // altermember
 
-    public Bill getBillThatExists(int billID){
+    public Bill getBillThatExists(String billID){
         Bill bill = getActualBillObject(billID);
         return new Bill(bill);
     }
 
 
-    public Bill getBill(int billID) throws BillDoesNotExist{
+    public Bill getBill(String billID) throws BillDoesNotExist{
         Iterator<Bill> iter = bills.iterator();
         Bill thisBill;
         while(iter.hasNext()){
@@ -211,7 +211,7 @@ public class DataProvider {
         throw new BillDoesNotExist(billID);
     }
     
-    public boolean billHasMember(int billID){
+    public boolean billHasMember(String billID){
         Bill bill=null;
         try {
             bill = getBill(billID);
