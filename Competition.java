@@ -11,11 +11,14 @@ public abstract class Competition {
     private String name; //competition name
     private int id; //competition identifier
     private String type;
+    private DataProvider data;
 
+    // all comps get the same copy of members and bills form main!
     public Competition(String compName, int compID, String type){
         id = compID;
         name = compName;
         this.type = type;
+        //this.data = data;
     }
 
     public abstract void addEntries();
@@ -32,7 +35,9 @@ public abstract class Competition {
         this.type = type;
     }
 
-    public String getBillID(){
+
+
+    public int getBillIDFromInput(){
         System.out.println("Bill ID:");
         Scanner scanner = SimpleCompetitions.getScanner();
         boolean validResponse = false;
@@ -41,7 +46,7 @@ public abstract class Competition {
             response = scanner.nextLine();
             validResponse = (Bill.validBillID(response)); // && billHasValidMemberID(response) going to chek in higher level. just want to get the valid numerical bill.
         }
-        return response;
+        return Integer.parseInt(response);
         
     }
 

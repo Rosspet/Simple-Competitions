@@ -16,6 +16,13 @@ public class Member {
         this.address=address;
     }
 
+        //copy constructor
+    public Member(Member member){
+        this.ID = member.ID;
+        this.name = member.name;
+        this.address = member.address;
+    }
+
     public String toString(){
         return ("Member ID: " +ID+ ", Member Name: "+ name);
     }

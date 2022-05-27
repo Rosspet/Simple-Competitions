@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Random;
 
 /*
@@ -11,11 +12,12 @@ public class RandomPickCompetition extends Competition {
     private final int SECOND_PRIZE = 5000;
     private final int THIRD_PRIZE = 1000;
     private final int[] prizes = {FIRST_PRIZE, SECOND_PRIZE, THIRD_PRIZE};
-	
+	DataProvider data;
     private final int MAX_WINNING_ENTRIES = 3;
 	
-    public RandomPickCompetition(String compName, int compID){
+    public RandomPickCompetition(String compName, int compID, DataProvider data){
         super(compName, compID, "RandomPickCompetition");
+        this.data = data;
         
     }
 

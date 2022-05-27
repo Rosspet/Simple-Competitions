@@ -19,6 +19,14 @@ public class Bill {
         this.used=used;
     }
 
+    // copy constructor
+    public Bill(Bill bill){
+        this.billID = bill.billID;
+        this.memberID = bill.memberID;
+        this.totalBillAmount = bill.totalBillAmount;
+        this.used = bill.used;
+    }
+
     public void useBill(){
         used=true;
     }
@@ -56,6 +64,10 @@ public class Bill {
         }
         return true;
 
+    }
+
+    public boolean hasMember(){
+        return (!memberID.equals(""));
     }
 
     public boolean hasID(int ID){

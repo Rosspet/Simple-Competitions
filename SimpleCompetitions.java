@@ -24,6 +24,8 @@ public class SimpleCompetitions {
     private static final int SUMMARY = 4;
     private static final int EXIT = 5;
     private DataProvider data;
+    private ArrayList<Bill> bills;
+    private ArrayList<Member> members;
     private ArrayList<Competition> competitions; // list of all competitions. Only 1 can be active
     private Competition activeComp = null; // the 1 active competition.// for quick access, store here too.
     // We can have multiple competitions. But only 1 "active" competitions.
@@ -53,14 +55,14 @@ public class SimpleCompetitions {
         nextCompID+=1;
 
         if (compType.equalsIgnoreCase("L")){
-            return new LuckyNumbersCompetition(compName, compID);
+            return new LuckyNumbersCompetition(compName, compID, data);
         }
         else if (compType.equalsIgnoreCase("R")){
-            return new RandomPickCompetition(compName, compID);
+            return new RandomPickCompetition(compName, compID, data);
         }
         else {
             System.out.println("ERROR: should have made 1 of the two types!!!!!");
-            return new RandomPickCompetition(compName, compID);
+            return new RandomPickCompetition(compName, compID, data);
         }
         
     }
@@ -125,6 +127,7 @@ public class SimpleCompetitions {
                 case NEW_COMP:
                     if (activeComp==null){ // make sure to reset to null once done.
                         activeComp = addNewCompetition();
+                        competitions.add(activeComp);
                         System.out.println("A new competition has been created!");
                         System.out.println(activeComp);
                     }
@@ -155,6 +158,8 @@ public class SimpleCompetitions {
 
     private void readData(){
         data = new DataProvider(memberFileName, billFileName);
+        bills = data.getBills(); // main game engine gets a copy of bills which is now the truth.
+        members = data.getMembers(); // same as above
         return;
     }
 
@@ -244,4 +249,6 @@ public class SimpleCompetitions {
     public static Scanner getScanner(){
         return sc;
     }
+
+
 }

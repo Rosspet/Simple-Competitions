@@ -71,18 +71,19 @@ public class DataProvider {
         throw new MemberDoesNotExist(memberID);
     }
 
-    public Bill getBill(int BillID) throws BillDoesNotExist{
+    
+
+    public boolean billExists(int billID){
+
         Iterator<Bill> iter = bills.iterator();
-        Bill thisBill;
         while(iter.hasNext()){
-            thisBill = iter.next();
-            if (thisBill.hasID(BillID)){
-                return thisBill;
+            if(iter.next().hasID(billID)){
+                return true;
             }
         }
-        // member doesnt exist if still here
-        throw new BillDoesNotExist(BillID);
+        return false;
     }
+
 
     private void getMembersFromFile() throws DataAccessException, DataFormatException{
         Scanner memberStream;
@@ -160,6 +161,54 @@ public class DataProvider {
         billStream.close();
     }
 
+
+    // getBill
+    //alterBill
+    //get member
+    // altermember
+
+    public Bill getBill(int BillID) throws BillDoesNotExist{
+        Iterator<Bill> iter = bills.iterator();
+        Bill thisBill;
+        while(iter.hasNext()){
+            thisBill = iter.next();
+            if (thisBill.hasID(BillID)){
+                return new Bill(thisBill); // return a copy for security reasons.
+            }
+        }
+        // member doesnt exist if still here
+        throw new BillDoesNotExist(BillID);
+    }
+    
+    public boolean billHasMember(int billID){
+        Bill bill=null;
+        try {
+            bill = getBill(billID);
+        }
+        catch (BillDoesNotExist e) {
+            System.out.println("Bill: "+billID+" does not exist");
+        }
+
+        return bill.hasMember();
+    }
+    
+    public ArrayList<Bill> getBills(){
+        ArrayList<Bill> bills_copy = new ArrayList<Bill>();
+        Iterator<Bill> iter = bills.iterator();
+        while(iter.hasNext()){
+            bills_copy.add(new Bill(iter.next()));
+        }
+        return bills_copy;
+    }
+
+    public ArrayList<Member> getMembers(){
+        ArrayList<Member> members_copy = new ArrayList<Member>();
+        Iterator<Member> iter = members.iterator();
+        while(iter.hasNext()){
+            members_copy.add(new Member(iter.next()));
+        }
+        return members_copy;
+    }
     
 }
 
