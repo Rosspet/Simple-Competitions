@@ -40,7 +40,9 @@ public abstract class Competition {
         this.type = type;
     }
 
-
+    public int getCompId(){
+        return id;
+    }
 
     public String getBillIDFromInputForEntry(){
         System.out.println("Bill ID:");

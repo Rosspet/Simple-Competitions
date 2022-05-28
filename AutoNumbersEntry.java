@@ -13,6 +13,12 @@ public class AutoNumbersEntry extends NumbersEntry {
 
     private int seed;
 
+    public AutoNumbersEntry(int seed){
+        super();
+        setNumbers(createNumbers(seed));
+        this.seed=seed;
+    }
+
     public AutoNumbersEntry(int entryId, String billId, String memberId, int seed){
         super(entryId, billId, memberId, true);
         setNumbers(createNumbers(seed));

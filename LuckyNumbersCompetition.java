@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Random;
 /*
@@ -18,6 +19,7 @@ public class LuckyNumbersCompetition extends Competition {
 	// private ArrayList<Member> members;
 	private static final int MIN_NUM_MANUAL = 1;
 	private boolean testingMode;
+	private Random random = new Random();
 
 
 	public LuckyNumbersCompetition(String compName, int compID, DataProvider data, boolean testingMode) {
@@ -37,7 +39,7 @@ public class LuckyNumbersCompetition extends Competition {
 		int entryId = 1;
 		Bill bill;
 		String memberId;
-		Random random = new Random();
+		
 		while (!finishedAddingEntries) {
 			ArrayList<NumbersEntry> theseEntries = new ArrayList<NumbersEntry>(); // arrList for this batch of entrys
 			billId = getBillIDFromInputForEntry();
@@ -78,7 +80,52 @@ public class LuckyNumbersCompetition extends Competition {
 		}
 	}
 
+	public void drawWinners() { // use compID as seed for generating the lucky entry.
+		int seed;
+		if (testingMode){
+			seed = getCompId();
+		} 
+		else {
+			seed = random.nextInt();
+		}
+
+		AutoNumbersEntry luckyEntry = new AutoNumbersEntry(seed); // the entry to matching with.
+		
+		System.out.print("Lucky Numbers: ");
+		System.out.println(luckyEntry.getEntriesString());
+		System.out.println("Winning entries:");
+
+		ArrayList<NumbersEntry> winners = getWinningEntries((NumbersEntry)luckyEntry);
+
+
+
+	}
+
+	private ArrayList<NumbersEntry> getWinningEntries(NumbersEntry luckyEntry){
+		ArrayList<NumbersEntry> winners = new ArrayList<NumbersEntry>();
+		Iterator<NumbersEntry> entryIter = entries.iterator();
+		NumbersEntry entry;
+		while (entryIter.hasNext()){
+			entry = entryIter.next();
+			if (winningEntry(entry, luckyEntry)){
+
+			}
+		}
+		
+
+		// SORT WINNERS BY ENTRY ID BEFORE RETURNING;
+
+		return winners;
+		
+	}
 	
+	private boolean winningEntry(NumbersEntry entry, NumbersEntry luckyEntry){
+		ArrayList<Integer> numbs = entry.getNumbers();
+		ArrayList<Integer> luckyNumbs = luckyEntry.getNumbers();
+
+		
+
+	}
 
 	private boolean moreEntries(){
 		System.out.println("Add more entries? (Y/N)?");
@@ -121,7 +168,5 @@ public class LuckyNumbersCompetition extends Competition {
 		return -1; // should never get here.
 	}
 
-	public void drawWinners() { // use compID as seed for generating the lucky entry.
-
-	}
+	
 }

@@ -17,12 +17,18 @@ public class NumbersEntry extends Entry {
 	private static final int MAX_RANGE = 35;
 	private static final int MIN_RANGE = 1;
 
+    // null constructor
+    public NumbersEntry(){
+        super();
+    }
+
     public NumbersEntry(
             int entryId,
             String billId,
             String memberId,
             //ArrayList<Integer> numbers,
             boolean auto) {
+                
         // can this be same method for the auto LuckyNumbers and then the Auto class is
         // for the random nu bers comp?
         super(entryId, billId, memberId);
@@ -48,7 +54,7 @@ public class NumbersEntry extends Entry {
         return returnString;
     }
 
-    private String getEntriesString() {
+    public String getEntriesString() {
         String numbs = "";
         Iterator<Integer> iter = getNumbers().iterator();
         while (iter.hasNext()) {

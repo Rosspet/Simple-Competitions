@@ -9,6 +9,10 @@ public class Entry {
     private String billId;
     private String memberId;
     
+    // null constructor
+    public Entry(){
+
+    }
 
     public Entry(int entryId, String billId, String memberId){
         this.entryId = entryId;
