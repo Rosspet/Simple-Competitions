@@ -18,6 +18,12 @@ public class LuckyNumbersCompetition extends Competition {
 	// private ArrayList<Bill> bills;
 	// private ArrayList<Member> members;
 	private static final int MIN_NUM_MANUAL = 1;
+	private static final int TWO_NUM_PRIZE = 50;
+	private static final int THREE_NUM_PRIZE = 100;
+    private static final int FOUR_NUM_PRIZE = 500;
+    private static final int FIVE_NUM_PRIZE = 1000;
+	private static final int SIX_NUM_PRIZE = 5000;
+	private static final int SEVEN_NUM_PRIZE = 50000;
 	private boolean testingMode;
 	private Random random = new Random();
 
@@ -105,10 +111,20 @@ public class LuckyNumbersCompetition extends Competition {
 		ArrayList<NumbersEntry> winners = new ArrayList<NumbersEntry>();
 		Iterator<NumbersEntry> entryIter = entries.iterator();
 		NumbersEntry entry;
+		int points;
 		while (entryIter.hasNext()){
 			entry = entryIter.next();
-			if (winningEntry(entry, luckyEntry)){
+			points = getPoints(entry, luckyEntry);
+			if (points!=0){
+				// we have a winner.
 
+				//check if already exist,
+				if (/*already existing winner*/){
+					// update there entry
+				}
+				else {
+					// make new winner
+				}
 			}
 		}
 		
@@ -119,12 +135,34 @@ public class LuckyNumbersCompetition extends Competition {
 		
 	}
 	
-	private boolean winningEntry(NumbersEntry entry, NumbersEntry luckyEntry){
+	private int getPoints(NumbersEntry entry, NumbersEntry luckyEntry){
 		ArrayList<Integer> numbs = entry.getNumbers();
 		ArrayList<Integer> luckyNumbs = luckyEntry.getNumbers();
 
-		
+		// first get the number of entries in common with each other
+		int numInCommon=0;
+		for (int num : numbs){
+			if (luckyNumbs.contains(num)){
+				numInCommon+=1;
+			}
+		}
 
+		switch (numInCommon){
+			case(2):
+				return (TWO_NUM_PRIZE);
+			case(3):
+				return (THREE_NUM_PRIZE);
+			case(4):
+				return (FOUR_NUM_PRIZE);
+			case(5):
+				return (FIVE_NUM_PRIZE);
+			case(6):
+				return (SIX_NUM_PRIZE);
+			case(7):
+				return (SEVEN_NUM_PRIZE);
+			default:
+				return (0);
+		}
 	}
 
 	private boolean moreEntries(){
