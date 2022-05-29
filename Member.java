@@ -9,6 +9,7 @@ public class Member {
     private String ID; // no mention over whether member ID is only numerical
     private String name;
     private String address;
+    
 
     public Member(String ID, String name, String address){
         this.ID=ID;
@@ -25,6 +26,14 @@ public class Member {
 
     public String toString(){
         return ("Member ID: " +ID+ ", Member Name: "+ name);
+    }
+
+    public String getMemberID(){
+        return ID;
+    }
+
+    public String getMemberName(){
+        return name;
     }
 
     public boolean hasID(String ID){

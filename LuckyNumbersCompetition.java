@@ -15,6 +15,7 @@ public class LuckyNumbersCompetition extends Competition {
 																	// bills ever which is in data)
 	private DataProvider data;
 	private ArrayList<NumbersEntry> entries = new ArrayList<NumbersEntry>();
+	ArrayList<Winner> winners = new ArrayList<Winner>();
 	// private ArrayList<Bill> bills;
 	// private ArrayList<Member> members;
 	private static final int MIN_NUM_MANUAL = 1;
@@ -96,44 +97,84 @@ public class LuckyNumbersCompetition extends Competition {
 		}
 
 		AutoNumbersEntry luckyEntry = new AutoNumbersEntry(seed); // the entry to matching with.
-		
 		System.out.print("Lucky Numbers: ");
 		System.out.println(luckyEntry.getEntriesString());
 		System.out.println("Winning entries:");
 
-		ArrayList<NumbersEntry> winners = getWinningEntries((NumbersEntry)luckyEntry);
-
-
-
+		winners = getWinningEntries((NumbersEntry)luckyEntry);
+		displayWinners(winners);
 	}
 
-	private ArrayList<NumbersEntry> getWinningEntries(NumbersEntry luckyEntry){
-		ArrayList<NumbersEntry> winners = new ArrayList<NumbersEntry>();
+	private ArrayList<Winner> getWinningEntries(NumbersEntry luckyEntry){
+		ArrayList<Winner> winners = new ArrayList<Winner>();
 		Iterator<NumbersEntry> entryIter = entries.iterator();
 		NumbersEntry entry;
+		Winner existingWinner;
 		int points;
 		while (entryIter.hasNext()){
 			entry = entryIter.next();
 			points = getPoints(entry, luckyEntry);
+
+			// a customer can only win one prize each. 
+			// This will the prize with the highest value. 
+			// If theres multiple of these, choose the one with the smallest ID. 
+
 			if (points!=0){
 				// we have a winner.
-
+				
 				//check if already exist,
-				if (/*already existing winner*/){
+				if (alreadyWinningMember(winners, entry.getMemberId())){
 					// update there entry
+					existingWinner = getExistingWinner(winners, entry.getMemberId());
+					existingWinner.updatePrize(entry, points, entry.getEntryiD());
 				}
 				else {
 					// make new winner
+					try{
+						winners.add(new Winner(
+							data.getMember(entry.getMemberId()), 
+							entry, 
+							points, 
+							entry.getEntryiD()
+							)
+						);
+					}
+					catch (MemberDoesNotExist e){
+						System.out.println(e.getMessage());
+					}
 				}
 			}
 		}
-		
-
-		// SORT WINNERS BY ENTRY ID BEFORE RETURNING;
+		// SORT WINNERS BY ENTRY ID BEFORE RETURNING; (maybe already sorted.)
 
 		return winners;
 		
 	}
+
+	private Winner getExistingWinner(ArrayList<Winner> winners, String memberID){
+		Iterator<Winner> winnerIter = winners.iterator();
+		Winner thisWinner;
+		while (winnerIter.hasNext()){
+			thisWinner = winnerIter.next();
+			if(thisWinner.hasID(memberID)){
+				return thisWinner;
+			}
+		}
+		return null;
+	}
+	
+
+
+	private boolean alreadyWinningMember(ArrayList<Winner> winners, String memberID){
+		Iterator<Winner> winnerIter = winners.iterator();
+		while (winnerIter.hasNext()){
+			if(winnerIter.next().hasID(memberID)){
+				return true;
+			}
+		}
+		return false;
+	}
+
 	
 	private int getPoints(NumbersEntry entry, NumbersEntry luckyEntry){
 		ArrayList<Integer> numbs = entry.getNumbers();
@@ -204,6 +245,13 @@ public class LuckyNumbersCompetition extends Competition {
 			System.out.println(inputErrMsg);
 		}
 		return -1; // should never get here.
+	}
+
+
+	private void displayWinners(ArrayList<Winner> winners){
+		for (Winner winner : winners){
+			System.out.print(winner);
+		}
 	}
 
 	
