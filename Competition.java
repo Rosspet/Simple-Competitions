@@ -46,21 +46,21 @@ public abstract class Competition {
     }
 
     public String getBillIDFromInputForEntry(){
-        System.out.println("Bill ID:");
         Scanner scanner = SimpleCompetitions.getScanner();
         boolean validResponse = false;
         String billID=INVALID_INT_RESPONSE;
         //int int_billID=-1;
 
         while (!validResponse){
+            System.out.println("Bill ID:");
             billID = (scanner.nextLine().trim());
-            System.out.println(billID);
+            //System.out.println(billID);
             if(!Bill.validBillID(billID)){ // && billHasValidMemberID(response) going to chek in higher level. just want to get the valid numerical bill.
                 continue;
             }
             
             if  (!data.billExists(billID)){
-                System.out.println("Bill does not exist. Enter a different Bill ID");
+                System.out.println("This bill does not exist. Please try again.");
                 continue;
             }
             if (!data.billHasMember(billID)){

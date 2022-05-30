@@ -50,7 +50,7 @@ public class RandomPickCompetition extends Competition {
             for (int i=0; i<numEntries; i++){
                 theseEntries.add(new Entry(entries.size()+theseEntries.size()+1, billId, memberId));
             }
-            System.out.println("The following entries have been automatically  generated:");
+            System.out.println("The following entries have been automatically generated:");
             //print entrys in theseEntries (will maybe need there own toString.) which means the toStrings in Numbers/autoEntry will need to be decorated with @Overide
             
             // TO DO print these
@@ -84,21 +84,90 @@ public class RandomPickCompetition extends Competition {
         } else {
             randomGenerator = new Random();
         }
+		int numUniqueWinners=0;
+        int winningEntryCount = 0;
+        int numUniqueMembers = getNumUniqueMembers();
+        System.out.println(numUniqueMembers);
+        while (winningEntryCount < MAX_WINNING_ENTRIES && numUniqueWinners<numUniqueMembers) {
+            int winningEntryIndex = randomGenerator.nextInt(entries.size());
+	
+            Entry winningEntry = entries.get(winningEntryIndex);
+		    
+            /*
+             * Ensure that once an entry has been selected,
+             * it will not be selected again.
+             */
+            String memberID = winningEntry.getMemberId();
+            if (alreadyWinningMember(winners, memberID)){
+                continue; // customer can only win 1 and entry cant be picked twice.
+            }
+            
+
+            if (winningEntry.getPrize() == 0) {
+                int currentPrize = prizes[winningEntryCount];
+                winningEntry.setPrize(currentPrize);
+                //winningEntryCount++; moved to after making winner
+            } 
+            else {
+                // already picked this entry
+                continue;
+            }
+
+            // make a winner to help keep track of things.
+            try {
+                Winner winner = new Winner(data.getMember(memberID), 
+                                    winningEntry, 
+                                    prizes[winningEntryCount],
+                                    winningEntry.getEntryiD()
+                                );
+                winners.add(winner);
+                winningEntryCount+=1;
+                numUniqueWinners+=1;
+            }
+            catch (MemberDoesNotExist e) {
+                System.out.println(e.getMessage());
+            }
+        }
 		
+        /*
+         * Note that the above piece of code does not ensure that
+         * one customer gets at most one winning entry. Add your code
+         * to complete the logic.
+         */
+        
+        winners.sort(null); // sort using overriden compareTo
+
+        displayWinners();
+        return true; 
+
+    }
+
+    private int getNumUniqueMembers(){
+        int numUnique=0;
+        ArrayList<String> memberIds = new ArrayList<String>();
+
+        for (Entry entry : entries){
+            if(!memberIds.contains(entry.getMemberId())){
+                numUnique+=1;
+                memberIds.add(entry.getMemberId()); // now add.
+            }
+        }
+        return numUnique;
+        
+    }
+        /*
         int winningEntryCount = 0;
         while (winningEntryCount < MAX_WINNING_ENTRIES && entriesForDrawing.size()>0) {
             
             int winningEntryIndex = randomGenerator.nextInt(entriesForDrawing.size());
             
             Entry winningEntry = entriesForDrawing.get(winningEntryIndex);
-            entriesForDrawing.remove(winningEntryIndex); // do for duplicate only as want to remeber all the entries for reporting.
+            //entriesForDrawing.remove(winningEntryIndex); // do for duplicate only as want to remeber all the entries for reporting.
             String memberID = winningEntry.getMemberId();
 
-            if (alreadyWinningMember(winners, memberID) /*|| alreadyPickedEntry(winningEntry.getEntryiD())*/){
+            if (alreadyWinningMember(winners, memberID) || alreadyPickedEntry(winningEntry.getEntryiD())){
                 continue; // customer can only win 1 and entry cant be picked twice.
             }
-            
-
             try {
                 Winner winner = new Winner(data.getMember(memberID), 
                                     winningEntry, 
@@ -111,6 +180,7 @@ public class RandomPickCompetition extends Competition {
             catch (MemberDoesNotExist e) {
                 System.out.println(e.getMessage());
             }
+            */
 
             //Ensure that once an entry has been selected,
             //it will not be selected again.
@@ -120,13 +190,12 @@ public class RandomPickCompetition extends Competition {
                 winningEntry.setPrize(currentPrize);
                 winningEntryCount++;
             }
-            */
+        }
+        */
 
             // display winners
-        }
-        displayWinners();
-        return true; 
-    }
+        
+    
         
 		
     private boolean alreadyPickedEntry(int entryId){

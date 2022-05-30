@@ -77,6 +77,7 @@ public class SimpleCompetitions {
         String cmd = sc.nextLine();
         while(!validCompTypeResponse(cmd)){
             System.out.println("Invalid competition type! Please choose again");
+            System.out.println("Type of competition (L: LuckyNumbers, R: RandomPick)?:");
             //System.out.println("Valid responses: L,l,R,r");
             cmd = sc.nextLine();
         }
@@ -158,6 +159,11 @@ public class SimpleCompetitions {
                     } // else. didnt have any entries.
                     break;
                 case SUMMARY:
+                    if (activeComp==null){
+                        System.out.println("There is no active competition. Please create one!");
+                        break;
+                    }
+
                     break;
                 case EXIT:
                     break; // maybe print exit messages?
@@ -191,6 +197,7 @@ public class SimpleCompetitions {
             input = sc.nextLine().trim();
             if (!input.matches("[0-9]+")){
                 System.out.println("A number is expected. Please try again.");
+                displayMenu();
                 continue;
             }
             option = Integer.parseInt(input);
@@ -200,6 +207,7 @@ public class SimpleCompetitions {
             } 
             else {
                 System.out.println("Unsupported option. Please try again!");
+                displayMenu();
                 continue;
             }
             
@@ -234,6 +242,7 @@ public class SimpleCompetitions {
         while(!validModeResponse(cmd)){
             //System.out.println("valid responses: T,t,N,n"); 
             System.out.println("Invalid mode! Please choose again.");
+            System.out.println("Which mode would you like to run? (Type T for Testing, and N for Normal mode):");
             cmd = sc.nextLine();
         }
         return cmd.equalsIgnoreCase("N"); // return true if running normal mode. 

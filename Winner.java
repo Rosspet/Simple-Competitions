@@ -1,4 +1,4 @@
-public class Winner extends Member {
+public class Winner extends Member implements Comparable<Winner> {
 
     private Entry winningEntry;
     private int points;
@@ -18,6 +18,11 @@ public class Winner extends Member {
         this.entryID = entryId;
     }
 
+    @Override
+    public int compareTo(Winner otherWinner){
+        // for sorting winners.
+        return otherWinner.entryID < this.entryID ? 1 : otherWinner.entryID > this.entryID ? -1 : 0;
+    }
 
     public void setWinningEntry(NumbersEntry winningEntry){
         this.winningEntry = winningEntry;
