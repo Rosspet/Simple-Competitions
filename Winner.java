@@ -1,10 +1,17 @@
 public class Winner extends Member {
 
-    private NumbersEntry winningEntry;
+    private Entry winningEntry;
     private int points;
     private int entryID;
     
     public Winner(Member member, NumbersEntry winningEntry, int points, int entryId){
+        super(member);
+        this.winningEntry = winningEntry;
+        this.points = points;
+        this.entryID = entryId;
+    }
+
+    public Winner(Member member, Entry winningEntry, int points, int entryId){
         super(member);
         this.winningEntry = winningEntry;
         this.points = points;
@@ -29,7 +36,21 @@ public class Winner extends Member {
 
     public String toString(){
         return "Member ID: " + getMemberID() + ", Member Name: " + getMemberName() + 
-            ", Entry ID: " + entryID + ", Prize: " + points; 
+            ", Prize: " + points; 
+    }
+
+    public void printEntry(){
+        System.out.println(
+            "--> Entry ID: "+entryID+", Numbers: " +((NumbersEntry)winningEntry).getEntriesString() 
+        );
+    }
+
+    public int getEntryId(){
+        return entryID;
+    }
+
+    public int getPoints(){
+        return points;
     }
 
 }

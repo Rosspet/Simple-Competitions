@@ -20,6 +20,18 @@ public class Entry {
         this.memberId = memberId;
 
     }
+    // copy constructor
+    public Entry(Entry entry){
+        this.entryId = entry.getEntryiD();
+        this.billId = entry.getBillId();
+        this.memberId = entry.getMemberId();
+    }
+
+    @Override // the default toString
+    public String toString(){
+        return "Entry: ID: " + entryId;
+    }
+
 
     public int getEntryiD(){
         return entryId;

@@ -6,6 +6,7 @@
 import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 
 public abstract class Competition {
     private String name; //competition name
@@ -28,7 +29,7 @@ public abstract class Competition {
 
     public abstract void addEntries();
 
-    public abstract void drawWinners();
+    public abstract boolean drawWinners();
 
     public void report() {
     }
@@ -70,10 +71,8 @@ public abstract class Competition {
                 System.out.println("This bill has already been used for a competition. Please try again.");
                 continue;
             }
-            
             validResponse = true;
             data.setBillToUsed(billID);
-
         }
         if (billID==INVALID_INT_RESPONSE){
             System.out.print("FAILED TO GET PROPER BILL ID");
@@ -83,7 +82,36 @@ public abstract class Competition {
         
     }
 
-    
+    public boolean moreEntries(){
+		System.out.println("Add more entries? (Y/N)?");
+		Scanner sc = SimpleCompetitions.getScanner();
+		String cmd = sc.nextLine();
+		while(!SimpleCompetitions.validYesNoResponse(cmd)){
+			System.out.println("valid responses: Y,y,N,n. Try again.");
+            cmd = sc.nextLine(); // mebbe change to next.
+        }
+		return cmd.equalsIgnoreCase("Y");
+	} 
+
+    public boolean alreadyWinningMember(ArrayList<Winner> winners, String memberID){
+		Iterator<Winner> winnerIter = winners.iterator();
+		while (winnerIter.hasNext()){
+			if(winnerIter.next().hasID(memberID)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+    public ArrayList<Entry> duplicateEntries(ArrayList<Entry> entries){
+        
+        ArrayList<Entry> copyEntries =  new ArrayList<Entry>();
+
+        for (Entry entry : entries){
+            copyEntries.add(new Entry(entry));
+        }
+        return copyEntries;
+    }
     
 
 }

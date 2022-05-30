@@ -58,11 +58,11 @@ public class SimpleCompetitions {
             return new LuckyNumbersCompetition(compName, compID, data, !normalMode);
         }
         else if (compType.equalsIgnoreCase("R")){
-            return new RandomPickCompetition(compName, compID, data);
+            return new RandomPickCompetition(compName, compID, data, !normalMode);
         }
         else {
             System.out.println("ERROR: should have made 1 of the two types!!!!!");
-            return new RandomPickCompetition(compName, compID, data);
+            return new RandomPickCompetition(compName, compID, data, !normalMode);
         }
         
     }
@@ -76,7 +76,8 @@ public class SimpleCompetitions {
         System.out.println("Type of competition (L: LuckyNumbers, R: RandomPick)?:");
         String cmd = sc.nextLine();
         while(!validCompTypeResponse(cmd)){
-            System.out.println("Valid responses: L,l,R,r");
+            System.out.println("Invalid competition type! Please choose again");
+            //System.out.println("Valid responses: L,l,R,r");
             cmd = sc.nextLine();
         }
         return cmd; //cmd is one of the valid types. now return it.
@@ -143,8 +144,18 @@ public class SimpleCompetitions {
                     }
                     // else have active competition.
                     activeComp.addEntries();
-                    break;
+                    break;  
                 case DRAW_WINNERS:
+                    if (activeComp==null){
+                        System.out.println("There is no active competition. Please create one!");
+                        break;
+                    }
+
+                    // maybe add check for having added any entries first?
+                    boolean success = activeComp.drawWinners();
+                    if (success){
+                        activeComp = null;
+                    } // else. didnt have any entries.
                     break;
                 case SUMMARY:
                     break;
@@ -178,15 +189,22 @@ public class SimpleCompetitions {
 
         while (!validInput)  {
             input = sc.nextLine().trim();
-            if (input.matches("[0-9]+")){
-                option = Integer.parseInt(input);
-                if (option>=1 && option <= NUM_OPTIONS){
-                    validInput=true;
-                    break;
-                }
+            if (!input.matches("[0-9]+")){
+                System.out.println("A number is expected. Please try again.");
+                continue;
             }
+            option = Integer.parseInt(input);
+            if (option>=1 && option <= NUM_OPTIONS){
+                validInput=true;
+                break; // not required but include for extra safety.
+            } 
+            else {
+                System.out.println("Unsupported option. Please try again!");
+                continue;
+            }
+            
             // not broken, invalid INput
-            System.out.println("Please enter an integer number between 1 and "+ NUM_OPTIONS);
+            //System.out.println("Please enter an integer number between 1 and "+ NUM_OPTIONS);
         }
         return option;
     }
@@ -214,7 +232,8 @@ public class SimpleCompetitions {
         System.out.println("Which mode would you like to run? (Type T for Testing, and N for Normal mode):");
         String cmd = sc.nextLine();
         while(!validModeResponse(cmd)){
-            System.out.println("valid responses: T,t,N,n"); 
+            //System.out.println("valid responses: T,t,N,n"); 
+            System.out.println("Invalid mode! Please choose again.");
             cmd = sc.nextLine();
         }
         return cmd.equalsIgnoreCase("N"); // return true if running normal mode. 
@@ -227,7 +246,8 @@ public class SimpleCompetitions {
         
         // check y,Y,n,N were entered
         while (!validYesNoResponse(cmd)){
-            System.out.println("valid responses: Y,y,N,n. Try again.");
+            //System.out.println("valid responses: Y,y,N,n. Try again.");
+            System.out.println("Unsupported option. Please try again!");
             cmd = sc.nextLine(); // mebbe change to next.
         }
         return cmd.equalsIgnoreCase("Y");

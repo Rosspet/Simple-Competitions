@@ -15,10 +15,10 @@ public class LuckyNumbersCompetition extends Competition {
 																	// bills ever which is in data)
 	private DataProvider data;
 	private ArrayList<NumbersEntry> entries = new ArrayList<NumbersEntry>();
-	ArrayList<Winner> winners = new ArrayList<Winner>();
+	private ArrayList<Winner> winners = new ArrayList<Winner>();
 	// private ArrayList<Bill> bills;
 	// private ArrayList<Member> members;
-	private static final int MIN_NUM_MANUAL = 1;
+	private static final int MIN_NUM_MANUAL = 0;
 	private static final int TWO_NUM_PRIZE = 50;
 	private static final int THREE_NUM_PRIZE = 100;
     private static final int FOUR_NUM_PRIZE = 500;
@@ -43,7 +43,7 @@ public class LuckyNumbersCompetition extends Competition {
 
 		boolean finishedAddingEntries = false;
 		String billId;
-		int entryId = 1;
+		//int entryId = 1;
 		Bill bill;
 		String memberId;
 		
@@ -60,34 +60,36 @@ public class LuckyNumbersCompetition extends Competition {
 			int numAutoEntires = numEntries - numManualEntries;
 			// now do each manual entry
 			for (int i = 0; i < numManualEntries; i++) {
-				theseEntries.add(new NumbersEntry(entryId, billId, memberId, false)); 
-				entryId+=1;
+				theseEntries.add(new NumbersEntry(entries.size()+theseEntries.size()+1, billId, memberId, false)); 
 			}
 
 			for (int i = 0; i <numAutoEntires; i++){
 				if (testingMode){
-					theseEntries.add(new AutoNumbersEntry(entryId, billId, memberId, entries.size()+theseEntries.size())); 
+					theseEntries.add(new AutoNumbersEntry(entries.size()+theseEntries.size()+1, billId, memberId, entries.size()+theseEntries.size())); 
 					
 				}
 				else {
-					theseEntries.add(new AutoNumbersEntry(entryId, billId, memberId, random.nextInt())); // random seed 
+					theseEntries.add(new AutoNumbersEntry(entries.size()+theseEntries.size()+1, billId, memberId, random.nextInt())); // random seed 
 				}
-				entryId+=1;
 				//  the number of entries in the currently active competition to generate automated customers' entries.
 			}
 			entries.addAll(theseEntries); // added all entries
 			System.out.println("The following entries have been added:");
 			displayEntries(theseEntries);
 
-			if (!moreEntries()){
+			if (!moreEntries()){ // change to a doWhile
 				finishedAddingEntries=true;
 			}
-			
-
 		}
 	}
 
-	public void drawWinners() { // use compID as seed for generating the lucky entry.
+	public boolean drawWinners() { // use compID as seed for generating the lucky entry.
+		
+		if (entries.size()==0){
+            System.out.println("The current competition has no entries yet!");
+            return false;
+        }
+		
 		int seed;
 		if (testingMode){
 			seed = getCompId();
@@ -95,7 +97,7 @@ public class LuckyNumbersCompetition extends Competition {
 		else {
 			seed = random.nextInt();
 		}
-
+		System.out.println(this);
 		AutoNumbersEntry luckyEntry = new AutoNumbersEntry(seed); // the entry to matching with.
 		System.out.print("Lucky Numbers: ");
 		System.out.println(luckyEntry.getEntriesString());
@@ -103,6 +105,7 @@ public class LuckyNumbersCompetition extends Competition {
 
 		winners = getWinningEntries((NumbersEntry)luckyEntry);
 		displayWinners(winners);
+		return true;
 	}
 
 	private ArrayList<Winner> getWinningEntries(NumbersEntry luckyEntry){
@@ -145,11 +148,13 @@ public class LuckyNumbersCompetition extends Competition {
 				}
 			}
 		}
-		// SORT WINNERS BY ENTRY ID BEFORE RETURNING; (maybe already sorted.)
+		// SORT WINNERS BY ENTRY ID BEFORE RETURNING; (maybe already sorted since created in sorted orda.)
 
 		return winners;
 		
 	}
+
+	
 
 	private Winner getExistingWinner(ArrayList<Winner> winners, String memberID){
 		Iterator<Winner> winnerIter = winners.iterator();
@@ -165,15 +170,7 @@ public class LuckyNumbersCompetition extends Competition {
 	
 
 
-	private boolean alreadyWinningMember(ArrayList<Winner> winners, String memberID){
-		Iterator<Winner> winnerIter = winners.iterator();
-		while (winnerIter.hasNext()){
-			if(winnerIter.next().hasID(memberID)){
-				return true;
-			}
-		}
-		return false;
-	}
+	
 
 	
 	private int getPoints(NumbersEntry entry, NumbersEntry luckyEntry){
@@ -206,16 +203,7 @@ public class LuckyNumbersCompetition extends Competition {
 		}
 	}
 
-	private boolean moreEntries(){
-		System.out.println("Add more entries? (Y/N)?");
-		Scanner sc = SimpleCompetitions.getScanner();
-		String cmd = sc.nextLine();
-		while(!SimpleCompetitions.validYesNoResponse(cmd)){
-			System.out.println("valid responses: Y,y,N,n. Try again.");
-            cmd = sc.nextLine(); // mebbe change to next.
-        }
-		return cmd.equalsIgnoreCase("Y");
-	} 
+	
 
 	
 
@@ -231,7 +219,7 @@ public class LuckyNumbersCompetition extends Competition {
 				bill.getNumEntries() + " entires. How many manual entries did the customer fill up?:");
 		Scanner scanner = SimpleCompetitions.getScanner();
 		boolean validResponse = false;
-		String inputErrMsg = "Please enter a number between 1 and " + bill.getNumEntries() + ".";
+		String inputErrMsg = "Please enter a number between " + MIN_NUM_MANUAL + " and " + bill.getNumEntries() + ".";
 		int intResp = -1;
 		while (!validResponse) {
 			String resp = scanner.nextLine().trim();
@@ -250,7 +238,8 @@ public class LuckyNumbersCompetition extends Competition {
 
 	private void displayWinners(ArrayList<Winner> winners){
 		for (Winner winner : winners){
-			System.out.print(winner);
+			System.out.println(winner);
+			winner.printEntry();
 		}
 	}
 

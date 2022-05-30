@@ -44,13 +44,10 @@ public class NumbersEntry extends Entry {
         this.numbers = numbers;
     }
 
+    @Override // the default toString in Entry.
     public String toString() {
         String returnString = String.format("Entry ID: %-6d Numbers: ", getEntryiD()) + getEntriesString();
         
-        if (auto){
-        returnString+="[Auto]";
-        }
-         
         return returnString;
     }
 
@@ -60,7 +57,14 @@ public class NumbersEntry extends Entry {
         while (iter.hasNext()) {
             numbs += String.format("%2d ", iter.next());
         }
+        
+        if (auto){
+            numbs += "[Auto]";
+        }
+        
         return numbs;
+
+
     }
 
     public ArrayList<Integer> getNumbers() {

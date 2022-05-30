@@ -71,10 +71,6 @@ public class DataProvider {
         throw new MemberDoesNotExist(memberID);
     }
 
-    
-
-    
-
     public boolean billExists(String billID){
 
         Iterator<Bill> iter = bills.iterator();
