@@ -18,6 +18,14 @@ public class Winner extends Member implements Comparable<Winner> {
         this.entryID = entryId;
     }
 
+    public Winner(Winner winner){
+        super(winner.getMemberID(), winner.getMemberName(), winner.getAdress());
+        this.points = winner.points;
+        this.entryID = winner.entryID;
+        this.winningEntry = winner.winningEntry;
+
+    }
+
     @Override
     public int compareTo(Winner otherWinner){
         // for sorting winners.

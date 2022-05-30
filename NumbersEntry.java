@@ -22,6 +22,13 @@ public class NumbersEntry extends Entry {
         super();
     }
 
+    // copy constructor
+    public NumbersEntry(NumbersEntry entry){
+        super((Entry)entry);
+        this.auto = entry.auto;
+        this.numbers = entry.getNumbers();
+    }
+
     public NumbersEntry(
             int entryId,
             String billId,

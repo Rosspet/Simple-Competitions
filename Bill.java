@@ -5,23 +5,23 @@
  */
 
 public class Bill {
-    private String billID;
+    private String billId;
     private String memberId; // by keeping string, can avoid errors of parsing into Int '""' and also might want t use chars in id also nothing in spec about memberID being on numerical.
     private float totalBillAmount;
     private boolean used;
     private static final int COST_PER_ENTRY = 50;
     private static final int BILL_ID_LENGTH = 6;
 
-    public Bill(String billID, String memberID, float totalBillAmount, boolean used){
-        this.billID=billID;
-        this.memberId=memberID;
+    public Bill(String billID, String memberId, float totalBillAmount, boolean used){
+        this.billId=billID;
+        this.memberId=memberId;
         this.totalBillAmount=totalBillAmount;
         this.used=used;
     }
 
     // copy constructor
     public Bill(Bill bill){
-        this.billID = bill.billID;
+        this.billId = bill.billId;
         this.memberId = bill.memberId;
         this.totalBillAmount = bill.totalBillAmount;
         this.used = bill.used;
@@ -54,7 +54,7 @@ public class Bill {
     }
 
     public String toString(){
-        return ("BillID: "+billID+", memberID: "+memberId+", totalBillAmount: " + totalBillAmount +
+        return ("BillID: "+billId+", memberID: "+memberId+", totalBillAmount: " + totalBillAmount +
             ", used: "+ used);
     }
     /**
@@ -62,8 +62,8 @@ public class Bill {
     }
     */
 
-    public static boolean validBillID(String billID){
-        if (billID.length()!=BILL_ID_LENGTH || !billID.matches("[0-9]+")){
+    public static boolean validBillID(String billId){
+        if (billId.length()!=BILL_ID_LENGTH || !billId.matches("[0-9]+")){
             System.out.println("Invalid bill id! It must be a 6-digit number. Please try again.");
             return false;
         }
@@ -71,11 +71,15 @@ public class Bill {
 
     }
 
+    public String getId(){
+        return billId;
+    }
+
     public boolean hasMember(){
         return (!memberId.equals(""));
     }
 
-    public boolean hasID(String ID){
-        return (billID.equals(ID));
+    public boolean hasId(String Id){
+        return (billId.equals(Id));
     }
 }

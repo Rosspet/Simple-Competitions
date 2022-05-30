@@ -14,9 +14,9 @@ public class RandomPickCompetition extends Competition {
     private final int[] prizes = {FIRST_PRIZE, SECOND_PRIZE, THIRD_PRIZE};
 	DataProvider data;
     private final int MAX_WINNING_ENTRIES = 3;
-    private ArrayList<Entry> entries = new ArrayList<Entry>();
+    //private ArrayList<Entry> entries = new ArrayList<Entry>();
     //private ArrayList<Entry> theseEntries = new ArrayList<Entry>();
-	private ArrayList<Winner> winners = new ArrayList<Winner>();
+	//private ArrayList<Winner> winners = new ArrayList<Winner>();
     private boolean testingMode;
     private Random random = new Random();
     //private ArrayList<Bill> bills;
@@ -47,16 +47,17 @@ public class RandomPickCompetition extends Competition {
 			int numEntries = bill.getNumEntries();
             System.out.println("This bill ($" + bill.getTotalAmount() + ") is elidgible for " +
             bill.getNumEntries() + " entires.");
+
             for (int i=0; i<numEntries; i++){
-                theseEntries.add(new Entry(entries.size()+theseEntries.size()+1, billId, memberId));
+                theseEntries.add(new Entry(getNumEntries()+theseEntries.size()+1, billId, memberId));
             }
             System.out.println("The following entries have been automatically generated:");
             //print entrys in theseEntries (will maybe need there own toString.) which means the toStrings in Numbers/autoEntry will need to be decorated with @Overide
             
             // TO DO print these
             displayEntries(theseEntries);
-            
-            entries.addAll(theseEntries);
+            addEntriesOfArralyList(theseEntries);
+            //entries.addAll(theseEntries);
 
             if (!moreEntries()){ // change to a doWhile
 				finishedAddingEntries=true;
@@ -73,11 +74,11 @@ public class RandomPickCompetition extends Competition {
     public boolean drawWinners(){
         //System.out.println("current entries:");
         //displayEntries(entries);
-        if (entries.size()==0){
+        if (getNumEntries()==0){
             System.out.println("The current competition has no entries yet!");
             return false;
         }
-        ArrayList<Entry> entriesForDrawing = duplicateEntries(entries);
+        ArrayList<Entry> entriesForDrawing = getEntries(); // duplicate
         Random randomGenerator = null;
         if (testingMode) {
             randomGenerator = new Random(this.getCompId());
@@ -87,18 +88,18 @@ public class RandomPickCompetition extends Competition {
 		int numUniqueWinners=0;
         int winningEntryCount = 0;
         int numUniqueMembers = getNumUniqueMembers();
-        System.out.println(numUniqueMembers);
+        //System.out.println(numUniqueMembers);
         while (winningEntryCount < MAX_WINNING_ENTRIES && numUniqueWinners<numUniqueMembers) {
-            int winningEntryIndex = randomGenerator.nextInt(entries.size());
+            int winningEntryIndex = randomGenerator.nextInt(getNumEntries());
 	
-            Entry winningEntry = entries.get(winningEntryIndex);
+            Entry winningEntry = entriesForDrawing.get(winningEntryIndex);
 		    
             /*
              * Ensure that once an entry has been selected,
              * it will not be selected again.
              */
             String memberID = winningEntry.getMemberId();
-            if (alreadyWinningMember(winners, memberID)){
+            if (alreadyWinningMember(getWinners(), memberID)){
                 continue; // customer can only win 1 and entry cant be picked twice.
             }
             
@@ -106,6 +107,7 @@ public class RandomPickCompetition extends Competition {
             if (winningEntry.getPrize() == 0) {
                 int currentPrize = prizes[winningEntryCount];
                 winningEntry.setPrize(currentPrize);
+                increasePrizesGiven(currentPrize);
                 //winningEntryCount++; moved to after making winner
             } 
             else {
@@ -120,7 +122,7 @@ public class RandomPickCompetition extends Competition {
                                     prizes[winningEntryCount],
                                     winningEntry.getEntryiD()
                                 );
-                winners.add(winner);
+                addWinner(winner);
                 winningEntryCount+=1;
                 numUniqueWinners+=1;
             }
@@ -134,10 +136,10 @@ public class RandomPickCompetition extends Competition {
          * one customer gets at most one winning entry. Add your code
          * to complete the logic.
          */
-        
+        ArrayList<Winner> winners = getWinners();
         winners.sort(null); // sort using overriden compareTo
 
-        displayWinners();
+        displayWinners(winners);
         return true; 
 
     }
@@ -146,7 +148,7 @@ public class RandomPickCompetition extends Competition {
         int numUnique=0;
         ArrayList<String> memberIds = new ArrayList<String>();
 
-        for (Entry entry : entries){
+        for (Entry entry : getEntries()){
             if(!memberIds.contains(entry.getMemberId())){
                 numUnique+=1;
                 memberIds.add(entry.getMemberId()); // now add.
@@ -199,7 +201,7 @@ public class RandomPickCompetition extends Competition {
         
 		
     private boolean alreadyPickedEntry(int entryId){
-        for (Winner winner : winners){
+        for (Winner winner : getWinners()){
             if (winner.getEntryId()==entryId){
                 return true; // arleady been picked
             }
@@ -212,7 +214,7 @@ public class RandomPickCompetition extends Competition {
          * one customer gets at most one winning entry. Add your code
          * to complete the logic.
          */
-    private void displayWinners(){
+    private void displayWinners(ArrayList<Winner> winners){
         for (Winner winner : winners){
             System.out.println(
                 "Member ID: "+winner.getMemberID()+", Member Name: "+winner.getMemberName()+

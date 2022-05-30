@@ -14,8 +14,8 @@ public class LuckyNumbersCompetition extends Competition {
 	private ArrayList<Integer> billIDs = new ArrayList<Integer>(); // list of bill IDs in this particular comp (not all
 																	// bills ever which is in data)
 	private DataProvider data;
-	private ArrayList<NumbersEntry> entries = new ArrayList<NumbersEntry>();
-	private ArrayList<Winner> winners = new ArrayList<Winner>();
+	//private ArrayList<NumbersEntry> entries = new ArrayList<NumbersEntry>();
+	//private ArrayList<Winner> winners = new ArrayList<Winner>();
 	// private ArrayList<Bill> bills;
 	// private ArrayList<Member> members;
 	private static final int MIN_NUM_MANUAL = 0;
@@ -60,20 +60,24 @@ public class LuckyNumbersCompetition extends Competition {
 			int numAutoEntires = numEntries - numManualEntries;
 			// now do each manual entry
 			for (int i = 0; i < numManualEntries; i++) {
-				theseEntries.add(new NumbersEntry(entries.size()+theseEntries.size()+1, billId, memberId, false)); 
+				theseEntries.add(new NumbersEntry(getNumEntries()+theseEntries.size()+1, billId, memberId, false)); 
 			}
 
 			for (int i = 0; i <numAutoEntires; i++){
 				if (testingMode){
-					theseEntries.add(new AutoNumbersEntry(entries.size()+theseEntries.size()+1, billId, memberId, entries.size()+theseEntries.size())); 
+					theseEntries.add(new AutoNumbersEntry(getNumEntries()+theseEntries.size()+1, billId, memberId, getNumEntries()+theseEntries.size())); 
 					
 				}
 				else {
-					theseEntries.add(new AutoNumbersEntry(entries.size()+theseEntries.size()+1, billId, memberId, random.nextInt())); // random seed 
+					theseEntries.add(new AutoNumbersEntry(getNumEntries()+theseEntries.size()+1, billId, memberId, random.nextInt())); // random seed 
 				}
 				//  the number of entries in the currently active competition to generate automated customers' entries.
 			}
-			entries.addAll(theseEntries); // added all entries
+			//addEntries((ArrayList<Entry>)theseEntries); // added all entries
+			for (NumbersEntry entry : theseEntries){
+				addEntry((Entry)entry);
+			}
+			
 			System.out.println("The following entries have been added:");
 			displayEntries(theseEntries);
 
@@ -85,7 +89,7 @@ public class LuckyNumbersCompetition extends Competition {
 
 	public boolean drawWinners() { // use compID as seed for generating the lucky entry.
 		
-		if (entries.size()==0){
+		if (getNumEntries()==0){
             System.out.println("The current competition has no entries yet!");
             return false;
         }
@@ -103,13 +107,15 @@ public class LuckyNumbersCompetition extends Competition {
 		System.out.println(luckyEntry.getEntriesString());
 		System.out.println("Winning entries:");
 
-		winners = getWinningEntries((NumbersEntry)luckyEntry);
-		displayWinners(winners);
+		setWinningEntries((NumbersEntry)luckyEntry);
+		displayWinners(getWinners());
 		return true;
 	}
 
-	private ArrayList<Winner> getWinningEntries(NumbersEntry luckyEntry){
+	private void setWinningEntries(NumbersEntry luckyEntry){
 		ArrayList<Winner> winners = new ArrayList<Winner>();
+		//ArrayList<Entry> entries = getEntries();
+		ArrayList<NumbersEntry> entries = (getNumbersEntries());
 		Iterator<NumbersEntry> entryIter = entries.iterator();
 		NumbersEntry entry;
 		Winner existingWinner;
@@ -133,7 +139,7 @@ public class LuckyNumbersCompetition extends Competition {
 				}
 				else {
 					// make new winner
-					try{
+					try{ 
 						winners.add(new Winner(
 							data.getMember(entry.getMemberId()), 
 							entry, 
@@ -149,11 +155,34 @@ public class LuckyNumbersCompetition extends Competition {
 			}
 		}
 		// SORT WINNERS BY ENTRY ID BEFORE RETURNING; (maybe already sorted since created in sorted orda.)
+		setWinners(winners);
+		
+		// set awardPrize total now at the end as it could have changed and dont need to 
+		// worry about updating if doing at end.
+		for (Winner winner : winners){
+			increasePrizesGiven(winner.getPoints());
+		}
 
-		return winners;
+
+		return;
 		
 	}
 
+	private ArrayList<NumbersEntry> castToNumbersEntries(ArrayList<Entry> entries){
+		
+		ArrayList<NumbersEntry> numbersEntries = new ArrayList<NumbersEntry>();
+		
+		for(Entry entry : entries){
+			if (entry instanceof NumbersEntry){
+				System.out.println("ye");
+				numbersEntries.add((NumbersEntry)entry);
+			}
+			else {
+				System.out.println("no");
+			}
+		}
+		return numbersEntries;
+	}	
 	
 
 	private Winner getExistingWinner(ArrayList<Winner> winners, String memberID){

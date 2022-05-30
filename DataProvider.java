@@ -1,5 +1,7 @@
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -18,6 +20,7 @@ public class DataProvider {
     private ArrayList<Bill> bills; 
     private static final int NUM_MEMBER_DATA = 3; 
     private static final int NUM_BILL_DATA = 4;
+
     /**
      * 
      * @param memberFile A path to the member file (e.g., members.csv)
@@ -75,7 +78,7 @@ public class DataProvider {
 
         Iterator<Bill> iter = bills.iterator();
         while(iter.hasNext()){
-            if(iter.next().hasID(billID)){
+            if(iter.next().hasId(billID)){
                 return true;
             }
         }
@@ -88,7 +91,7 @@ public class DataProvider {
         Bill thisBill=null;
         while(iter.hasNext()){
             thisBill = iter.next();
-            if (thisBill.hasID(billID)){
+            if (thisBill.hasId(billID)){
                 return thisBill; // not returning copy as this is a private helper for this class only
             }
         }
@@ -202,7 +205,7 @@ public class DataProvider {
         Bill thisBill;
         while(iter.hasNext()){
             thisBill = iter.next();
-            if (thisBill.hasID(billID)){
+            if (thisBill.hasId(billID)){
                 return new Bill(thisBill); // return a copy for security reasons.
             }
         }
@@ -239,4 +242,29 @@ public class DataProvider {
         }
         return members_copy;
     }
+
+    public void updateBillsFile(){
+        
+        PrintWriter billOut=null;
+
+        try{
+            billOut = new PrintWriter(new FileOutputStream(billFile));
+
+        }
+        catch (FileNotFoundException e){
+            System.out.println(e.getMessage());
+        }
+
+        for (Bill bill : bills){
+            try{
+                billOut.println(bill.getId()+","+bill.getMemberId()+","+bill.getTotalAmount()+
+                ","+(bill.hasBeenUsed() ? "true" : "false"));
+            }
+            catch (Exception e){
+                System.out.println("Failed to write bill of billID :" + bill.getId()+ " Error: "+e.getMessage());
+            }
+        }
+        billOut.close();
+    }
+
 }

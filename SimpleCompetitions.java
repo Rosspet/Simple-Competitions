@@ -13,7 +13,7 @@ public class SimpleCompetitions {
     private boolean fromFile; // true if reading from file.
     private boolean normalMode; // true if running normal mode.
     private String loadFileName; // possibly ununsed. if not loading from a file  
-    private String memberFileName;
+    private String memberFileName; // maybe dont make varaibles like these ones global - just need this for reading in so make it local to that function.
     private String billFileName;
     private static final int INIT_COMP_ID = 1;
     private int nextCompID = INIT_COMP_ID; // to keep track of all the IDs - increment for each new comp!
@@ -27,6 +27,7 @@ public class SimpleCompetitions {
     private ArrayList<Bill> bills;
     private ArrayList<Member> members;
     private ArrayList<Competition> competitions; // list of all competitions. Only 1 can be active
+    private int numCompletedComps=0;
     private Competition activeComp = null; // the 1 active competition.// for quick access, store here too.
     // We can have multiple competitions. But only 1 "active" competitions.
 
@@ -151,21 +152,30 @@ public class SimpleCompetitions {
                         System.out.println("There is no active competition. Please create one!");
                         break;
                     }
-
+                    
                     // maybe add check for having added any entries first?
                     boolean success = activeComp.drawWinners();
                     if (success){
+                        activeComp.deactivate();
                         activeComp = null;
-                    } // else. didnt have any entries.
+                        numCompletedComps++;
+                    } // else. didnt have any entries and nothing was changed.
                     break;
                 case SUMMARY:
-                    if (activeComp==null){
-                        System.out.println("There is no active competition. Please create one!");
+                    if (competitions.isEmpty()){
+                        System.out.println("No competition has been created yet!");
                         break;
                     }
+                    summaryReport();
 
                     break;
                 case EXIT:
+                    
+                    if (getSavePreference()){
+                        saveCompetitions();
+                    }
+                    
+                    System.out.println("Goodbye!");
                     break; // maybe print exit messages?
                 default:
                     System.out.println("--this should be handled in getSelectedOption--"+"Unkown command: "+selectedOption); // this is meant to be handled in getSelectedOption. SO if this prints then something is wrong.
@@ -174,6 +184,14 @@ public class SimpleCompetitions {
         } while(selectedOption!=EXIT); // come back and change this
     }
 
+
+    private void saveCompetitions(){
+        System.out.println("File name:");
+        data.updateBillsFile();
+        String saveFileName = sc.nextLine(); 
+    }
+
+
     private void readData(){
         data = new DataProvider(memberFileName, billFileName);
         bills = data.getBills(); // main game engine gets a copy of bills which is now the truth.
@@ -181,6 +199,17 @@ public class SimpleCompetitions {
         return;
     }
 
+    private void summaryReport(){
+        
+        System.out.println("----SUMMARY REPORT----");
+        System.out.println("+Number of completed competitions: "+ numCompletedComps);
+        System.out.println("+Number of active competitions: "+ (activeComp==null ? "0" : "1"));
+        for (Competition comp : competitions){
+            System.out.println();
+            comp.report();
+            
+        }
+    }
 
 
     /**
@@ -251,6 +280,16 @@ public class SimpleCompetitions {
     private boolean obtainFilePrefernce(){
         System.out.println("----WELCOME TO SIMPLE COMPETITIONS APP----\n"+
         "Load competitions from file? (Y/N)?");
+        
+        return getYesNoResponse();
+    }
+
+    private boolean getSavePreference(){
+        System.out.println("Save competitions to file? (Y/N)?");
+        return getYesNoResponse();
+    }
+
+    private boolean getYesNoResponse(){
         String cmd = sc.nextLine();
         
         // check y,Y,n,N were entered
@@ -261,7 +300,6 @@ public class SimpleCompetitions {
         }
         return cmd.equalsIgnoreCase("Y");
         // else n or N was entered as we already check for garbage values.
-        
     }
 
     public static boolean validYesNoResponse(String cmd){

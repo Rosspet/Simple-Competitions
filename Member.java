@@ -17,6 +17,22 @@ public class Member {
         this.address=address;
     }
 
+    public void setMemberID(String id){
+        this.ID = id;
+    }
+
+    public String getAdress(){
+        return address;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public void setAdress(String address){
+        this.address = address;
+    }
+
         //copy constructor
     public Member(Member member){
         this.ID = member.ID;

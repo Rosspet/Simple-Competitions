@@ -13,7 +13,16 @@ public abstract class Competition {
     private int id; //competition identifier
     private String type;
     private DataProvider data;
+    private boolean isActive;
     private static final String INVALID_INT_RESPONSE = "-1";
+    private int totalPrizesAwarded=0;
+        private int numEntries;
+        private int numWinners;
+    private ArrayList<Entry> entries = new ArrayList<Entry>();
+	private ArrayList<Winner> winners = new ArrayList<Winner>();
+    
+    
+
     //private ArrayList<Bill> bills;
     //private ArrayList<Member> members;
 
@@ -23,8 +32,13 @@ public abstract class Competition {
         name = compName;
         this.type = type;
         this.data = data;
+        this.isActive=true;
         //this.bills = bills;
         //this.members = members;
+    }
+
+    public void deactivate(){
+        this.isActive=false;
     }
 
     public abstract void addEntries();
@@ -32,6 +46,28 @@ public abstract class Competition {
     public abstract boolean drawWinners();
 
     public void report() {
+        System.out.println("Competition ID: "+id+", name: "+name+", active: "+ (isActive ? "yes" : "no"));
+        System.out.println("Number of entries: "+ entries.size());
+        if (!isActive){
+            System.out.println("Number of winning entries: "+ winners.size());
+            System.out.println("Total awarded prizes: "+totalPrizesAwarded);
+        }
+    }
+
+    public ArrayList<Entry> getEntries(){
+        ArrayList<Entry> entriesCopy = new ArrayList<Entry>();
+        for (Entry entry : entries){
+            entriesCopy.add(new Entry(entry));
+        }
+        return entriesCopy;
+    }
+
+    public ArrayList<NumbersEntry> getNumbersEntries(){
+        ArrayList<NumbersEntry> entriesCopy = new ArrayList<NumbersEntry>();
+        for (Entry entry : entries) {
+            entriesCopy.add(new NumbersEntry((NumbersEntry)entry));
+        }
+        return entriesCopy;
     }
 
     public String toString(){
@@ -43,6 +79,34 @@ public abstract class Competition {
 
     public int getCompId(){
         return id;
+    }
+
+    public int getNumEntries(){
+        return entries.size();
+    }
+
+    public void increasePrizesGiven(int amount){
+        totalPrizesAwarded+=amount;
+    }
+
+    public void setWinners(ArrayList<Winner> winners){
+        this.winners = winners;
+    }
+
+    public ArrayList<Winner> getWinners(){
+        ArrayList<Winner> winnersCopy = new ArrayList<Winner>();
+        for (Winner winner : winners){
+            winnersCopy.add(new Winner(winner));
+        }
+        return winnersCopy;
+    }
+
+    public void addEntriesOfArralyList(ArrayList<Entry> entries){
+        this.entries.addAll(entries);
+    }
+
+    public void addEntry(Entry entry){
+        entries.add(entry);
     }
 
     public String getBillIDFromInputForEntry(){
@@ -102,6 +166,10 @@ public abstract class Competition {
 		}
 		return false;
 	}
+
+    public void addWinner(Winner winner){
+        winners.add(winner);
+    }
 
     public ArrayList<Entry> duplicateEntries(ArrayList<Entry> entries){
         
