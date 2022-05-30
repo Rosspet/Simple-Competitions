@@ -1,4 +1,6 @@
-public class Winner extends Member implements Comparable<Winner> {
+import java.io.Serializable;
+
+public class Winner extends Member implements Comparable<Winner>, Serializable {
 
     private Entry winningEntry;
     private int points;

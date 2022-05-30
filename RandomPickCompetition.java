@@ -12,7 +12,7 @@ public class RandomPickCompetition extends Competition {
     private final int SECOND_PRIZE = 5000;
     private final int THIRD_PRIZE = 1000;
     private final int[] prizes = {FIRST_PRIZE, SECOND_PRIZE, THIRD_PRIZE};
-	DataProvider data;
+	//DataProvider data;
     private final int MAX_WINNING_ENTRIES = 3;
     //private ArrayList<Entry> entries = new ArrayList<Entry>();
     //private ArrayList<Entry> theseEntries = new ArrayList<Entry>();
@@ -22,15 +22,15 @@ public class RandomPickCompetition extends Competition {
     //private ArrayList<Bill> bills;
     //private ArrayList<Member> members;
 	
-    public RandomPickCompetition(String compName, int compID, DataProvider data, boolean testingMode){
-        super(compName, compID, "RandomPickCompetition", data);
-        this.data = data;
+    public RandomPickCompetition(String compName, int compID, boolean testingMode){
+        super(compName, compID, "RandomPickCompetition");
+        //this.data = data;
         this.testingMode = testingMode;
         //this.bills = bills;
         //this.members = members;    
     }
 
-    public void addEntries(){
+    public DataProvider addEntries(DataProvider data){
         boolean finishedAddingEntries = false;
 		String billId;
 		//int thisEntryId = 1;
@@ -44,6 +44,7 @@ public class RandomPickCompetition extends Competition {
 			
 			bill = data.getBillThatExists(billId); // returns a copy of the bill
             memberId = bill.getMemberId();
+            data.setBillToUsed(billId);
 			int numEntries = bill.getNumEntries();
             System.out.println("This bill ($" + bill.getTotalAmount() + ") is elidgible for " +
             bill.getNumEntries() + " entires.");
@@ -63,6 +64,7 @@ public class RandomPickCompetition extends Competition {
 				finishedAddingEntries=true;
 			}
         }
+        return data;
     }
 
     private void displayEntries(ArrayList<Entry> theseEntries){
@@ -117,6 +119,7 @@ public class RandomPickCompetition extends Competition {
 
             // make a winner to help keep track of things.
             try {
+                DataProvider data = SimpleCompetitions.getData();
                 Winner winner = new Winner(data.getMember(memberID), 
                                     winningEntry, 
                                     prizes[winningEntryCount],

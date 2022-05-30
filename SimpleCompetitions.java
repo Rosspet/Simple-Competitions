@@ -4,6 +4,12 @@
  * LMS username: ZZZ
  */
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InvalidClassException;
+import java.io.NotSerializableException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -23,7 +29,7 @@ public class SimpleCompetitions {
     private static final int DRAW_WINNERS = 3;
     private static final int SUMMARY = 4;
     private static final int EXIT = 5;
-    private DataProvider data;
+    private static DataProvider data;
     private ArrayList<Bill> bills;
     private ArrayList<Member> members;
     private ArrayList<Competition> competitions; // list of all competitions. Only 1 can be active
@@ -56,14 +62,14 @@ public class SimpleCompetitions {
         nextCompID+=1;
 
         if (compType.equalsIgnoreCase("L")){
-            return new LuckyNumbersCompetition(compName, compID, data, !normalMode);
+            return new LuckyNumbersCompetition(compName, compID, !normalMode);
         }
         else if (compType.equalsIgnoreCase("R")){
-            return new RandomPickCompetition(compName, compID, data, !normalMode);
+            return new RandomPickCompetition(compName, compID, !normalMode);
         }
         else {
             System.out.println("ERROR: should have made 1 of the two types!!!!!");
-            return new RandomPickCompetition(compName, compID, data, !normalMode);
+            return new RandomPickCompetition(compName, compID, !normalMode);
         }
         
     }
@@ -145,7 +151,7 @@ public class SimpleCompetitions {
                         break;
                     }
                     // else have active competition.
-                    activeComp.addEntries();
+                    data = activeComp.addEntries(data);
                     break;  
                 case DRAW_WINNERS:
                     if (activeComp==null){
@@ -173,6 +179,8 @@ public class SimpleCompetitions {
                     
                     if (getSavePreference()){
                         saveCompetitions();
+                        System.out.println("Competitions have been saved to file.\n"+
+                            "The bill file has also been automatically updated.");
                     }
                     
                     System.out.println("Goodbye!");
@@ -180,17 +188,60 @@ public class SimpleCompetitions {
                 default:
                     System.out.println("--this should be handled in getSelectedOption--"+"Unkown command: "+selectedOption); // this is meant to be handled in getSelectedOption. SO if this prints then something is wrong.
             }
-
         } while(selectedOption!=EXIT); // come back and change this
     }
 
+    public static void updateData(){
+
+    }
 
     private void saveCompetitions(){
+        
         System.out.println("File name:");
         data.updateBillsFile();
         String saveFileName = sc.nextLine(); 
+        ObjectOutputStream compOut=null;
+
+        // Connect to output
+        try {
+            compOut = new ObjectOutputStream(new FileOutputStream(saveFileName));
+            
+        }
+        catch (IOException e){
+            System.out.print(e.getMessage());
+        }
+
+        // write to output
+        try {
+            for(Competition comp : competitions){
+                compOut.writeObject(comp);
+                System.out.println("Wrote: "+comp.getName());
+            }
+        }
+        catch (InvalidClassException e) {
+            System.out.println("Attempting to write invalid class. Error: "+e.getMessage());
+        }
+        catch (NotSerializableException e) {
+            System.out.println("Cannot serialise object. Error: "+e.getMessage());
+        }
+        catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+        
+        
+        
+        
+        try{
+            compOut.close();
+        }
+        catch (IOException e) {
+            System.out.print(e.getMessage());
+        }
     }
 
+    public static DataProvider getData(){
+        return new DataProvider(data);
+    }
 
     private void readData(){
         data = new DataProvider(memberFileName, billFileName);

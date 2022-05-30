@@ -13,7 +13,7 @@ public class LuckyNumbersCompetition extends Competition {
 
 	private ArrayList<Integer> billIDs = new ArrayList<Integer>(); // list of bill IDs in this particular comp (not all
 																	// bills ever which is in data)
-	private DataProvider data;
+	//private DataProvider data;
 	//private ArrayList<NumbersEntry> entries = new ArrayList<NumbersEntry>();
 	//private ArrayList<Winner> winners = new ArrayList<Winner>();
 	// private ArrayList<Bill> bills;
@@ -29,9 +29,9 @@ public class LuckyNumbersCompetition extends Competition {
 	private Random random = new Random();
 
 
-	public LuckyNumbersCompetition(String compName, int compID, DataProvider data, boolean testingMode) {
-		super(compName, compID, "LuckyNumbersCompetition", data);
-		this.data = data;
+	public LuckyNumbersCompetition(String compName, int compID, boolean testingMode) {
+		super(compName, compID, "LuckyNumbersCompetition");
+		//this.data = data;
 		this.testingMode = testingMode;
 		 // use compID as seed for generating lucky entry and the number of entries in the currently active competition 
 		// to generate automated customers' entries.
@@ -39,7 +39,7 @@ public class LuckyNumbersCompetition extends Competition {
 		// this.members = members;
 	}
 
-	public void addEntries() { // can this be done in parent Competition class?
+	public DataProvider addEntries(DataProvider data) { // can this be done in parent Competition class?
 
 		boolean finishedAddingEntries = false;
 		String billId;
@@ -51,9 +51,9 @@ public class LuckyNumbersCompetition extends Competition {
 			ArrayList<NumbersEntry> theseEntries = new ArrayList<NumbersEntry>(); // arrList for this batch of entrys
 			billId = getBillIDFromInputForEntry();
 			// have a bill id that is valid and in the list of bill_ids and has a member!.
-			
 			bill = data.getBillThatExists(billId); // returns a copy of the bill
 			memberId = bill.getMemberId();
+			data.setBillToUsed(billId);
 			int numEntries = bill.getNumEntries();
 			
 			int numManualEntries = getNumManualEntries(bill);
@@ -85,6 +85,7 @@ public class LuckyNumbersCompetition extends Competition {
 				finishedAddingEntries=true;
 			}
 		}
+		return data; //return the updated data
 	}
 
 	public boolean drawWinners() { // use compID as seed for generating the lucky entry.
@@ -106,7 +107,7 @@ public class LuckyNumbersCompetition extends Competition {
 		System.out.print("Lucky Numbers: ");
 		System.out.println(luckyEntry.getEntriesString());
 		System.out.println("Winning entries:");
-
+		
 		setWinningEntries((NumbersEntry)luckyEntry);
 		displayWinners(getWinners());
 		return true;
@@ -123,7 +124,7 @@ public class LuckyNumbersCompetition extends Competition {
 		while (entryIter.hasNext()){
 			entry = entryIter.next();
 			points = getPoints(entry, luckyEntry);
-
+			
 			// a customer can only win one prize each. 
 			// This will the prize with the highest value. 
 			// If theres multiple of these, choose the one with the smallest ID. 
@@ -139,7 +140,8 @@ public class LuckyNumbersCompetition extends Competition {
 				}
 				else {
 					// make new winner
-					try{ 
+					try{
+						DataProvider data = SimpleCompetitions.getData(); 
 						winners.add(new Winner(
 							data.getMember(entry.getMemberId()), 
 							entry, 

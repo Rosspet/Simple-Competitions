@@ -12,7 +12,7 @@ import java.util.Scanner;
  * LMS username: ZZZ
  */
 
-public class DataProvider {
+public class DataProvider{
 
     private String memberFile;
     private String billFile;
@@ -60,6 +60,15 @@ public class DataProvider {
         }
 
     }
+
+    // copy constructor
+    public DataProvider(DataProvider data){
+        this.billFile = data.billFile;
+        this.memberFile = data.memberFile;
+        this.members = data.getMembers();
+        this.bills = data.getBills();
+    }
+
 
     public Member getMember(String memberID) throws MemberDoesNotExist{
         Iterator<Member> iter = members.iterator();
@@ -266,5 +275,5 @@ public class DataProvider {
         }
         billOut.close();
     }
-
+    
 }

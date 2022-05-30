@@ -1,10 +1,12 @@
+import java.io.Serializable;
+
 /*
  * Student name: XXX
  * Student ID: YYY
  * LMS username: ZZZ
  */
 
-public class Entry {
+public class Entry implements Serializable {
     private int entryId;
     private String billId;
     private String memberId;

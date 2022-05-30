@@ -4,15 +4,16 @@
  * LMS username: ZZZ
  */
 import java.util.Scanner;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
-public abstract class Competition {
+public abstract class Competition implements Serializable {
     private String name; //competition name
     private int id; //competition identifier
     private String type;
-    private DataProvider data;
+    //private DataProvider data;
     private boolean isActive;
     private static final String INVALID_INT_RESPONSE = "-1";
     private int totalPrizesAwarded=0;
@@ -27,11 +28,11 @@ public abstract class Competition {
     //private ArrayList<Member> members;
 
     // all comps get the same copy of members and bills form main!
-    public Competition(String compName, int compID, String type, DataProvider data){
+    public Competition(String compName, int compID, String type){
         id = compID;
         name = compName;
         this.type = type;
-        this.data = data;
+        //this.data = data;
         this.isActive=true;
         //this.bills = bills;
         //this.members = members;
@@ -41,7 +42,7 @@ public abstract class Competition {
         this.isActive=false;
     }
 
-    public abstract void addEntries();
+    public abstract DataProvider addEntries(DataProvider data);
 
     public abstract boolean drawWinners();
 
@@ -52,6 +53,11 @@ public abstract class Competition {
             System.out.println("Number of winning entries: "+ winners.size());
             System.out.println("Total awarded prizes: "+totalPrizesAwarded);
         }
+        System.out.println("");
+    }
+
+    public String getName(){
+        return name;
     }
 
     public ArrayList<Entry> getEntries(){
@@ -114,6 +120,7 @@ public abstract class Competition {
         boolean validResponse = false;
         String billID=INVALID_INT_RESPONSE;
         //int int_billID=-1;
+        DataProvider data = SimpleCompetitions.getData() ;
 
         while (!validResponse){
             System.out.println("Bill ID:");
@@ -136,12 +143,15 @@ public abstract class Competition {
                 continue;
             }
             validResponse = true;
-            data.setBillToUsed(billID);
+            //data.setBillToUsed(billID);
         }
         if (billID==INVALID_INT_RESPONSE){
             System.out.print("FAILED TO GET PROPER BILL ID");
             System.exit(1);
         }
+
+        //SimpleCompetitions.updateData(data);
+
         return billID;
         
     }
@@ -180,6 +190,7 @@ public abstract class Competition {
         }
         return copyEntries;
     }
+
     
 
 }
