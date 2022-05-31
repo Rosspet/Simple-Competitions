@@ -4,7 +4,6 @@
  * LMS username: ZZZ
  */
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -12,18 +11,15 @@ import java.util.Random;
 
 public class AutoNumbersEntry extends NumbersEntry {
 
-    private int seed;
-
     public AutoNumbersEntry(int seed){
         super();
         setNumbers(createNumbers(seed));
-        this.seed=seed;
+
     }
 
     public AutoNumbersEntry(int entryId, String billId, String memberId, int seed){
         super(entryId, billId, memberId, true);
         setNumbers(createNumbers(seed));
-        this.seed = seed;
 
     }
 
