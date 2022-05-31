@@ -136,7 +136,7 @@ public class LuckyNumbersCompetition extends Competition {
 						DataProvider data = SimpleCompetitions.getData();
 						winners.add(new Winner(
 								data.getMember(entry.getMemberId()),
-								entry,
+								(Entry)entry, // added cast here.
 								points,
 								entry.getEntryiD()));
 					} catch (MemberDoesNotExist e) {
