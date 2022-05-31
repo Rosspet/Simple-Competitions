@@ -57,7 +57,7 @@ public abstract class Competition implements Serializable {
             System.out.println("Number of winning entries: "+ winners.size());
             System.out.println("Total awarded prizes: "+totalPrizesAwarded);
         }
-        System.out.println("");
+        //System.out.println("");
     }
 
     public String getName(){
@@ -127,7 +127,7 @@ public abstract class Competition implements Serializable {
         DataProvider data = SimpleCompetitions.getData() ;
 
         while (!validResponse){
-            System.out.println("Bill ID:");
+            System.out.println("Bill ID: ");
             billID = (scanner.nextLine().trim());
             //System.out.println(billID);
             if(!Bill.validBillID(billID)){ // && billHasValidMemberID(response) going to chek in higher level. just want to get the valid numerical bill.
@@ -161,14 +161,30 @@ public abstract class Competition implements Serializable {
     }
 
     public boolean moreEntries(){
-		System.out.println("Add more entries? (Y/N)?");
+        boolean validResponse=false;
+        String cmd=null;
+        Scanner sc = SimpleCompetitions.getScanner();
+        while (!validResponse){
+            System.out.println("Add more entries (Y/N)?");
+            cmd = sc.nextLine();
+            if (SimpleCompetitions.validYesNoResponse(cmd)){
+                validResponse=true;
+            } else {
+                System.out.println("Unsupported option. Please try again!");
+            }
+        }
+        return cmd.equalsIgnoreCase("Y");
+        /*
+		System.out.println("Add more entries (Y/N)?");
 		Scanner sc = SimpleCompetitions.getScanner();
 		String cmd = sc.nextLine();
 		while(!SimpleCompetitions.validYesNoResponse(cmd)){
-			System.out.println("valid responses: Y,y,N,n. Try again.");
+			System.out.println("Unsupported option. Please try again!");
+            System.out.println("Add more entries (Y/N)?");
             cmd = sc.nextLine(); // mebbe change to next.
         }
 		return cmd.equalsIgnoreCase("Y");
+        */
 	} 
 
     public boolean alreadyWinningMember(ArrayList<Winner> winners, String memberID){

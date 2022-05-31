@@ -49,12 +49,12 @@ public class Winner extends Member implements Comparable<Winner> {
 
     public String toString(){
         return "Member ID: " + getMemberID() + ", Member Name: " + getMemberName() + 
-            ", Prize: " + points; 
+            ", Prize: " + String.format("%-5d",points); 
     }
 
     public void printEntry(){
         System.out.println(
-            "--> Entry ID: "+entryID+", Numbers: " +((NumbersEntry)winningEntry).getEntriesString() 
+            "--> Entry ID: "+entryID+", Numbers:" +((NumbersEntry)winningEntry).getEntriesString() 
         );
     }
 

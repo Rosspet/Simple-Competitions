@@ -40,7 +40,7 @@ public class Entry implements Serializable {
 
     @Override // the default toString
     public String toString(){
-        return "Entry: ID: " + entryId;
+        return "Entry ID: " + String.format("%-6d",entryId);
     }
 
 

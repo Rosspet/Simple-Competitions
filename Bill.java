@@ -46,7 +46,7 @@ public class Bill {
     public int getNumEntries(){
         int numEntries=0;
         float billAmount = totalBillAmount;
-        while (billAmount>COST_PER_ENTRY){
+        while (billAmount>=COST_PER_ENTRY){
             numEntries+=1;
             billAmount-=COST_PER_ENTRY;
         } 

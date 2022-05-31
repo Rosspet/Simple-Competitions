@@ -22,6 +22,10 @@ public class NumbersEntry extends Entry {
         super();
     }
 
+    public void setAuto(boolean bool){
+        this.auto = bool;
+    }
+
     // copy constructor
     public NumbersEntry(NumbersEntry entry){
         super((Entry)entry);
@@ -53,8 +57,10 @@ public class NumbersEntry extends Entry {
 
     @Override // the default toString in Entry.
     public String toString() {
-        String returnString = String.format("Entry ID: %-6d Numbers: ", getEntryiD()) + getEntriesString();
-        
+        String returnString = String.format("Entry ID: %-6d Numbers:", getEntryiD()) + getEntriesString();
+        /*if (auto){ // added if auto here
+            returnString += " [Auto]";
+        }*/
         return returnString;
     }
 
@@ -62,16 +68,14 @@ public class NumbersEntry extends Entry {
         String numbs = "";
         Iterator<Integer> iter = getNumbers().iterator();
         while (iter.hasNext()) {
-            numbs += String.format("%2d ", iter.next());
+            numbs += String.format(" %2d", iter.next());
         }
         
         if (auto){
-            numbs += "[Auto]";
+            numbs += " [Auto]";
         }
         
         return numbs;
-
-
     }
 
     public ArrayList<Integer> getNumbers() {
@@ -91,16 +95,16 @@ public class NumbersEntry extends Entry {
                     " " + MAX_RANGE + ") separated by whitespace.");
             entryNumbersStr = scanner.nextLine().trim();
             if (!entryNumbersStr.matches("[0-9 ]+")) { // numbers seperate by white space
-                System.out.println("Invalid input! Non numerical input detected!");
+                System.out.println("Invalid input! Numbers are expected. Please try again!");
                 continue;
             }
             entryNumbersStrArr = entryNumbersStr.split("\\s+"); // split by white space.
             if (entryNumbersStrArr.length < NUM_ALLOWED_ENTRIES) {
-                System.out.println("Invalid Iput! Fewer than 7 number are provided. Please try again!");
+                System.out.println("Invalid input! Fewer than 7 numbers are provided. Please try again!");
                 continue;
             }
             if (entryNumbersStrArr.length > NUM_ALLOWED_ENTRIES) {
-                System.out.println("Invalid Iput! More than 7 numbers are provided. Please try again!");
+                System.out.println("Invalid input! More than 7 numbers are provided. Please try again!");
                 continue;
             }
 

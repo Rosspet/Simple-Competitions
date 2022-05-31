@@ -28,12 +28,14 @@ public class DataProvider{
      * @throws DataAccessException If a file cannot be opened/read
      * @throws DataFormatException If the format of the the content is incorrect
      */
-     public DataProvider(String memberFile, String billFile) {
+     public DataProvider(String memberFile, String billFile) throws DataAccessException, DataFormatException {
          //Add your code here
         this.memberFile = memberFile;
         this.billFile = billFile;
+        getMembersFromFile();   
+        getBillsFromFile(); 
+        /*
         try {
-            getMembersFromFile();   
         }
         catch (DataAccessException e) {
             System.out.println(e.getMessage());
@@ -47,7 +49,6 @@ public class DataProvider{
         
         
         try {
-            getBillsFromFile(); 
         }
         catch (DataAccessException e) {
             System.out.println(e.getMessage());
@@ -58,6 +59,7 @@ public class DataProvider{
         catch (Exception e){
             System.out.println(e.getMessage());
         }
+        */
 
     }
 

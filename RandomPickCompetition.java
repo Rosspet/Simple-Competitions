@@ -45,8 +45,8 @@ public class RandomPickCompetition extends Competition {
             memberId = bill.getMemberId();
             data.setBillToUsed(billId);
 			int numEntries = bill.getNumEntries();
-            System.out.println("This bill ($" + bill.getTotalAmount() + ") is elidgible for " +
-            bill.getNumEntries() + " entires.");
+            System.out.println("This bill ($" + bill.getTotalAmount() + ") is eligible for " +
+            bill.getNumEntries() + " entries.");
 
             for (int i=0; i<numEntries; i++){
                 theseEntries.add(new Entry(getNumEntries()+theseEntries.size()+1, billId, memberId));
@@ -68,7 +68,8 @@ public class RandomPickCompetition extends Competition {
 
     private void displayEntries(ArrayList<Entry> theseEntries){
         for (Entry entry : theseEntries){
-            System.out.println("Entry ID: "+entry.getEntryiD());
+            System.out.println(entry);  
+            //System.out.println("Entry ID: "+entry.getEntryiD());
         }
     }
 
@@ -79,6 +80,8 @@ public class RandomPickCompetition extends Competition {
             System.out.println("The current competition has no entries yet!");
             return false;
         }
+        System.out.println(this);
+
         ArrayList<Entry> entriesForDrawing = getEntries(); // duplicate
         Random randomGenerator = null;
         if (getTestingMode()) {
@@ -101,6 +104,10 @@ public class RandomPickCompetition extends Competition {
              */
             String memberID = winningEntry.getMemberId();
             if (alreadyWinningMember(getWinners(), memberID)){
+                // upgrade them.
+                // actually no upgrade because the original is already going to be better.
+                // so just skip by doing ... then continue.
+                winningEntryCount+=1; // if doing this then dont need the numUnique winner check in while loop conditions
                 continue; // customer can only win 1 and entry cant be picked twice.
             }
             
@@ -218,10 +225,11 @@ public class RandomPickCompetition extends Competition {
          * to complete the logic.
          */
     private void displayWinners(ArrayList<Winner> winners){
+        System.out.println("Winning entries:");
         for (Winner winner : winners){
             System.out.println(
                 "Member ID: "+winner.getMemberID()+", Member Name: "+winner.getMemberName()+
-                ", Entry ID: "+winner.getEntryId()+", Prize: "+winner.getPoints()
+                ", Entry ID: "+winner.getEntryId()+", Prize: "+String.format("%-5d",winner.getPoints())  //winner.getPoints()
             );
         }
     }    

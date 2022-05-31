@@ -30,9 +30,9 @@ public class SimpleCompetitions {
     private String loadFileName; // possibly ununsed. if not loading from a file  
     private String memberFileName; // maybe dont make varaibles like these ones global - just need this for reading in so make it local to that function.
     private String billFileName;
-    private int nextCompID = INIT_COMP_ID; // to keep track of all the IDs - increment for each new comp!
+    //private int nextCompID = INIT_COMP_ID; // to keep track of all the IDs - increment for each new comp!
     
-    private static final int INIT_COMP_ID = 1;
+    //private static final int INIT_COMP_ID = 1;
     private static final int NUM_OPTIONS = 5;
     private static final int NEW_COMP = 1;
     private static final int NEW_ENTRIES = 2;
@@ -65,24 +65,24 @@ public class SimpleCompetitions {
 
         String compType = getCompType();
         String compName = getCompName();
-        int compID = nextCompID;
-        nextCompID+=1;
+        //int compID = nextCompID;
+        //nextCompID+=1;
 
         if (compType.equalsIgnoreCase("L")){
-            return new LuckyNumbersCompetition(compName, compID, testingMode);
+            return new LuckyNumbersCompetition(compName, competitions.size()+1, testingMode);
         }
         else if (compType.equalsIgnoreCase("R")){
-            return new RandomPickCompetition(compName, compID, testingMode);
+            return new RandomPickCompetition(compName, competitions.size()+1, testingMode);
         }
         else {
             System.out.println("ERROR: should have made 1 of the two types!!!!!");
-            return new RandomPickCompetition(compName, compID, testingMode);
+            return new RandomPickCompetition(compName, competitions.size()+1, testingMode);
         }
         
     }
     
     private String getCompName(){
-        System.out.println("Competition name:");
+        System.out.println("Competition name: ");
         return sc.nextLine(); // just a name bruv, can have numbers innit.
     }
 
@@ -90,7 +90,7 @@ public class SimpleCompetitions {
         System.out.println("Type of competition (L: LuckyNumbers, R: RandomPick)?:");
         String cmd = sc.nextLine();
         while(!validCompTypeResponse(cmd)){
-            System.out.println("Invalid competition type! Please choose again");
+            System.out.println("Invalid competition type! Please choose again.");
             System.out.println("Type of competition (L: LuckyNumbers, R: RandomPick)?:");
             //System.out.println("Valid responses: L,l,R,r");
             cmd = sc.nextLine();
@@ -112,10 +112,11 @@ public class SimpleCompetitions {
 
     private void startApp(){
         competitions = new ArrayList<Competition>();
+        System.out.println("----WELCOME TO SIMPLE COMPETITIONS APP----");
         boolean fromFile = obtainFilePrefernce();
 
         if (fromFile){ // only loading from file if atleast one game has gone which would mean the mode has been selected.
-            System.out.println("@@@loading from file@@@");
+            //System.out.println("@@@loading from file@@@");
             System.out.println("File name:");
             loadFileName = sc.nextLine();
             loadCompetitionsFromFile(loadFileName);
@@ -129,9 +130,9 @@ public class SimpleCompetitions {
             testingMode = obtainModePreference();
         }
         // get remainding mandatory files.
-        getMemberAndBillFileNames();
+        
         // read data from mandatory files.
-        readData();
+        readInData();
         /* not sure if we are meant to read in the contents of the member and bill file
          just yet */
         int selectedOption;
@@ -215,7 +216,7 @@ public class SimpleCompetitions {
                 competitions.add(
                     (Competition)compInStream.readObject()
                 );
-                System.out.print("read one");
+                //System.out.println("read one");
             } 
         } catch (EOFException e) {
             // Done reading
@@ -250,7 +251,7 @@ public class SimpleCompetitions {
         try {
             for(Competition comp : competitions){
                 compOut.writeObject(comp);
-                System.out.println("Wrote: "+comp.getName());
+                //System.out.println("Wrote: "+comp.getName());
             }
         }
         catch (InvalidClassException e) {
@@ -278,8 +279,22 @@ public class SimpleCompetitions {
         return new DataProvider(data);
     }
 
-    private void readData(){
-        data = new DataProvider(memberFileName, billFileName);
+    private void readInData(){
+        boolean success = false;
+        while (!success) {
+            getMemberAndBillFileNames();
+            try {
+                data = new DataProvider(memberFileName, billFileName);
+                success = true;
+            } catch (DataAccessException e) {
+                System.out.println("Data access Error: " + e.getMessage());
+            } catch (DataFormatException e) {
+                System.out.println("Invalid data format in file. Error: " + e.getMessage());
+            } catch (Exception e) {
+                System.out.println("An unhandled exception occured. Error: " + e.getMessage());
+            }
+        }
+        
         return;
     }
 
@@ -360,9 +375,9 @@ public class SimpleCompetitions {
     }
 
     private void getMemberAndBillFileNames(){
-        System.out.println("Member file:");
+        System.out.println("Member file: ");
         memberFileName = sc.nextLine();
-        System.out.println("Bill file:");
+        System.out.println("Bill file: ");
         billFileName = sc.nextLine();
     }
 
@@ -391,10 +406,21 @@ public class SimpleCompetitions {
     }
 
     private boolean obtainFilePrefernce(){
-        System.out.println("----WELCOME TO SIMPLE COMPETITIONS APP----\n"+
-        "Load competitions from file? (Y/N)?");
+        boolean notValidResp = true;
+        String cmd=null;
+        while (notValidResp){
+            System.out.println("Load competitions from file? (Y/N)?");
+            cmd = sc.nextLine();
+            if (!validYesNoResponse(cmd)){
+                System.out.println("Unsupported option. Please try again!");
+                continue;
+            }
+            // else it is valid.
+            notValidResp = false;
+        }
         
-        return getYesNoResponse();
+        return cmd.equalsIgnoreCase("Y");
+        
     }
 
     private boolean getSavePreference(){
@@ -409,6 +435,7 @@ public class SimpleCompetitions {
         while (!validYesNoResponse(cmd)){
             //System.out.println("valid responses: Y,y,N,n. Try again.");
             System.out.println("Unsupported option. Please try again!");
+
             cmd = sc.nextLine(); // mebbe change to next.
         }
         return cmd.equalsIgnoreCase("Y");

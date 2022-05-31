@@ -14,8 +14,9 @@ public class AutoNumbersEntry extends NumbersEntry {
     public AutoNumbersEntry(int seed){
         super();
         setNumbers(createNumbers(seed));
-
+        setAuto(true);
     }
+
 
     public AutoNumbersEntry(int entryId, String billId, String memberId, int seed){
         super(entryId, billId, memberId, true);
