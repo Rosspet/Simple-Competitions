@@ -156,7 +156,7 @@ public class LuckyNumbersCompetition extends Competition {
 		}
 		return;
 	}
-
+	/*
 	private ArrayList<NumbersEntry> castToNumbersEntries(ArrayList<Entry> entries){
 		
 		ArrayList<NumbersEntry> numbersEntries = new ArrayList<NumbersEntry>();
@@ -171,7 +171,8 @@ public class LuckyNumbersCompetition extends Competition {
 			}
 		}
 		return numbersEntries;
-	}	
+	}
+	*/	
 	
 
 	private Winner getExistingWinner(ArrayList<Winner> winners, String memberID){

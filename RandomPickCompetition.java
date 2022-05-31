@@ -201,7 +201,7 @@ public class RandomPickCompetition extends Competition {
         
     
         
-		
+	/*
     private boolean alreadyPickedEntry(int entryId){
         for (Winner winner : getWinners()){
             if (winner.getEntryId()==entryId){
@@ -211,6 +211,7 @@ public class RandomPickCompetition extends Competition {
         return false;
         //
     }
+    */
         /*
          * Note that the above piece of code does not ensure that
          * one customer gets at most one winning entry. Add your code

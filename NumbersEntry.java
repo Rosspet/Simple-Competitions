@@ -164,6 +164,7 @@ public class NumbersEntry extends Entry {
         return intArr;
     }
 
+    /*
     private void printArray(int[] entryNumbers){
         System.out.println("------ARRAY------");
         for (int i : entryNumbers){
@@ -171,4 +172,5 @@ public class NumbersEntry extends Entry {
         }
         System.out.println("------ARRAY DONE------");
     }
+    */
 }
