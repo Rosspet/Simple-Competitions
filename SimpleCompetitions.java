@@ -203,6 +203,8 @@ public class SimpleCompetitions {
 
     private void loadCompetitionsFromFile(String fileName) {
         ObjectInputStream compInStream=null;
+        
+        // Establish Stream to File. 
         try {
             compInStream = new ObjectInputStream(new FileInputStream(fileName));
         } catch (FileNotFoundException e) {
@@ -211,6 +213,7 @@ public class SimpleCompetitions {
             e.printStackTrace();
         }
 
+        // Read Competition objects from file.
         try {
             while(true){
                 competitions.add(
@@ -226,6 +229,15 @@ public class SimpleCompetitions {
             System.out.println("Invalid class: "+e.getMessage());
         } catch (IOException e){
             System.out.println("IO ERR: "+e.getMessage());
+        } finally {
+
+            // close connection to file.
+            try {
+                compInStream.close();
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+
         }
 
         
@@ -245,6 +257,7 @@ public class SimpleCompetitions {
         }
         catch (IOException e){
             System.out.print(e.getMessage());
+            System.exit(1);
         }
 
         // write to output
@@ -256,22 +269,23 @@ public class SimpleCompetitions {
         }
         catch (InvalidClassException e) {
             System.out.println("Attempting to write invalid class. Error: "+e.getMessage());
+            System.exit(1);
         }
         catch (NotSerializableException e) {
             System.out.println("Cannot serialise object. Error: "+e.getMessage());
+            System.exit(1);
         }
         catch (IOException e) {
             System.out.println(e.getMessage());
+            System.exit(1);
         }
-        
-        
-        
         
         try{
             compOut.close();
         }
         catch (IOException e) {
             System.out.print(e.getMessage());
+            System.exit(1);
         }
     }
 
@@ -288,10 +302,13 @@ public class SimpleCompetitions {
                 success = true;
             } catch (DataAccessException e) {
                 System.out.println("Data access Error: " + e.getMessage());
+                System.exit(1);
             } catch (DataFormatException e) {
                 System.out.println("Invalid data format in file. Error: " + e.getMessage());
+                System.exit(1);
             } catch (Exception e) {
                 System.out.println("An unhandled exception occured. Error: " + e.getMessage());
+                System.exit(1);
             }
         }
         
