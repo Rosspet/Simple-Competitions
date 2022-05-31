@@ -1,7 +1,7 @@
 /*
- * Student name: XXX
- * Student ID: YYY
- * LMS username: ZZZ
+ * Student name: Ross Petridis
+ * Student ID: 1080249
+ * LMS username: rpetridis
  */
 
 import java.util.ArrayList;
@@ -9,46 +9,66 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Scanner;
 
+/**
+ * An entry to the LuckyNumbers competition.
+ * This class is an extension to a standard Entry
+ * by including a list of numbers and a boolean
+ * to keep track of whether this entry was automatically
+ * generated or not.
+ */
 public class NumbersEntry extends Entry {
 
-    private ArrayList<Integer> numbers;
-    private boolean auto;
+    private ArrayList<Integer> numbers; // Entered number for entry
+    private boolean auto; // true iff auto generatd the entry.
+
     private static final int NUM_ALLOWED_ENTRIES = 7;
 	private static final int MAX_RANGE = 35;
 	private static final int MIN_RANGE = 1;
 
-    // null constructor
+    /**
+     * Null constructor
+     */
     public NumbersEntry(){
         super();
     }
 
+    /**
+     * Sets the value of auto
+     * @param bool true iff this entry was auto generated.
+     */
     public void setAuto(boolean bool){
         this.auto = bool;
     }
 
-    // copy constructor
+    /**
+     * Copy constructor
+     * @param entry An object of NumberEntry to make a copy of.
+     */
     public NumbersEntry(NumbersEntry entry){
         super((Entry)entry);
         this.auto = entry.auto;
         this.numbers = entry.getNumbers();
     }
 
+    /**
+     * Constructor for making a new NumberEntry from 
+     * @param entryId Entry ID for this new entry
+     * @param billId Bill associated with this entry
+     * @param memberId Member associated with this entry
+     * @param auto Whether or not to auto generate the numbers for this entry.
+     */
     public NumbersEntry(
             int entryId,
             String billId,
             String memberId,
-            //ArrayList<Integer> numbers,
             boolean auto) {
                 
-        // can this be same method for the auto LuckyNumbers and then the Auto class is
-        // for the random nu bers comp?
         super(entryId, billId, memberId);
+
         if(!auto){
             this.numbers = getManualEntryNumbers();
-        } // else, numbers will be set in the constructor for AutoNumbersEntry
-        //this.numbers = numbers;
+        } // else, numbers are generated and set in subclass for AutoNumbersEntry.
         this.auto = auto;
-                    
     }
 
     public void setNumbers(ArrayList<Integer> numbers){

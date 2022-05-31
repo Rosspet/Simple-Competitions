@@ -29,7 +29,7 @@ public class AutoNumbersEntry extends NumbersEntry {
 	
     public ArrayList<Integer> createNumbers (int seed) {
         ArrayList<Integer> validList = new ArrayList<Integer>();
-	int[] tempNumbers = new int[NUMBER_COUNT];
+	    int[] tempNumbers = new int[NUMBER_COUNT];
         for (int i = 1; i <= MAX_NUMBER; i++) {
     	    validList.add(i);
         }

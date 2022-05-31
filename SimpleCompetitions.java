@@ -57,16 +57,16 @@ public class SimpleCompetitions {
 
         competitions = new ArrayList<Competition>();
         
-        if (loadFromFilePreference()){ 
+        if (loadFromFile()){ 
             System.out.println("File name:");
             
             loadCompetitionsFromFile(sc.nextLine());
             setActiveComp();
-            testingMode = obtainModeFromExistingCompetitions();
+            testingMode = obtainTestModeFromExistingCompetitions();
 
         } 
         else { // Need to get operating mode from User.
-            testingMode = obtainModePreference();
+            testingMode = obtainTestModePreference();
         }
          
         // read data from mandatory files then start game.
@@ -138,7 +138,7 @@ public class SimpleCompetitions {
 
                 case EXIT:
                     // Check if its desired to save
-                    if (getSavePreference()){
+                    if (getSaveToFile()){
                         saveCompetitions();
                         System.out.println("Competitions have been saved to file.\n"+
                             "The bill file has also been automatically updated.");
@@ -150,6 +150,7 @@ public class SimpleCompetitions {
                     break;
             }
         } while(selectedOption!=EXIT); // come back and change this
+        sc.close();
     }
     /**
      * Create a new competition with user commands
@@ -305,6 +306,9 @@ public class SimpleCompetitions {
         return new DataProvider(data);
     }
 
+    /**
+     * Initiate reading in of data (members and bills) from files
+     */
     private void readInData(){
         boolean success = false;
         while (!success) {
@@ -329,6 +333,9 @@ public class SimpleCompetitions {
         return;
     }
 
+    /**
+     * Print the Summary Report on competition data.
+     */
     private void report(){
         
         System.out.println("----SUMMARY REPORT----");
@@ -341,6 +348,10 @@ public class SimpleCompetitions {
         }
     }
 
+    /**
+     * Find the active comp in the competition list, as set the variable activeComp to it
+     * for ease of access.
+     */
     private void setActiveComp(){
         for(Competition comp : competitions){
             if (comp.isActive()){
@@ -351,6 +362,11 @@ public class SimpleCompetitions {
         return;
     } 
 
+    /**
+     * 
+     * @return the number of competitions that have been completed in the list of 
+     * competitions
+     */
     private int getNumCompleted(){
         int totNumCompleted=0;
         for(Competition comp : competitions){
@@ -370,30 +386,34 @@ public class SimpleCompetitions {
          // System.out.println("Please enter an integer number between 1 and "+ NUM_OPTIONS);
 
         while (!validInput)  {
+
             input = sc.nextLine().trim();
+
+            // check if integer type
             if (!input.matches("[0-9]+")){
                 System.out.println("A number is expected. Please try again.");
                 displayMenu();
                 continue;
             }
+
+            // is integer type, check if in range
             option = Integer.parseInt(input);
             if (option>=1 && option <= NUM_OPTIONS){
                 validInput=true;
                 break; // not required but include for extra safety.
             } 
-            else {
+            else { // out of range.
                 System.out.println("Unsupported option. Please try again!");
                 displayMenu();
                 continue;
             }
-            
-            // not broken, invalid INput
-            //System.out.println("Please enter an integer number between 1 and "+ NUM_OPTIONS);
         }
         return option;
     }
     
-
+    /**
+     * Display menu options
+     */
     private void displayMenu(){
         System.out.println(
             "Please select an option. Type 5 to exit.\n" + 
@@ -405,25 +425,31 @@ public class SimpleCompetitions {
         );
     }
 
-    /*
-    private void getMemberAndBillFileNames(){
-        System.out.println("Member file: ");
-        memberFileName = sc.nextLine();
-        System.out.println("Bill file: ");
-        billFileName = sc.nextLine();
-    }*/
-
+    /**
+     * Prompt user for memberFile name
+     * @return The inputted name for member file
+     */
     private String getMemberFileName(){
         System.out.println("Member file: ");
         return sc.nextLine();
     }
 
+    /**
+     * Prompt user for memberFile name
+     * @return The inputted name for member file
+     */
     private String getBillFileName(){
         System.out.println("Bill file: ");
         return sc.nextLine();
     }
 
-    private boolean obtainModePreference(){
+    /**
+     * Obtains operating mode from the user. 
+     * Either Test or Normal are the possible modes.
+     * Test uses deterministic seeds for generating "randomness"
+     * @return True iff testing mode is being used.
+     */
+    private boolean obtainTestModePreference(){
         System.out.println("Which mode would you like to run? (Type T for Testing, and N for Normal mode):");
         String cmd = sc.nextLine();
         while(!validModeResponse(cmd)){
@@ -435,7 +461,12 @@ public class SimpleCompetitions {
         return cmd.equalsIgnoreCase("T"); // return true if running normal mode. 
     }
 
-    private boolean obtainModeFromExistingCompetitions(){
+    /**
+     * Uses existing competitions to decipher the approprite mode of operation.
+     * Called after reading competitions form file.
+     * @return true iff testing mode.
+     */
+    private boolean obtainTestModeFromExistingCompetitions(){
 
         try {
             Competition comp = competitions.get(0);
@@ -443,11 +474,16 @@ public class SimpleCompetitions {
         } catch (IndexOutOfBoundsException e) {
             System.out.println("No existing competitions to determine operating mode.");
             System.out.println("Asking for operating mode...");
-            return obtainModePreference(); // returns true if normal mode.
+            return obtainTestModePreference(); // returns true if normal mode.
         }
     }
 
-    private boolean loadFromFilePreference(){
+    /**
+     * Get preference for loading game form file or 
+     * starting game from scratch
+     * @return true iff desired to load gamefrom file. 
+     */
+    private boolean loadFromFile(){
         boolean notValidResp = true;
         String cmd=null;
         while (notValidResp){
@@ -460,41 +496,56 @@ public class SimpleCompetitions {
             // else it is valid.
             notValidResp = false;
         }
-        
         return cmd.equalsIgnoreCase("Y");
-        
     }
 
-    private boolean getSavePreference(){
+    /**
+     * Asks and processes if user want to save game data to a file.
+     * @return true iff desired to save to file.
+     */
+    private boolean getSaveToFile(){
         System.out.println("Save competitions to file? (Y/N)?");
         return getYesNoResponse();
     }
 
+    /**
+     * Asks user for a yes/no anser then maps this to a bool
+     * @return true iff yes.
+     */
     private boolean getYesNoResponse(){
         String cmd = sc.nextLine();
-        
-        // check y,Y,n,N were entered
         while (!validYesNoResponse(cmd)){
-            //System.out.println("valid responses: Y,y,N,n. Try again.");
             System.out.println("Unsupported option. Please try again!");
-
             cmd = sc.nextLine(); // mebbe change to next.
         }
         return cmd.equalsIgnoreCase("Y");
-        // else n or N was entered as we already check for garbage values.
     }
 
+    /**
+     * Checks if inputted string is valid yes or no anser
+     * @param cmd the input
+     * @return true if cmd is valid yes or no answer by comparing to
+     * "y" or "n". Comparison is case insensitive.
+     */
     public static boolean validYesNoResponse(String cmd){
         return cmd.equalsIgnoreCase("Y") || cmd.equalsIgnoreCase("n");
     } 
 
+    /**
+     * Checks if inputted string is valid test or normal anser
+     * @param cmd the input
+     * @return true if cmd is valid test or normal answer by comparing to
+     * "N" or "T". Comparison is case insensitive.
+     */
     private boolean validModeResponse(String cmd){
         return cmd.equalsIgnoreCase("N") || cmd.equalsIgnoreCase("T"); 
-    } 
+    }
 
+    /**
+     * Provides access to standard input.
+     * @return Scanner object for reading form stdin.
+     */
     public static Scanner getScanner(){
         return sc;
     }
-
-
 }
