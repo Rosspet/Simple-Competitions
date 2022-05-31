@@ -1,10 +1,12 @@
+import java.io.Serializable;
+
 /*
  * Student name: XXX
  * Student ID: YYY
  * LMS username: ZZZ
  */
 
-public class Member {
+public class Member implements Serializable{
     // currently assuming all members in the csv are valid entries.
     private String ID; // no mention over whether member ID is only numerical
     private String name;

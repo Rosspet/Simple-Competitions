@@ -4,11 +4,14 @@
  * LMS username: ZZZ
  */
 
+import java.io.EOFException;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -30,10 +33,7 @@ public class SimpleCompetitions {
     private static final int SUMMARY = 4;
     private static final int EXIT = 5;
     private static DataProvider data;
-    private ArrayList<Bill> bills;
-    private ArrayList<Member> members;
     private ArrayList<Competition> competitions; // list of all competitions. Only 1 can be active
-    private int numCompletedComps=0;
     private Competition activeComp = null; // the 1 active competition.// for quick access, store here too.
     // We can have multiple competitions. But only 1 "active" competitions.
 
@@ -111,6 +111,8 @@ public class SimpleCompetitions {
             System.out.println("@@@loading from file@@@");
             System.out.println("File name:");
             loadFileName = sc.nextLine();
+            loadCompetitionsFromFile(loadFileName);
+            setActiveComp();
             //The program will try to load that file and if there is an exception, 
             //it should display an error message and terminate. 
             // TO DO: this loading, once we know how the files are saved.
@@ -164,7 +166,6 @@ public class SimpleCompetitions {
                     if (success){
                         activeComp.deactivate();
                         activeComp = null;
-                        numCompletedComps++;
                     } // else. didnt have any entries and nothing was changed.
                     break;
                 case SUMMARY:
@@ -172,7 +173,7 @@ public class SimpleCompetitions {
                         System.out.println("No competition has been created yet!");
                         break;
                     }
-                    summaryReport();
+                    report();
 
                     break;
                 case EXIT:
@@ -191,8 +192,34 @@ public class SimpleCompetitions {
         } while(selectedOption!=EXIT); // come back and change this
     }
 
-    public static void updateData(){
+    private void loadCompetitionsFromFile(String fileName) {
+        ObjectInputStream compInStream=null;
+        try {
+            compInStream = new ObjectInputStream(new FileInputStream(fileName));
+        } catch (FileNotFoundException e) {
+            System.out.print(e.getMessage());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        try {
+            while(true){
+                competitions.add(
+                    (Competition)compInStream.readObject()
+                );
+                System.out.print("read one");
+            } 
+        } catch (EOFException e) {
+            // Done reading
+        } catch (ClassNotFoundException e) {
+            System.out.println("Class not Found. Error: "+e.getMessage());
+        } catch (InvalidClassException e){
+            System.out.println("Invalid class: "+e.getMessage());
+        } catch (IOException e){
+            System.out.println("IO ERR: "+e.getMessage());
+        }
+
+        
     }
 
     private void saveCompetitions(){
@@ -245,15 +272,13 @@ public class SimpleCompetitions {
 
     private void readData(){
         data = new DataProvider(memberFileName, billFileName);
-        bills = data.getBills(); // main game engine gets a copy of bills which is now the truth.
-        members = data.getMembers(); // same as above
         return;
     }
 
-    private void summaryReport(){
+    private void report(){
         
         System.out.println("----SUMMARY REPORT----");
-        System.out.println("+Number of completed competitions: "+ numCompletedComps);
+        System.out.println("+Number of completed competitions: "+ getNumCompleted());
         System.out.println("+Number of active competitions: "+ (activeComp==null ? "0" : "1"));
         for (Competition comp : competitions){
             System.out.println();
@@ -262,6 +287,23 @@ public class SimpleCompetitions {
         }
     }
 
+    private void setActiveComp(){
+        for(Competition comp : competitions){
+            if (comp.isActive()){
+                activeComp = comp;
+                return;
+            }
+        }
+        return;
+    } 
+
+    private int getNumCompleted(){
+        int totNumCompleted=0;
+        for(Competition comp : competitions){
+            totNumCompleted += comp.isActive() ? 1 : 0;
+        }
+        return totNumCompleted;
+    }
 
     /**
      * Returns only once valid integer command has been entered.
@@ -360,10 +402,6 @@ public class SimpleCompetitions {
     private boolean validModeResponse(String cmd){
         return cmd.equalsIgnoreCase("N") || cmd.equalsIgnoreCase("T"); 
     } 
-
-    public void report() {
-    	
-    }
 
     public static Scanner getScanner(){
         return sc;

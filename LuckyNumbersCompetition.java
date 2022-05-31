@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -9,7 +10,7 @@ import java.util.Random;
  * LMS username: ZZZ
  */
 
-public class LuckyNumbersCompetition extends Competition {
+public class LuckyNumbersCompetition extends Competition{
 
 	private ArrayList<Integer> billIDs = new ArrayList<Integer>(); // list of bill IDs in this particular comp (not all
 																	// bills ever which is in data)

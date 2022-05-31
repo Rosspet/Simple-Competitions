@@ -17,8 +17,6 @@ public abstract class Competition implements Serializable {
     private boolean isActive;
     private static final String INVALID_INT_RESPONSE = "-1";
     private int totalPrizesAwarded=0;
-        private int numEntries;
-        private int numWinners;
     private ArrayList<Entry> entries = new ArrayList<Entry>();
 	private ArrayList<Winner> winners = new ArrayList<Winner>();
     
@@ -36,6 +34,9 @@ public abstract class Competition implements Serializable {
         this.isActive=true;
         //this.bills = bills;
         //this.members = members;
+    }
+    public boolean isActive(){
+        return isActive;
     }
 
     public void deactivate(){

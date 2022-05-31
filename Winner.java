@@ -1,6 +1,6 @@
 import java.io.Serializable;
 
-public class Winner extends Member implements Comparable<Winner>, Serializable {
+public class Winner extends Member implements Comparable<Winner> {
 
     private Entry winningEntry;
     private int points;
@@ -25,7 +25,6 @@ public class Winner extends Member implements Comparable<Winner>, Serializable {
         this.points = winner.points;
         this.entryID = winner.entryID;
         this.winningEntry = winner.winningEntry;
-
     }
 
     @Override
