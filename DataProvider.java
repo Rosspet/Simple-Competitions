@@ -7,9 +7,9 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 /*
- * Student name: XXX
- * Student ID: YYY
- * LMS username: ZZZ
+ * Student name: Ross Petridis
+ * Student ID: 1080249
+ * LMS username: rpetridis
  */
 
 public class DataProvider{

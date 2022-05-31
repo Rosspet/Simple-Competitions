@@ -17,15 +17,14 @@ public class RandomPickCompetition extends Competition {
     //private ArrayList<Entry> entries = new ArrayList<Entry>();
     //private ArrayList<Entry> theseEntries = new ArrayList<Entry>();
 	//private ArrayList<Winner> winners = new ArrayList<Winner>();
-    private boolean testingMode;
-    private Random random = new Random();
+    //private boolean testingMode;
     //private ArrayList<Bill> bills;
     //private ArrayList<Member> members;
 	
     public RandomPickCompetition(String compName, int compID, boolean testingMode){
-        super(compName, compID, "RandomPickCompetition");
+        super(compName, compID, "RandomPickCompetition", testingMode);
         //this.data = data;
-        this.testingMode = testingMode;
+        //this.testingMode = testingMode;
         //this.bills = bills;
         //this.members = members;    
     }
@@ -82,7 +81,7 @@ public class RandomPickCompetition extends Competition {
         }
         ArrayList<Entry> entriesForDrawing = getEntries(); // duplicate
         Random randomGenerator = null;
-        if (testingMode) {
+        if (getTestingMode()) {
             randomGenerator = new Random(this.getCompId());
         } else {
             randomGenerator = new Random();

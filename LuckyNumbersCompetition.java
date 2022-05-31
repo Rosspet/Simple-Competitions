@@ -1,24 +1,15 @@
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Random;
 /*
- * Student name: XXX
- * Student ID: YYY
- * LMS username: ZZZ
+ * Student name: Ross Petridis
+ * Student ID: 1080249
+ * LMS username: rpetridis
  */
 
-public class LuckyNumbersCompetition extends Competition{
+public class LuckyNumbersCompetition extends Competition {
 
-	private ArrayList<Integer> billIDs = new ArrayList<Integer>(); // list of bill IDs in this particular comp (not all
-																	// bills ever which is in data)
-	//private DataProvider data;
-	//private ArrayList<NumbersEntry> entries = new ArrayList<NumbersEntry>();
-	//private ArrayList<Winner> winners = new ArrayList<Winner>();
-	// private ArrayList<Bill> bills;
-	// private ArrayList<Member> members;
 	private static final int MIN_NUM_MANUAL = 0;
 	private static final int TWO_NUM_PRIZE = 50;
 	private static final int THREE_NUM_PRIZE = 100;
@@ -26,14 +17,13 @@ public class LuckyNumbersCompetition extends Competition{
     private static final int FIVE_NUM_PRIZE = 1000;
 	private static final int SIX_NUM_PRIZE = 5000;
 	private static final int SEVEN_NUM_PRIZE = 50000;
-	private boolean testingMode;
+	//private boolean testingMode;
 	private Random random = new Random();
 
-
 	public LuckyNumbersCompetition(String compName, int compID, boolean testingMode) {
-		super(compName, compID, "LuckyNumbersCompetition");
+		super(compName, compID, "LuckyNumbersCompetition", testingMode);
 		//this.data = data;
-		this.testingMode = testingMode;
+		//this.testingMode = testingMode;
 		 // use compID as seed for generating lucky entry and the number of entries in the currently active competition 
 		// to generate automated customers' entries.
 		// this.bills = bills;
@@ -43,8 +33,7 @@ public class LuckyNumbersCompetition extends Competition{
 	public DataProvider addEntries(DataProvider data) { // can this be done in parent Competition class?
 
 		boolean finishedAddingEntries = false;
-		String billId;
-		//int entryId = 1;
+		String billId;;
 		Bill bill;
 		String memberId;
 		
@@ -65,7 +54,7 @@ public class LuckyNumbersCompetition extends Competition{
 			}
 
 			for (int i = 0; i <numAutoEntires; i++){
-				if (testingMode){
+				if (getTestingMode()){
 					theseEntries.add(new AutoNumbersEntry(getNumEntries()+theseEntries.size()+1, billId, memberId, getNumEntries()+theseEntries.size())); 
 					
 				}
@@ -97,7 +86,7 @@ public class LuckyNumbersCompetition extends Competition{
         }
 		
 		int seed;
-		if (testingMode){
+		if (getTestingMode()){
 			seed = getCompId();
 		} 
 		else {
@@ -165,10 +154,7 @@ public class LuckyNumbersCompetition extends Competition{
 		for (Winner winner : winners){
 			increasePrizesGiven(winner.getPoints());
 		}
-
-
 		return;
-		
 	}
 
 	private ArrayList<NumbersEntry> castToNumbersEntries(ArrayList<Entry> entries){
@@ -199,11 +185,6 @@ public class LuckyNumbersCompetition extends Competition{
 		}
 		return null;
 	}
-	
-
-
-	
-
 	
 	private int getPoints(NumbersEntry entry, NumbersEntry luckyEntry){
 		ArrayList<Integer> numbs = entry.getNumbers();
@@ -236,9 +217,6 @@ public class LuckyNumbersCompetition extends Competition{
 	}
 
 	
-
-	
-
 
 	private void displayEntries(ArrayList<NumbersEntry> entries){
 		for(NumbersEntry entry : entries){

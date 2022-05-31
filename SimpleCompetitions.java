@@ -16,16 +16,23 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/*
+ * Student name: Ross Petridis
+ * Student ID: 1080249
+ * LMS username: rpetridis
+ */
+
 public class SimpleCompetitions {
 
     private static Scanner sc = new Scanner(System.in);
-    private boolean fromFile; // true if reading from file.
-    private boolean normalMode; // true if running normal mode.
+    //private boolean fromFile; // true if reading from file.
+    private boolean testingMode; // true if running normal mode.
     private String loadFileName; // possibly ununsed. if not loading from a file  
     private String memberFileName; // maybe dont make varaibles like these ones global - just need this for reading in so make it local to that function.
     private String billFileName;
-    private static final int INIT_COMP_ID = 1;
     private int nextCompID = INIT_COMP_ID; // to keep track of all the IDs - increment for each new comp!
+    
+    private static final int INIT_COMP_ID = 1;
     private static final int NUM_OPTIONS = 5;
     private static final int NEW_COMP = 1;
     private static final int NEW_ENTRIES = 2;
@@ -62,14 +69,14 @@ public class SimpleCompetitions {
         nextCompID+=1;
 
         if (compType.equalsIgnoreCase("L")){
-            return new LuckyNumbersCompetition(compName, compID, !normalMode);
+            return new LuckyNumbersCompetition(compName, compID, testingMode);
         }
         else if (compType.equalsIgnoreCase("R")){
-            return new RandomPickCompetition(compName, compID, !normalMode);
+            return new RandomPickCompetition(compName, compID, testingMode);
         }
         else {
             System.out.println("ERROR: should have made 1 of the two types!!!!!");
-            return new RandomPickCompetition(compName, compID, !normalMode);
+            return new RandomPickCompetition(compName, compID, testingMode);
         }
         
     }
@@ -105,7 +112,7 @@ public class SimpleCompetitions {
 
     private void startApp(){
         competitions = new ArrayList<Competition>();
-        fromFile = obtainFilePrefernce();
+        boolean fromFile = obtainFilePrefernce();
 
         if (fromFile){ // only loading from file if atleast one game has gone which would mean the mode has been selected.
             System.out.println("@@@loading from file@@@");
@@ -113,12 +120,13 @@ public class SimpleCompetitions {
             loadFileName = sc.nextLine();
             loadCompetitionsFromFile(loadFileName);
             setActiveComp();
+            testingMode = obtainModePreferenceFromExistingCompetitions();
             //The program will try to load that file and if there is an exception, 
             //it should display an error message and terminate. 
             // TO DO: this loading, once we know how the files are saved.
         } 
         else { // not necessarily using previous setting. re obtain.
-            normalMode = obtainModePreference();
+            testingMode = obtainModePreference();
         }
         // get remainding mandatory files.
         getMemberAndBillFileNames();
@@ -300,7 +308,7 @@ public class SimpleCompetitions {
     private int getNumCompleted(){
         int totNumCompleted=0;
         for(Competition comp : competitions){
-            totNumCompleted += comp.isActive() ? 1 : 0;
+            totNumCompleted += comp.isActive() ? 0 : 1;
         }
         return totNumCompleted;
     }
@@ -367,7 +375,19 @@ public class SimpleCompetitions {
             System.out.println("Which mode would you like to run? (Type T for Testing, and N for Normal mode):");
             cmd = sc.nextLine();
         }
-        return cmd.equalsIgnoreCase("N"); // return true if running normal mode. 
+        return cmd.equalsIgnoreCase("T"); // return true if running normal mode. 
+    }
+
+    private boolean obtainModePreferenceFromExistingCompetitions(){
+
+        try {
+            Competition comp = competitions.get(0);
+            return comp.getTestingMode();
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("No existing competitions to determine operating mode.");
+            System.out.println("Asking for operating mode...");
+            return obtainModePreference(); // returns true if normal mode.
+        }
     }
 
     private boolean obtainFilePrefernce(){

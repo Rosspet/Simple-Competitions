@@ -1,12 +1,11 @@
 /*
- * Student name: XXX
- * Student ID: YYY
- * LMS username: ZZZ
+ * Student name: Ross Petridis
+ * Student ID: 1080249
+ * LMS username: rpetridis
  */
 import java.util.Scanner;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 
 public abstract class Competition implements Serializable {
@@ -19,19 +18,19 @@ public abstract class Competition implements Serializable {
     private int totalPrizesAwarded=0;
     private ArrayList<Entry> entries = new ArrayList<Entry>();
 	private ArrayList<Winner> winners = new ArrayList<Winner>();
-    
-    
+    private boolean testingMode;
 
     //private ArrayList<Bill> bills;
     //private ArrayList<Member> members;
 
     // all comps get the same copy of members and bills form main!
-    public Competition(String compName, int compID, String type){
+    public Competition(String compName, int compID, String type, boolean testingMode){
         id = compID;
         name = compName;
         this.type = type;
         //this.data = data;
         this.isActive=true;
+        this.testingMode = testingMode;
         //this.bills = bills;
         //this.members = members;
     }
@@ -41,6 +40,10 @@ public abstract class Competition implements Serializable {
 
     public void deactivate(){
         this.isActive=false;
+    }
+
+    public boolean getTestingMode(){
+        return this.testingMode;
     }
 
     public abstract DataProvider addEntries(DataProvider data);
