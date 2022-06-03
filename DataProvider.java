@@ -12,6 +12,11 @@ import java.util.Scanner;
  * LMS username: rpetridis
  */
 
+/**
+ * This class allows an instation of the bills and member data into a datastore object
+ * This class includes methods for reading and updating data in the store and ultimately
+ * in the files upon end of program if desired.
+ */
 public class DataProvider{
 
     private String memberFile;
@@ -34,36 +39,9 @@ public class DataProvider{
         this.billFile = billFile;
         getMembersFromFile();   
         getBillsFromFile(); 
-        /*
-        try {
-        }
-        catch (DataAccessException e) {
-            System.out.println(e.getMessage());
-        }
-        catch (DataFormatException e) {
-            System.out.println(e.getMessage());
-        }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-        
-        
-        try {
-        }
-        catch (DataAccessException e) {
-            System.out.println(e.getMessage());
-        }
-        catch (DataFormatException e) {
-            System.out.println(e.getMessage());
-        }
-        catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-        */
-
     }
 
-    // copy constructor
+    // copy constructor for safety
     public DataProvider(DataProvider data){
         this.billFile = data.billFile;
         this.memberFile = data.memberFile;
@@ -71,7 +49,12 @@ public class DataProvider{
         this.bills = data.getBills();
     }
 
-
+    /**
+     * Given a member Id, retrieve this member
+     * @param memberID ID of the member to retrieve.
+     * @return The member
+     * @throws MemberDoesNotExist if caanot find a member with ID memberID
+     */
     public Member getMember(String memberID) throws MemberDoesNotExist{
         Iterator<Member> iter = members.iterator();
         Member thisMember;
@@ -81,12 +64,16 @@ public class DataProvider{
                 return thisMember;
             }
         }
-        // member doesnt exist if still here
+        // scanned through all members and still here - member doesn't exist.
         throw new MemberDoesNotExist(memberID);
     }
 
+    /**
+     * Recieves a potential billID and retrns true if the bill exists
+     * @param billID
+     * @return
+     */
     public boolean billExists(String billID){
-
         Iterator<Bill> iter = bills.iterator();
         while(iter.hasNext()){
             if(iter.next().hasId(billID)){
@@ -96,33 +83,48 @@ public class DataProvider{
         return false;
     }
     
-    // bill getter helper func for this class only, hence private but returning actual object.
-    private Bill getActualBillObject(String billID){
+    /**
+     * Helper function that returns a bill with given BillID that is previously known to exist
+     * @param billId
+     * @return The bill with ID billId
+     */
+    private Bill getActualBillObject(String billId){
         Iterator<Bill> iter = bills.iterator();
         Bill thisBill=null;
         while(iter.hasNext()){
             thisBill = iter.next();
-            if (thisBill.hasId(billID)){
+            if (thisBill.hasId(billId)){
                 return thisBill; // not returning copy as this is a private helper for this class only
             }
         }
         System.out.println("failed to find bill that was assumed to exist. existing 1.");
         System.exit(1);
         return thisBill;
-        
     }
 
-
+    /**
+     * sets a bill to used
+     * @param billID the bill id to set to used
+     */
     public void setBillToUsed(String billID){
-        Bill bill = getActualBillObject(billID);
-        bill.useBill();
+        getActualBillObject(billID).useBill();
     }
 
+    /**
+     * Checks if a bill has been used or not
+     * @param billID
+     * @return
+     */
     public boolean billHasBeenUsed(String billID){
         Bill bill = getBillThatExists(billID);
         return bill.hasBeenUsed();
     }
 
+    /**
+     * Reads members from file into an arrray list of members
+     * @throws DataAccessException if function cannot access the file
+     * @throws DataFormatException if format of the file does not match the expected format
+     */
     private void getMembersFromFile() throws DataAccessException, DataFormatException{
         Scanner memberStream;
         try {
@@ -139,7 +141,7 @@ public class DataProvider{
 
         while (memberStream.hasNextLine()){ // while still members to add.
             memberLine = memberStream.nextLine();
-            memberData = memberLine.split(",");//= new String[NUM_MEMBER_DATA];
+            memberData = memberLine.split(",");
             if (memberData.length!=NUM_MEMBER_DATA){
                 throw new DataFormatException("Expecting exactly " + NUM_MEMBER_DATA + 
                 "piececs of information per member. Got " + memberData.length);
@@ -151,14 +153,16 @@ public class DataProvider{
                 memberData[2]  // member address
                 )
             );
-
         }
-
         memberStream.close();
     }
 
+    /**
+     * Reads bills from file and stores in arraylist of bills
+     * @throws DataAccessException if cannot access the bills file
+     * @throws DataFormatException if supplied format does match exapected format.
+     */
     private void getBillsFromFile() throws DataAccessException, DataFormatException{
-        
         Scanner billStream;
         try {
             billStream = new Scanner(new FileInputStream(billFile));
@@ -190,27 +194,29 @@ public class DataProvider{
                     )
                 );
             }
-            catch (Exception e){
+            catch (Exception e){ // weird format recieved
                 throw new DataFormatException("Error parsing Bill data. BillLine = "+billLine+"\nError:" + e.getMessage());
             }
         }
-
-
         billStream.close();
     }
 
-
-    // getBill
-    //alterBill
-    //get member
-    // altermember
-
+    /**
+     * retrive bill object that is previously known to exist.
+     * @param billID
+     * @return
+     */
     public Bill getBillThatExists(String billID){
         Bill bill = getActualBillObject(billID);
         return new Bill(bill);
     }
 
-
+    /**
+     * 
+     * @param billID
+     * @return
+     * @throws BillDoesNotExist
+     */
     public Bill getBill(String billID) throws BillDoesNotExist{
         Iterator<Bill> iter = bills.iterator();
         Bill thisBill;

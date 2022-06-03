@@ -110,31 +110,68 @@ public abstract class Competition implements Serializable {
         return entriesCopy;
     }
 
-    
+    /**
+     * 
+     * @return A copy of the entrys in this competition, casted to NumbersEntry objects.
+     */
+    public ArrayList<NumbersEntry> getNumbersEntries(){
+        ArrayList<NumbersEntry> entriesCopy = new ArrayList<NumbersEntry>();
+        for (Entry entry : entries) {
+            entriesCopy.add(new NumbersEntry((NumbersEntry)entry));
+        }
+        return entriesCopy;
+    }
 
+    /**
+     * Overide default toString for more appropriate printing
+     */
     public String toString(){
         return "Competition ID: " + id + ", Competition Name: " + name + ", Type: " + type ;    
     }
+
+    /**
+     * Set the type of this competition "R" or "L"
+     * @param type
+     */
     public void setType(String type){
         this.type = type;
     }
 
+    /**
+     * 
+     * @return the competition ID of this competition
+     */
     public int getCompId(){
         return id;
     }
 
+    /**
+     * @return The number of entries in this competition
+     */
     public int getNumEntries(){
         return entries.size();
     }
 
+    /**
+     * Increases variable storing the amount of prizes given out in this competition
+     * @param amount the amount to increase it by
+     */
     public void increasePrizesGiven(int amount){
         totalPrizesAwarded+=amount;
     }
 
+    /**
+     * Recieves a list of winners and sets them.
+     * @param winners The winners of this competition
+     */
     public void setWinners(ArrayList<Winner> winners){
         this.winners = winners;
     }
 
+    /**
+     * 
+     * @return The winners of this competition
+     */
     public ArrayList<Winner> getWinners(){
         ArrayList<Winner> winnersCopy = new ArrayList<Winner>();
         for (Winner winner : winners){
@@ -143,27 +180,40 @@ public abstract class Competition implements Serializable {
         return winnersCopy;
     }
 
+    /**
+     * Recieves a set of entries and adds the to the current set
+     * @param entries The entries to be added to the current set.
+     */
     public void addEntriesOfArralyList(ArrayList<Entry> entries){
         this.entries.addAll(entries);
     }
 
+    /**
+     * Recieves 1 entry and adds this to the current set
+     * @param entry The entry to be added
+     */
     public void addEntry(Entry entry){
         entries.add(entry);
     }
 
+    /**
+     * Functions that facilitates the prompting and parsing of userinput for 
+     * a bill ID to be entered into this competition. Checks if the bill is 
+     * valid format, has an associated member, and has not been used before.
+     * @return
+     */
     public String getBillIDFromInputForEntry(){
         Scanner scanner = SimpleCompetitions.getScanner();
         boolean validResponse = false;
         String billID=INVALID_INT_RESPONSE;
-        //int int_billID=-1;
         DataProvider data = SimpleCompetitions.getData() ;
 
         while (!validResponse){
             System.out.println("Bill ID: ");
             billID = (scanner.nextLine().trim());
-            //System.out.println(billID);
-            if(!Bill.validBillID(billID)){ // && billHasValidMemberID(response) going to chek in higher level. just want to get the valid numerical bill.
-                continue;
+
+            if(!Bill.validBillID(billID)){
+                continue; // not valid format for a bill ID
             }
             
             if  (!data.billExists(billID)){
@@ -179,19 +229,19 @@ public abstract class Competition implements Serializable {
                 continue;
             }
             validResponse = true;
-            //data.setBillToUsed(billID);
         }
         if (billID==INVALID_INT_RESPONSE){
             System.out.print("FAILED TO GET PROPER BILL ID");
             System.exit(1);
         }
-
-        //SimpleCompetitions.updateData(data);
-
         return billID;
         
     }
 
+    /**
+     * Asks and actions user request to continue adding more entries to competition or not
+     * @return true iff user wants to keep adding entriesd
+     */
     public boolean moreEntries(){
         boolean validResponse=false;
         String cmd=null;
@@ -200,25 +250,21 @@ public abstract class Competition implements Serializable {
             System.out.println("Add more entries (Y/N)?");
             cmd = sc.nextLine();
             if (SimpleCompetitions.validYesNoResponse(cmd)){
-                validResponse=true;
+                validResponse=true; // valid response format. i.e. recieved Y/N
             } else {
                 System.out.println("Unsupported option. Please try again!");
             }
         }
         return cmd.equalsIgnoreCase("Y");
-        /*
-		System.out.println("Add more entries (Y/N)?");
-		Scanner sc = SimpleCompetitions.getScanner();
-		String cmd = sc.nextLine();
-		while(!SimpleCompetitions.validYesNoResponse(cmd)){
-			System.out.println("Unsupported option. Please try again!");
-            System.out.println("Add more entries (Y/N)?");
-            cmd = sc.nextLine(); // mebbe change to next.
-        }
-		return cmd.equalsIgnoreCase("Y");
-        */
 	} 
 
+    /**
+     * Checks if a member ID is a winner already. USed to prevent awarding multiple prizes
+     * to the same member.
+     * @param winners The current list of winners
+     * @param memberID member id to check if they are already a winner
+     * @return true iff member with memberID is already a winner.
+     */
     public boolean alreadyWinningMember(ArrayList<Winner> winners, String memberID){
 		Iterator<Winner> winnerIter = winners.iterator();
 		while (winnerIter.hasNext()){
@@ -229,10 +275,15 @@ public abstract class Competition implements Serializable {
 		return false;
 	}
 
+    /**
+     * Adds a Winner to list of winners for this competition
+     * @param winner the winner to be added.
+     */
     public void addWinner(Winner winner){
         winners.add(winner);
     }
 
+    /*
     public ArrayList<Entry> duplicateEntries(ArrayList<Entry> entries){
         
         ArrayList<Entry> copyEntries =  new ArrayList<Entry>();
@@ -242,7 +293,7 @@ public abstract class Competition implements Serializable {
         }
         return copyEntries;
     }
-
+    */
     
 
 }
