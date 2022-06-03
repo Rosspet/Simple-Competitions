@@ -71,19 +71,33 @@ public class NumbersEntry extends Entry {
         this.auto = auto;
     }
 
+    /**
+     * Set this objects arraylist of numbers. Useful if using an 
+     * external tool to calculate them.
+     * @param numbers The numbers to set this.numbers to.
+     */
     public void setNumbers(ArrayList<Integer> numbers){
         this.numbers = numbers;
     }
 
+    
+    
+    /**
+     * Overriding of default toString method to print according to
+     * design spec.
+     * @return The string mostly sued for printing.
+     */
     @Override // the default toString in Entry.
     public String toString() {
         String returnString = String.format("Entry ID: %-6d Numbers:", getEntryiD()) + getEntriesString();
-        /*if (auto){ // added if auto here
-            returnString += " [Auto]";
-        }*/
+
         return returnString;
     }
 
+    /**
+     * Return the numbers used to make this entry in print format.
+     * @return The numbers
+     */
     public String getEntriesString() {
         String numbs = "";
         Iterator<Integer> iter = getNumbers().iterator();
@@ -98,10 +112,19 @@ public class NumbersEntry extends Entry {
         return numbs;
     }
 
+    /**
+     * 
+     * @return a copy of the numbers of this entry.
+     */
     public ArrayList<Integer> getNumbers() {
         return new ArrayList<Integer>(numbers);
     }
 
+    /**
+     * contains logic for setting numbers from user input.
+     * checkcs the formatting of input to be correct.
+     * @return The inputted numbers, sorted.
+     */
     private ArrayList<Integer> getManualEntryNumbers() {
 
         boolean validResponse = false;
@@ -111,35 +134,44 @@ public class NumbersEntry extends Entry {
         Scanner scanner = SimpleCompetitions.getScanner();
 
         while (!validResponse) {
+
+            // prompt and read from input.
             System.out.println("Please enter 7 different numbers (from the range 1 to" +
                     " " + MAX_RANGE + ") separated by whitespace.");
             entryNumbersStr = scanner.nextLine().trim();
-            if (!entryNumbersStr.matches("[0-9 ]+")) { // numbers seperate by white space
+
+            // Need numbers seperated by white space only
+            if (!entryNumbersStr.matches("[0-9 ]+")) {
                 System.out.println("Invalid input! Numbers are expected. Please try again!");
                 continue;
             }
+
+            // we have a string of numbers seperated by white space. 
+            //convert to arr to check size.
             entryNumbersStrArr = entryNumbersStr.split("\\s+"); // split by white space.
-            if (entryNumbersStrArr.length < NUM_ALLOWED_ENTRIES) {
+
+            if (entryNumbersStrArr.length < NUM_ALLOWED_ENTRIES) { // not enough numbers
                 System.out.println("Invalid input! Fewer than 7 numbers are provided. Please try again!");
                 continue;
             }
-            if (entryNumbersStrArr.length > NUM_ALLOWED_ENTRIES) {
+            if (entryNumbersStrArr.length > NUM_ALLOWED_ENTRIES) { // too many.
                 System.out.println("Invalid input! More than 7 numbers are provided. Please try again!");
                 continue;
             }
 
+            //convert to int array to check values.
             entryNumbers = convertStringIntArrayToIntArray(entryNumbersStrArr);
-            //printArray(entryNumbers);
-
-            if (notAllDifferent(entryNumbers)) {
+            
+            if (notAllDifferent(entryNumbers)) { // duplicates
                 System.out.println("Invalid input! All numbers must be different!");
                 continue;
             }
-            if (notAllInRange(entryNumbers, MIN_RANGE, MAX_RANGE)) {
+
+            if (notAllInRange(entryNumbers, MIN_RANGE, MAX_RANGE)) { //out of range.
                 System.out.println("Invalid input! All numbers must be in the range from 1 to 35!");
                 continue;
             }
-            // done all checks
+            // done all checks - OK
             validResponse = true;
         }
         ArrayList<Integer> arrList = arrayToArrayList(entryNumbers);
@@ -148,6 +180,11 @@ public class NumbersEntry extends Entry {
 
     }
 
+    /**
+     * convert array of int to arrayList of int.
+     * @param arr input array to be converted
+     * @return the converted array.
+     */
     public ArrayList<Integer> arrayToArrayList(int[] arr) {
         ArrayList<Integer> arrList = new ArrayList<Integer>();
 
@@ -157,6 +194,13 @@ public class NumbersEntry extends Entry {
         return arrList;
     }
 
+     /**
+      * checks if an inputted array of numbers are all within a specified range.
+      * @param numbers Numbers to checks the values of.
+      * @param min min value allowed.
+      * @param max max value allowed.
+      * @return true iff all in range.
+      */
     private boolean notAllInRange(int[] numbers, int min, int max) {
         for (int num : numbers) {
             if (num < min || num > max) {
@@ -164,9 +208,13 @@ public class NumbersEntry extends Entry {
             }
         }
         return false;
-
     }
 
+    /**
+     * returns true if array contains unique set of numbers.
+     * @param numbers
+     * @return
+     */
     private boolean notAllDifferent(int[] numbers) {
         ArrayList<Integer> currentNumbers = new ArrayList<Integer>();
 
@@ -180,6 +228,11 @@ public class NumbersEntry extends Entry {
 
     }
 
+    /**
+     * converts array of strings representing digits to actual integers.
+     * @param strArr array to convert
+     * @return int array.
+     */
     private int[] convertStringIntArrayToIntArray(String[] strArr) {
         int[] intArr = new int[strArr.length];
         for (int i = 0; i < strArr.length; i++) {
@@ -187,14 +240,4 @@ public class NumbersEntry extends Entry {
         }
         return intArr;
     }
-
-    /*
-    private void printArray(int[] entryNumbers){
-        System.out.println("------ARRAY------");
-        for (int i : entryNumbers){
-            System.out.println(i);
-        }
-        System.out.println("------ARRAY DONE------");
-    }
-    */
 }

@@ -252,4 +252,16 @@ public class LuckyNumbersCompetition extends Competition {
 		}
 	}
 
+	/**
+     * 
+     * @return A copy of the entrys in this competition, casted to NumbersEntry objects.
+     */
+    public ArrayList<NumbersEntry> getNumbersEntries(){
+        ArrayList<NumbersEntry> entriesCopy = new ArrayList<NumbersEntry>();
+        for (Entry entry : getEntries()) {
+            entriesCopy.add(new NumbersEntry((NumbersEntry)entry));
+        }
+        return entriesCopy;
+    }
+
 }

@@ -8,11 +8,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+/**
+ * Class for fascilitating general logic and methodsologies of 
+ * competitions broadly. This forms the foundation of lucky numbers and random pick competition.
+ */
 public abstract class Competition implements Serializable {
     private String name; //competition name
     private int id; //competition identifier
     private String type;
-    //private DataProvider data;
     private boolean isActive;
     private static final String INVALID_INT_RESPONSE = "-1";
     private int totalPrizesAwarded=0;
@@ -20,36 +23,64 @@ public abstract class Competition implements Serializable {
 	private ArrayList<Winner> winners = new ArrayList<Winner>();
     private boolean testingMode;
 
-    //private ArrayList<Bill> bills;
-    //private ArrayList<Member> members;
+    /**
+     * Method to add entries to the given competition subtype which can vary
+     * for different competitions
+     * @param data Data holding information read from files
+     * @return updated data.
+     */
+    public abstract DataProvider addEntries(DataProvider data);
 
-    // all comps get the same copy of members and bills form main!
+    /**
+     * Function contatining logic for drawing winners from a particular
+     * competition according to its game rules
+     * @return true iff the competition draw succesfully took place. (usually false
+     *          if there were no entries.)
+     */
+    public abstract boolean drawWinners();
+
+    /**
+     * Default constructor to set important values of the competition 
+     * @param compName The competition name
+     * @param compID The competition ID
+     * @param type The competition type, a string. Eithe "R" or "L"
+     * @param testingMode Boolean, true iff this competition is in testMode in which case
+     *                      comp ID will be used for generating entries.
+     */
     public Competition(String compName, int compID, String type, boolean testingMode){
         id = compID;
         name = compName;
         this.type = type;
-        //this.data = data;
         this.isActive=true;
         this.testingMode = testingMode;
-        //this.bills = bills;
-        //this.members = members;
     }
+    
+    /**
+     * 
+     * @return true iff this competition is active
+     */
     public boolean isActive(){
         return isActive;
     }
-
+    
+    /**
+     * Used to set competition to non-active.
+     */
     public void deactivate(){
         this.isActive=false;
     }
 
+    /**
+     * True iff this competition is in testing mode.
+     * @return
+     */
     public boolean getTestingMode(){
         return this.testingMode;
     }
 
-    public abstract DataProvider addEntries(DataProvider data);
-
-    public abstract boolean drawWinners();
-
+    /**
+     * Method to output report (key statistics) on this competition
+     */
     public void report() {
         System.out.println("Competition ID: "+id+", name: "+name+", active: "+ (isActive ? "yes" : "no"));
         System.out.println("Number of entries: "+ entries.size());
@@ -57,13 +88,20 @@ public abstract class Competition implements Serializable {
             System.out.println("Number of winning entries: "+ winners.size());
             System.out.println("Total awarded prizes: "+totalPrizesAwarded);
         }
-        //System.out.println("");
     }
 
+    /**
+     * 
+     * @return The name of this competition
+     */
     public String getName(){
         return name;
     }
 
+    /**
+     * 
+     * @return A copy of the entries currently in this competitions.
+     */
     public ArrayList<Entry> getEntries(){
         ArrayList<Entry> entriesCopy = new ArrayList<Entry>();
         for (Entry entry : entries){
@@ -72,13 +110,7 @@ public abstract class Competition implements Serializable {
         return entriesCopy;
     }
 
-    public ArrayList<NumbersEntry> getNumbersEntries(){
-        ArrayList<NumbersEntry> entriesCopy = new ArrayList<NumbersEntry>();
-        for (Entry entry : entries) {
-            entriesCopy.add(new NumbersEntry((NumbersEntry)entry));
-        }
-        return entriesCopy;
-    }
+    
 
     public String toString(){
         return "Competition ID: " + id + ", Competition Name: " + name + ", Type: " + type ;    
