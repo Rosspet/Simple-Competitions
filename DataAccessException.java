@@ -7,6 +7,7 @@
 /**
  * Exception class for creating exceptions when failiong to open a file
  * for streaming.
+ * @author Ross Petridis
  */
 public class DataAccessException extends Exception {
     /**

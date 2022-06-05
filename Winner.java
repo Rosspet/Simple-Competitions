@@ -1,7 +1,8 @@
 
 /**
  * Class used to facilitate storing of winners seperate to an Entry and a normal
- * Member.
+ * Member Winner objects act like links between members and a winning entry.
+ * @author Ross Petridis
  */
 public class Winner extends Member implements Comparable<Winner> {
 
@@ -39,6 +40,8 @@ public class Winner extends Member implements Comparable<Winner> {
     /**
      * Overiding to default compareTo method to sort an Arraylist of Winners by
      * their entryId's
+     * @param otherWinner - the otherwinner being compared with this
+     * @return 1 if this winner is greater than otherWinner, -1 if this winner is less than other winner. else, 0.
      */
     @Override
     public int compareTo(Winner otherWinner) {
@@ -75,6 +78,7 @@ public class Winner extends Member implements Comparable<Winner> {
 
     /**
      * Overiding of default toString for displaying winners.
+     * @return The string representing this object.
      */
     @Override
     public String toString() {

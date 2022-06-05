@@ -1,5 +1,6 @@
 /**
  * Custom Exception for when trying to retrieve a bill that does not exist.
+ * @author Ross Petridis
  */
 public class BillDoesNotExist extends Exception {
     public BillDoesNotExist() {

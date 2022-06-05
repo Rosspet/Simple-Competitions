@@ -7,6 +7,14 @@ import java.util.Random;
  * LMS username: rpetridis
  */
 
+/**
+ * This class implements the additional logic upon a general competition
+ * required to implement a RandomPickCompetition. It mainly addes functionality
+ * for automatically adding entries and drawing winners according to this type
+ * of competition.
+ * 
+ * @author Ross petridis
+ */
 public class RandomPickCompetition extends Competition {
 
     private final int FIRST_PRIZE = 50000;
@@ -34,12 +42,12 @@ public class RandomPickCompetition extends Competition {
      * @param data : game data to read from containing bill and member information
      */
     public DataProvider addEntries(DataProvider data) {
-        boolean finishedAddingEntries = false;
+        // boolean finishedAddingEntries = false;
         String billId;
         Bill bill;
         String memberId;
 
-        while (!finishedAddingEntries) {
+        do { // while user wants to keep adding entrys
             ArrayList<Entry> theseEntries = new ArrayList<Entry>(); // arrList for this batch of entrys
             billId = getBillIDFromInputForEntry(); // retirve valid bill ID from user
 
@@ -60,11 +68,7 @@ public class RandomPickCompetition extends Competition {
             displayEntries(theseEntries); // display entries added in this batch
             addEntriesOfArralyList(theseEntries); // add this batch to total batch of entries.
 
-            // repeat loop if user wants to keep adding more
-            if (!moreEntries()) { // change to a doWhile
-                finishedAddingEntries = true;
-            }
-        }
+        } while (moreEntries()); // user wants more entries.
         return data;
     }
 
@@ -83,7 +87,7 @@ public class RandomPickCompetition extends Competition {
      * Logic for drawing the winners of this competition. Only give up to one prize
      * per person
      * 
-     * @return truee iff the competition draw was successfully executed. (False if
+     * @return true iff the competition draw was successfully executed. (False if
      *         there were no entries to begin with.)
      */
     public boolean drawWinners() {

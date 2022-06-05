@@ -19,13 +19,17 @@ import java.util.Scanner;
 /**
  * Game Engine for facilitating Competitions.
  * Keeps track of important data and provides access to copys of data.
- * Methodologies include high level game logic
+ * Methodologies include high level game logic which is responsible for
+ * initiating lower level functions of the program.
+ * 
+ * @author Ross Petridis
  */
 public class SimpleCompetitions {
 
     private static Scanner sc = new Scanner(System.in);
     private boolean testingMode; // true if running in testingMode.
-    private static DataProvider data; // Contains ArrayLists of members and bills
+    private static DataProvider data; // Contains ArrayLists of members and bills. Static to ensure databases do not
+                                      // diverge if multiple games are running simulatenously in the future.
     private ArrayList<Competition> competitions; // ArrayList of all past and present competitions
     private Competition activeComp = null; // Quick access to the current activeComp.
 
@@ -38,9 +42,10 @@ public class SimpleCompetitions {
     private static final int EXIT = 5;
 
     /**
-     * Main program that uses the main SimpleCompetitions class
+     * Main program that uses the main SimpleCompetitions class to start
+     * application.
      * 
-     * @param args main program arguments
+     * @param args command line arguments used to run program. (None needed)
      */
     public static void main(String[] args) {
         // Create instance of game engine and start the application.
@@ -50,6 +55,7 @@ public class SimpleCompetitions {
 
     /**
      * The main Applicaiton start up process which calls main menu process.
+     * Specifically, initiates reading in of data and initiates main menu.
      */
     private void startApp() {
 
@@ -75,7 +81,7 @@ public class SimpleCompetitions {
 
     /**
      * Logic for running the main menu to implement high level
-     * game play logic.
+     * game play logic. To create competitions, add entrys, and draw winners.
      */
     private void runMenuAndGame() {
 
@@ -151,14 +157,15 @@ public class SimpleCompetitions {
     }
 
     /**
-     * Create a new competition with user commands
+     * Ask for user prefences on a new competion, then make the appropriate new
+     * competition.
      * 
      * @return The created competition.
      */
-    public Competition makeNewCompetition() {
+    private Competition makeNewCompetition() {
 
-        String compType = getCompType();
-        String compName = getCompName();
+        String compType = getCompType(); // ask user for competition type
+        String compName = getCompName(); // ask user for competition name
 
         if (compType.equalsIgnoreCase("L")) {
             return new LuckyNumbersCompetition(compName, competitions.size() + 1, testingMode);
@@ -327,7 +334,6 @@ public class SimpleCompetitions {
                 System.exit(1);
             }
         }
-
         return;
     }
 

@@ -8,7 +8,10 @@ import java.io.Serializable;
 
 /**
  * Class for keeping track of a general entry and associated data into a
- * competition
+ * competition. Forms the basis of an entry and is used to create more
+ * specialised entries for other specialised types of comeptitions
+ * 
+ * @author Ross Petridis
  */
 public class Entry implements Serializable {
     private int entryId;
@@ -21,7 +24,9 @@ public class Entry implements Serializable {
     }
 
     /**
-     * Standard constructor to initialise important information
+     * Standard constructor. Mostly used to retrieve safe copies of entry where only
+     * general information is needed.
+     * Typically instatiate entry's by using the subclasses.
      * 
      * @param entryId  This entry's ID
      * @param billId   The bill used to make this entry
@@ -42,14 +47,21 @@ public class Entry implements Serializable {
         this.prize = prize;
     }
 
-    // copy constructor
+    /**
+     * Return safe copy of this entry
+     * 
+     * @param entry Copy of the inputted entry.
+     */
     public Entry(Entry entry) {
         this.entryId = entry.getEntryiD();
         this.billId = entry.getBillId();
         this.memberId = entry.getMemberId();
     }
 
-    @Override // the default toString for printing according to spec
+    /**
+     * More useful toString() method to match printing needed as per specificaiton.
+     */
+    @Override
     public String toString() {
         return "Entry ID: " + String.format("%-6d", entryId);
     }

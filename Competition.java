@@ -12,25 +12,38 @@ import java.util.Iterator;
 /**
  * Class for fascilitating general logic and methodsologies of
  * competitions broadly. This forms the foundation of lucky numbers and random
- * pick competition.
+ * pick competition which must each employ there own addEntries() and
+ * drawWinners() functionalities according to their own competition rules.
+ * 
+ * Many methods are public as they are required to be directly accessible in the
+ * subclasses, this is was not done at the expense of a data leak as the
+ * functions mostly handle internal data and return a statement about the
+ * internal data which is never exposed. 
+ * 
+ * @author Ross Petridis
  */
 public abstract class Competition implements Serializable {
     private String name; // competition name
-    private int id; // competition identifier
     private String type;
-    private boolean isActive;
-    private static final String INVALID_INT_RESPONSE = "-1";
+    private int id; // competition identifier
     private int totalPrizesAwarded = 0;
+    private boolean isActive;
+    private boolean testingMode;
     private ArrayList<Entry> entries = new ArrayList<Entry>();
     private ArrayList<Winner> winners = new ArrayList<Winner>();
-    private boolean testingMode;
+
+    private static final String INVALID_INT_RESPONSE = "-1";
 
     /**
      * Method to add entries to the given competition subtype which can vary
      * for different competitions
      * 
      * @param data Data holding information read from files
-     * @return updated data.
+     * @return updated data. (Justification: it was decided to return the updated
+     *         data by the AddEntries to avoid passing the actual data object into
+     *         any instatiation of a competition. This allows the data management to
+     *         be exclusively handled by the DataProvider class which improves
+     *         security as there are less places for data to be changed.)
      */
     public abstract DataProvider addEntries(DataProvider data);
 
@@ -66,7 +79,7 @@ public abstract class Competition implements Serializable {
      * a bill ID to be entered into this competition. Checks if the bill is
      * valid format, has an associated member, and has not been used before.
      * 
-     * @return
+     * @return A bill ID of valid format.
      */
     public String getBillIDFromInputForEntry() {
         Scanner scanner = SimpleCompetitions.getScanner();

@@ -8,8 +8,18 @@ import java.util.Random;
  * LMS username: rpetridis
  */
 
+/**
+ * This class implements the logic required for instatiating and running
+ * LuckyNumbersCompetion's.
+ * It is an extension of the base competition and allows for manual and auto
+ * generation of entrys to the competition.
+ * @author Ross Petridis
+ */
 public class LuckyNumbersCompetition extends Competition {
 
+	private Random random = new Random();
+
+	// Constants
 	private static final int MIN_NUM_MANUAL = 0;
 	private static final int TWO_NUM_PRIZE = 50;
 	private static final int THREE_NUM_PRIZE = 100;
@@ -18,7 +28,6 @@ public class LuckyNumbersCompetition extends Competition {
 	private static final int SIX_NUM_PRIZE = 5000;
 	private static final int SEVEN_NUM_PRIZE = 50000;
 
-	private Random random = new Random();
 
 	/**
 	 * Standard constructor from user input
@@ -45,7 +54,7 @@ public class LuckyNumbersCompetition extends Competition {
 		Bill bill;
 		String memberId;
 
-		while (!finishedAddingEntries) {
+		do {
 			ArrayList<NumbersEntry> theseEntries = new ArrayList<NumbersEntry>(); // arrList for this batch of entrys
 			billId = getBillIDFromInputForEntry(); // get valid bill ID
 			bill = data.getBillThatExists(billId); // returns a copy of the bill
@@ -55,7 +64,7 @@ public class LuckyNumbersCompetition extends Competition {
 			int numEntries = bill.getNumEntries();
 			int numManualEntries = getNumManualEntries(bill);
 			int numAutoEntires = numEntries - numManualEntries;
-			
+
 			// Fill manual entries
 			for (int i = 0; i < numManualEntries; i++) {
 				theseEntries.add(new NumbersEntry(getNumEntries() + theseEntries.size() + 1, billId, memberId, false));
@@ -79,10 +88,7 @@ public class LuckyNumbersCompetition extends Competition {
 			System.out.println("The following entries have been added:");
 			displayEntries(theseEntries);
 
-			if (!moreEntries()) { // change to a doWhile
-				finishedAddingEntries = true;
-			}
-		}
+		} while (moreEntries());
 		return data; // return the updated data
 	}
 
@@ -90,6 +96,7 @@ public class LuckyNumbersCompetition extends Competition {
 	 * Facilitates the high level drawing of winners accoridng to the specificaiton
 	 * and whether or not
 	 * this competition is done in testing or normal mode.
+	 * @return true iff winners are drawn. False otherwise (if no entries)
 	 */
 	public boolean drawWinners() { // use compID as seed for generating the lucky entry.
 
@@ -106,10 +113,10 @@ public class LuckyNumbersCompetition extends Competition {
 		}
 
 		System.out.println(this); // print this comp data
-		AutoNumbersEntry luckyEntry = new AutoNumbersEntry(seed); //generate lucky entry to match with.
+		AutoNumbersEntry luckyEntry = new AutoNumbersEntry(seed); // generate lucky entry to match with.
 		System.out.print("Lucky Numbers:");
 		System.out.println(luckyEntry.getEntriesString());
-		
+
 		System.out.println("Winning entries:");
 		setWinningEntries((NumbersEntry) luckyEntry);
 		displayWinners(getWinners());
@@ -127,7 +134,7 @@ public class LuckyNumbersCompetition extends Competition {
 		ArrayList<Winner> winners = new ArrayList<Winner>();
 		ArrayList<NumbersEntry> entries = (getNumbersEntries());
 		Iterator<NumbersEntry> entryIter = entries.iterator();
-		
+
 		NumbersEntry entry;
 		Winner existingWinner;
 		int points;

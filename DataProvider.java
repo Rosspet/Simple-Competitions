@@ -14,10 +14,15 @@ import java.util.Scanner;
 
 /**
  * This class allows an instation of the bills and member data into a datastore
- * object
+ * object.
+ * Many methods in this class are used extensively by other classes and so are
+ * public - but not at the expense of data privacy.
+ * This class is essentially a collection of helper functions for accesdsing and
+ * maintaining game data by other game classes.
  * This class includes methods for reading and updating data in the store and
- * ultimately
- * in the files upon end of program if desired.
+ * ultimately in the files upon end of program if desired.
+ * 
+ * @author Ross Petridis
  */
 public class DataProvider {
 
@@ -43,7 +48,14 @@ public class DataProvider {
         getBillsFromFile();
     }
 
-    // copy constructor for safety
+    /**
+     * Copy constructor that returns new copies of objects rather than the original.
+     * These copy object would not be used for changing data, since they wont be
+     * changing the real database, but a copy.
+     * Instead, any copies would be purely for reading.
+     * 
+     * @param data The data class to return a copy of.
+     */
     public DataProvider(DataProvider data) {
         this.billFile = data.billFile;
         this.memberFile = data.memberFile;
@@ -89,7 +101,7 @@ public class DataProvider {
 
     /**
      * Helper function that returns a bill with given BillID that is previously
-     * known to exist
+     * known to exist - hence no need for try catch of custom BillDoesNotExist
      * 
      * @param billId
      * @return The bill with ID billId
@@ -137,6 +149,8 @@ public class DataProvider {
      *                             format
      */
     private void getMembersFromFile() throws DataAccessException, DataFormatException {
+
+        // Set up connection
         Scanner memberStream;
         try {
             memberStream = new Scanner(new FileInputStream(memberFile));
@@ -173,6 +187,8 @@ public class DataProvider {
      * @throws DataFormatException if supplied format does match exapected format.
      */
     private void getBillsFromFile() throws DataAccessException, DataFormatException {
+
+        // Set up connection
         Scanner billStream;
         try {
             billStream = new Scanner(new FileInputStream(billFile));
@@ -233,6 +249,7 @@ public class DataProvider {
     public Bill getBill(String billID) throws BillDoesNotExist {
         Iterator<Bill> iter = bills.iterator();
         Bill thisBill;
+
         while (iter.hasNext()) {
             thisBill = iter.next();
             if (thisBill.hasId(billID)) {
@@ -251,6 +268,7 @@ public class DataProvider {
      */
     public boolean billHasMember(String billID) {
         Bill bill = null;
+
         try {
             bill = getBill(billID);
         } catch (BillDoesNotExist e) {
@@ -267,6 +285,7 @@ public class DataProvider {
     public ArrayList<Bill> getBills() {
         ArrayList<Bill> bills_copy = new ArrayList<Bill>();
         Iterator<Bill> iter = bills.iterator();
+
         while (iter.hasNext()) {
             bills_copy.add(new Bill(iter.next()));
         }
@@ -280,6 +299,7 @@ public class DataProvider {
     public ArrayList<Member> getMembers() {
         ArrayList<Member> members_copy = new ArrayList<Member>();
         Iterator<Member> iter = members.iterator();
+
         while (iter.hasNext()) {
             members_copy.add(new Member(iter.next()));
         }
@@ -287,7 +307,8 @@ public class DataProvider {
     }
 
     /**
-     * Writes updates to file. The same file used for reading. This is to help
+     * Writes updates to file by re writing the entire file. The same file used for
+     * reading. This is to help
      * kepe track of bills that has been used.
      */
     public void updateBillsFile() {
@@ -301,7 +322,7 @@ public class DataProvider {
             System.out.println(e.getMessage());
         }
 
-        for (Bill bill : bills) {
+        for (Bill bill : bills) { // re write each bill
             try {
                 billOut.println(bill.getId() + "," + bill.getMemberId() + "," + bill.getTotalAmount() +
                         "," + (bill.hasBeenUsed() ? "true" : "false"));
@@ -311,5 +332,4 @@ public class DataProvider {
         }
         billOut.close();
     }
-
 }

@@ -10,6 +10,7 @@ import java.io.Serializable;
  * Mebmer class for keeping track of members and the links to other data
  * sourcecs,
  * such as bills and entry
+ * @author Ross Petridis
  */
 public class Member implements Serializable {
 
@@ -31,6 +32,10 @@ public class Member implements Serializable {
     }
 
     // copy constructor
+    /**
+     * Creates a safe copy of a member. 
+     * @param member
+     */
     public Member(Member member) {
         this.ID = member.ID;
         this.name = member.name;
@@ -62,6 +67,10 @@ public class Member implements Serializable {
         this.address = address;
     }
 
+    /**
+     * Overriding of default toString to make it more useful
+     */
+    @Override
     public String toString() {
         return ("Member ID: " + ID + ", Member Name: " + name);
     }
@@ -73,5 +82,4 @@ public class Member implements Serializable {
     public String getMemberName() {
         return name;
     }
-
 }

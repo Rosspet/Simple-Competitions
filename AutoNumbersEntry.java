@@ -19,8 +19,8 @@ import java.util.Random;
  */
 public class AutoNumbersEntry extends NumbersEntry {
 
-    private final int NUMBER_COUNT = 7;
-    private final int MAX_NUMBER = 35;
+    private static final int NUMBER_COUNT = 7;
+    private static final int MAX_NUMBER = 35;
 
     /**
      * Constructor used for Lucky Entry.
@@ -53,7 +53,7 @@ public class AutoNumbersEntry extends NumbersEntry {
      * @param seed seed for the auto number genrator
      * @return the automatically generated numbers.
      */
-    public ArrayList<Integer> createNumbers(int seed) {
+    private ArrayList<Integer> createNumbers(int seed) {
         // new list to add generated numbers to.
         ArrayList<Integer> validList = new ArrayList<Integer>();
         int[] tempNumbers = new int[NUMBER_COUNT];

@@ -8,6 +8,11 @@
  * Bill class for facilitated actions and method surrounding a 'bill'
  * in the competition. Keeps track of bill uses and member associated with
  * bill.
+ * In addition to being their own entity holding important data about themselves
+ * and their ability to affect entries in competions and thus competitions,
+ * bills also acts as a link to members via the memberID and game data.
+ * 
+ * @author Ross Petridis
  */
 public class Bill {
 
