@@ -61,9 +61,9 @@ public class LuckyNumbersCompetition extends Competition {
 			
 
 			int numEntries = bill.getNumEntries();
-			if (numEntries == 0) {
+			if (numEntries == 0) { // check this here as thread 450 says to.
 				System.out.println(String.format(
-						"This bill ($%f) is not eligible for an entry. The total amount is smaller than $%d",
+						"This bill ($%.1f) is not eligible for an entry. The total amount is smaller than $%d",
 						bill.getTotalAmount(), Competition.COST_PER_ENTRY
 				));
 				continue;

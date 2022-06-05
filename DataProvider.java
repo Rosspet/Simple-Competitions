@@ -341,6 +341,11 @@ public class DataProvider {
         billOut.close();
     }
 
+    /**
+     * Recieves an array of string and returns true if there is an empty field
+     * @param data array of string to check for empty fields in
+     * @return true iff theres an empty string in data.
+     */
     private boolean emptyFieldFound(String[] data){
         for (String str : data){
             if (str==""){
