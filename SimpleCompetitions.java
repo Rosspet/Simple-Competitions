@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Game Engine for facilitating Competitions. 
+ * Game Engine for facilitating Competitions.
  * Keeps track of important data and provides access to copys of data.
- * 
+ * Methodologies include high level game logic
  */
 public class SimpleCompetitions {
 
@@ -28,7 +28,7 @@ public class SimpleCompetitions {
     private static DataProvider data; // Contains ArrayLists of members and bills
     private ArrayList<Competition> competitions; // ArrayList of all past and present competitions
     private Competition activeComp = null; // Quick access to the current activeComp.
-    
+
     // Constants
     private static final int NUM_OPTIONS = 5;
     private static final int NEW_COMP = 1;
@@ -38,90 +38,87 @@ public class SimpleCompetitions {
     private static final int EXIT = 5;
 
     /**
-    * Main program that uses the main SimpleCompetitions class
-    * @param args main program arguments
-    */
+     * Main program that uses the main SimpleCompetitions class
+     * 
+     * @param args main program arguments
+     */
     public static void main(String[] args) {
-    
-    // Create instance of game engine and start the application.
-    SimpleCompetitions simpleComp = new SimpleCompetitions();
-    simpleComp.startApp();
+        // Create instance of game engine and start the application.
+        SimpleCompetitions simpleComp = new SimpleCompetitions();
+        simpleComp.startApp();
     }
 
     /**
      * The main Applicaiton start up process which calls main menu process.
      */
-    private void startApp(){
-        
+    private void startApp() {
+
         System.out.println("----WELCOME TO SIMPLE COMPETITIONS APP----");
 
         competitions = new ArrayList<Competition>();
-        
-        if (loadFromFile()){ 
+
+        if (loadFromFile()) {
             System.out.println("File name:");
-            
+
             loadCompetitionsFromFile(sc.nextLine());
             setActiveComp();
             testingMode = obtainTestModeFromExistingCompetitions();
 
-        } 
-        else { // Need to get operating mode from User.
+        } else { // Need to get operating mode from User.
             testingMode = obtainTestModePreference();
         }
-         
+
         // read data from mandatory files then start game.
         readInData();
         runMenuAndGame();
     }
 
     /**
-     * Logic for running the main menu to implement high level 
+     * Logic for running the main menu to implement high level
      * game play logic.
      */
-    private void runMenuAndGame(){
+    private void runMenuAndGame() {
 
-        int selectedOption; 
+        int selectedOption;
 
-        do {
+        do { // MAIN MENU
             displayMenu();
             selectedOption = getSelectedOption();
-            
-            switch (selectedOption){
 
-                case NEW_COMP: 
-                    // only make new comp if there isn't already an existing one.
-                    if (activeComp==null){
+            switch (selectedOption) {
+
+                case NEW_COMP:
+                    if (activeComp == null) {
                         activeComp = makeNewCompetition();
                         competitions.add(activeComp);
                         System.out.println("A new competition has been created!");
                         System.out.println(activeComp);
-                    }
-                    else {
-                        System.out.println("There is an active competition. "+
+                    } else {
+                        System.out.println("There is an active competition. " +
                                 "SimpleCompetitions does not support concurrent competitions!");
                     }
                     break;
 
                 case NEW_ENTRIES:
-                    // Only add entries if there is an existing active Competition.
-                    if (activeComp==null){
+                    if (activeComp == null) {
                         System.out.println("There is no active competition. Please create one!");
                         break;
                     }
-                    // Add entries to the active comp and return an updated version of the members and bills used.
+                    // Add entries to the active comp and return an updated version of the members
+                    // and bills used.
                     data = activeComp.addEntries(data);
-                    break; 
+                    break;
 
                 case DRAW_WINNERS:
-                    // Only draw if there is a competition to draw from!
-                    if (activeComp==null){
+                    if (activeComp == null) {
                         System.out.println("There is no active competition. Please create one!");
                         break;
                     }
-                    
-                    // Attempt to draw winners (if failed because no entrie exist, dont deactivate the active comp)
+
+                    // Attempt to draw winners (if failed because no entrie exist, dont deactivate
+                    // the active comp)
                     boolean success = activeComp.drawWinners();
-                    if (success){
+                    if (success) {
                         activeComp.deactivate();
                         activeComp = null;
                     }
@@ -129,7 +126,7 @@ public class SimpleCompetitions {
 
                 case SUMMARY:
                     // only print summary if there is stuff to print.
-                    if (competitions.isEmpty()){
+                    if (competitions.isEmpty()) {
                         System.out.println("No competition has been created yet!");
                         break;
                     }
@@ -138,22 +135,24 @@ public class SimpleCompetitions {
 
                 case EXIT:
                     // Check if its desired to save
-                    if (getSaveToFile()){
+                    if (getSaveToFile()) {
                         saveCompetitions();
-                        System.out.println("Competitions have been saved to file.\n"+
-                            "The bill file has also been automatically updated.");
+                        System.out.println("Competitions have been saved to file.\n" +
+                                "The bill file has also been automatically updated.");
                     }
                     System.out.println("Goodbye!");
-                    break; 
+                    break;
 
                 default:
                     break;
             }
-        } while(selectedOption!=EXIT); // come back and change this
+        } while (selectedOption != EXIT); // come back and change this
         sc.close();
     }
+
     /**
      * Create a new competition with user commands
+     * 
      * @return The created competition.
      */
     public Competition makeNewCompetition() {
@@ -161,31 +160,34 @@ public class SimpleCompetitions {
         String compType = getCompType();
         String compName = getCompName();
 
-        if (compType.equalsIgnoreCase("L")){
-            return new LuckyNumbersCompetition(compName, competitions.size()+1, testingMode);
+        if (compType.equalsIgnoreCase("L")) {
+            return new LuckyNumbersCompetition(compName, competitions.size() + 1, testingMode);
         } else {
-            return new RandomPickCompetition(compName, competitions.size()+1, testingMode);
+            return new RandomPickCompetition(compName, competitions.size() + 1, testingMode);
         }
     }
-    
+
     /**
      * Get competition name from user
+     * 
      * @return The entered competition name.
      */
-    private String getCompName(){
+    private String getCompName() {
         System.out.println("Competition name: ");
         return sc.nextLine();
     }
 
     /**
      * Get a valid competition type form the user
-     * @return The valid competition type. L or R for LuckyNumbers or RandomPick game.
+     * 
+     * @return The valid competition type. L or R for LuckyNumbers or RandomPick
+     *         game.
      */
-    private String getCompType(){
-        String cmd=null;
-        boolean validCompType=false;
-        
-        while(!validCompType){
+    private String getCompType() {
+        String cmd = null;
+        boolean validCompType = false;
+
+        while (!validCompType) {
             System.out.println("Type of competition (L: LuckyNumbers, R: RandomPick)?:");
             cmd = sc.nextLine();
             validCompType = validCompTypeResponse(cmd);
@@ -193,11 +195,12 @@ public class SimpleCompetitions {
                 System.out.println("Invalid competition type! Please choose again.");
             }
         }
-        return cmd; 
+        return cmd;
     }
 
     /**
      * Decide whether user input was valid competition type
+     * 
      * @param cmd The inputted command
      * @return True iff valid
      */
@@ -207,12 +210,13 @@ public class SimpleCompetitions {
 
     /**
      * Load competitions from binary File or handle exceptions appropriately.
+     * 
      * @param fileName The file to load competitions from.
      */
     private void loadCompetitionsFromFile(String fileName) {
-        ObjectInputStream compInStream=null;
-        
-        // Establish Stream connection File. 
+        ObjectInputStream compInStream = null;
+
+        // Establish Stream connection File.
         try {
             compInStream = new ObjectInputStream(new FileInputStream(fileName));
         } catch (FileNotFoundException e) {
@@ -223,19 +227,18 @@ public class SimpleCompetitions {
 
         // Read Competition objects from file.
         try {
-            while(true){ // Keep reading until EOFException.
+            while (true) { // Keep reading until EOFException.
                 competitions.add(
-                    (Competition)compInStream.readObject()
-                );
-            } 
+                        (Competition) compInStream.readObject());
+            }
         } catch (EOFException e) {
             // Done reading
         } catch (ClassNotFoundException e) {
-            System.out.println("Class not Found. Error: "+e.getMessage());
-        } catch (InvalidClassException e){
-            System.out.println("Invalid class: "+e.getMessage());
-        } catch (IOException e){
-            System.out.println("IO ERR: "+e.getMessage());
+            System.out.println("Class not Found. Error: " + e.getMessage());
+        } catch (InvalidClassException e) {
+            System.out.println("Invalid class: " + e.getMessage());
+        } catch (IOException e) {
+            System.out.println("IO ERR: " + e.getMessage());
         } finally {
 
             // close connection to file.
@@ -249,50 +252,45 @@ public class SimpleCompetitions {
 
     /**
      * Logic for saving competitions to binary file.
-     * First gets the filename from user then establishes connection to output, 
+     * First gets the filename from user then establishes connection to output,
      * then actually writes the object or handles exceptions appropriately.
      */
-    private void saveCompetitions(){
-        
+    private void saveCompetitions() {
+
         System.out.println("File name:");
         data.updateBillsFile();
-        String saveFileName = sc.nextLine(); 
-        ObjectOutputStream compOut=null;
+        String saveFileName = sc.nextLine();
+        ObjectOutputStream compOut = null;
 
         // Connect to output
         try {
             compOut = new ObjectOutputStream(new FileOutputStream(saveFileName));
-            
-        }
-        catch (IOException e){
+
+        } catch (IOException e) {
             System.out.print(e.getMessage());
             System.exit(1);
         }
 
         // write to output
         try {
-            for(Competition comp : competitions){
+            for (Competition comp : competitions) {
                 compOut.writeObject(comp);
-                //System.out.println("Wrote: "+comp.getName());
+                // System.out.println("Wrote: "+comp.getName());
             }
-        }
-        catch (InvalidClassException e) {
-            System.out.println("Attempting to write invalid class. Error: "+e.getMessage());
+        } catch (InvalidClassException e) {
+            System.out.println("Attempting to write invalid class. Error: " + e.getMessage());
             System.exit(1);
-        }
-        catch (NotSerializableException e) {
-            System.out.println("Cannot serialise object. Error: "+e.getMessage());
+        } catch (NotSerializableException e) {
+            System.out.println("Cannot serialise object. Error: " + e.getMessage());
             System.exit(1);
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.println(e.getMessage());
             System.exit(1);
         }
-        
-        try{
+
+        try { // close output stream.
             compOut.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             System.out.print(e.getMessage());
             System.exit(1);
         }
@@ -302,17 +300,17 @@ public class SimpleCompetitions {
      *
      * @return Copy of the object containing relevant game data.
      */
-    public static DataProvider getData(){
+    public static DataProvider getData() {
         return new DataProvider(data);
     }
 
     /**
      * Initiate reading in of data (members and bills) from files
      */
-    private void readInData(){
+    private void readInData() {
         boolean success = false;
         while (!success) {
-            //getMemberAndBillFileNames();
+            // getMemberAndBillFileNames();
             String memberFileName = getMemberFileName();
             String billFileName = getBillFileName();
             try {
@@ -329,47 +327,48 @@ public class SimpleCompetitions {
                 System.exit(1);
             }
         }
-        
+
         return;
     }
 
     /**
      * Print the Summary Report on competition data.
      */
-    private void report(){
-        
+    private void report() {
+
         System.out.println("----SUMMARY REPORT----");
-        System.out.println("+Number of completed competitions: "+ getNumCompleted());
-        System.out.println("+Number of active competitions: "+ (activeComp==null ? "0" : "1"));
-        for (Competition comp : competitions){
+        System.out.println("+Number of completed competitions: " + getNumCompleted());
+        System.out.println("+Number of active competitions: " + (activeComp == null ? "0" : "1"));
+        for (Competition comp : competitions) {
             System.out.println();
             comp.report();
-            
+
         }
     }
 
     /**
-     * Find the active comp in the competition list, as set the variable activeComp to it
+     * Find the active comp in the competition list, as set the variable activeComp
+     * to it
      * for ease of access.
      */
-    private void setActiveComp(){
-        for(Competition comp : competitions){
-            if (comp.isActive()){
+    private void setActiveComp() {
+        for (Competition comp : competitions) {
+            if (comp.isActive()) {
                 activeComp = comp;
                 return;
             }
         }
         return;
-    } 
+    }
 
     /**
      * 
-     * @return the number of competitions that have been completed in the list of 
-     * competitions
+     * @return the number of competitions that have been completed in the list of
+     *         competitions
      */
-    private int getNumCompleted(){
-        int totNumCompleted=0;
-        for(Competition comp : competitions){
+    private int getNumCompleted() {
+        int totNumCompleted = 0;
+        for (Competition comp : competitions) {
             totNumCompleted += comp.isActive() ? 0 : 1;
         }
         return totNumCompleted;
@@ -377,20 +376,22 @@ public class SimpleCompetitions {
 
     /**
      * Returns only once valid integer command has been entered.
+     * 
      * @return the selected integer input command
      */
-    private int getSelectedOption(){
-        int option=-1;
+    private int getSelectedOption() {
+        int option = -1;
         String input;
-        boolean validInput=false;
-         // System.out.println("Please enter an integer number between 1 and "+ NUM_OPTIONS);
+        boolean validInput = false;
+        // System.out.println("Please enter an integer number between 1 and "+
+        // NUM_OPTIONS);
 
-        while (!validInput)  {
+        while (!validInput) {
 
             input = sc.nextLine().trim();
 
             // check if integer type
-            if (!input.matches("[0-9]+")){
+            if (!input.matches("[0-9]+")) {
                 System.out.println("A number is expected. Please try again.");
                 displayMenu();
                 continue;
@@ -398,11 +399,10 @@ public class SimpleCompetitions {
 
             // is integer type, check if in range
             option = Integer.parseInt(input);
-            if (option>=1 && option <= NUM_OPTIONS){
-                validInput=true;
+            if (option >= 1 && option <= NUM_OPTIONS) {
+                validInput = true;
                 break; // not required but include for extra safety.
-            } 
-            else { // out of range.
+            } else { // out of range.
                 System.out.println("Unsupported option. Please try again!");
                 displayMenu();
                 continue;
@@ -410,63 +410,66 @@ public class SimpleCompetitions {
         }
         return option;
     }
-    
+
     /**
      * Display menu options
      */
-    private void displayMenu(){
+    private void displayMenu() {
         System.out.println(
-            "Please select an option. Type 5 to exit.\n" + 
-            "1. Create a new competition\n" +
-            "2. Add new entries\n" +
-            "3. Draw winners\n" +
-            "4. Get a summary report\n" +
-            "5. Exit"
-        );
+                "Please select an option. Type 5 to exit.\n" +
+                        "1. Create a new competition\n" +
+                        "2. Add new entries\n" +
+                        "3. Draw winners\n" +
+                        "4. Get a summary report\n" +
+                        "5. Exit");
     }
 
     /**
      * Prompt user for memberFile name
+     * 
      * @return The inputted name for member file
      */
-    private String getMemberFileName(){
+    private String getMemberFileName() {
         System.out.println("Member file: ");
         return sc.nextLine();
     }
 
     /**
      * Prompt user for memberFile name
+     * 
      * @return The inputted name for member file
      */
-    private String getBillFileName(){
+    private String getBillFileName() {
         System.out.println("Bill file: ");
         return sc.nextLine();
     }
 
     /**
-     * Obtains operating mode from the user. 
+     * Obtains operating mode from the user.
      * Either Test or Normal are the possible modes.
      * Test uses deterministic seeds for generating "randomness"
+     * 
      * @return True iff testing mode is being used.
      */
-    private boolean obtainTestModePreference(){
+    private boolean obtainTestModePreference() {
         System.out.println("Which mode would you like to run? (Type T for Testing, and N for Normal mode):");
         String cmd = sc.nextLine();
-        while(!validModeResponse(cmd)){
-            //System.out.println("valid responses: T,t,N,n"); 
+        while (!validModeResponse(cmd)) {
+            // System.out.println("valid responses: T,t,N,n");
             System.out.println("Invalid mode! Please choose again.");
             System.out.println("Which mode would you like to run? (Type T for Testing, and N for Normal mode):");
             cmd = sc.nextLine();
         }
-        return cmd.equalsIgnoreCase("T"); // return true if running normal mode. 
+        return cmd.equalsIgnoreCase("T"); // return true if running normal mode.
     }
 
     /**
      * Uses existing competitions to decipher the approprite mode of operation.
      * Called after reading competitions form file.
+     * 
      * @return true iff testing mode.
      */
-    private boolean obtainTestModeFromExistingCompetitions(){
+    private boolean obtainTestModeFromExistingCompetitions() {
 
         try {
             Competition comp = competitions.get(0);
@@ -479,17 +482,18 @@ public class SimpleCompetitions {
     }
 
     /**
-     * Get preference for loading game form file or 
+     * Get preference for loading game form file or
      * starting game from scratch
-     * @return true iff desired to load gamefrom file. 
+     * 
+     * @return true iff desired to load gamefrom file.
      */
-    private boolean loadFromFile(){
+    private boolean loadFromFile() {
         boolean notValidResp = true;
-        String cmd=null;
-        while (notValidResp){
+        String cmd = null;
+        while (notValidResp) {
             System.out.println("Load competitions from file? (Y/N)?");
             cmd = sc.nextLine();
-            if (!validYesNoResponse(cmd)){
+            if (!validYesNoResponse(cmd)) {
                 System.out.println("Unsupported option. Please try again!");
                 continue;
             }
@@ -501,20 +505,22 @@ public class SimpleCompetitions {
 
     /**
      * Asks and processes if user want to save game data to a file.
+     * 
      * @return true iff desired to save to file.
      */
-    private boolean getSaveToFile(){
+    private boolean getSaveToFile() {
         System.out.println("Save competitions to file? (Y/N)?");
         return getYesNoResponse();
     }
 
     /**
      * Asks user for a yes/no anser then maps this to a bool
+     * 
      * @return true iff yes.
      */
-    private boolean getYesNoResponse(){
+    private boolean getYesNoResponse() {
         String cmd = sc.nextLine();
-        while (!validYesNoResponse(cmd)){
+        while (!validYesNoResponse(cmd)) {
             System.out.println("Unsupported option. Please try again!");
             cmd = sc.nextLine(); // mebbe change to next.
         }
@@ -523,29 +529,32 @@ public class SimpleCompetitions {
 
     /**
      * Checks if inputted string is valid yes or no anser
+     * 
      * @param cmd the input
      * @return true if cmd is valid yes or no answer by comparing to
-     * "y" or "n". Comparison is case insensitive.
+     *         "y" or "n". Comparison is case insensitive.
      */
-    public static boolean validYesNoResponse(String cmd){
+    public static boolean validYesNoResponse(String cmd) {
         return cmd.equalsIgnoreCase("Y") || cmd.equalsIgnoreCase("n");
-    } 
+    }
 
     /**
      * Checks if inputted string is valid test or normal anser
+     * 
      * @param cmd the input
      * @return true if cmd is valid test or normal answer by comparing to
-     * "N" or "T". Comparison is case insensitive.
+     *         "N" or "T". Comparison is case insensitive.
      */
-    private boolean validModeResponse(String cmd){
-        return cmd.equalsIgnoreCase("N") || cmd.equalsIgnoreCase("T"); 
+    private boolean validModeResponse(String cmd) {
+        return cmd.equalsIgnoreCase("N") || cmd.equalsIgnoreCase("T");
     }
 
     /**
      * Provides access to standard input.
+     * 
      * @return Scanner object for reading form stdin.
      */
-    public static Scanner getScanner(){
+    public static Scanner getScanner() {
         return sc;
     }
 }

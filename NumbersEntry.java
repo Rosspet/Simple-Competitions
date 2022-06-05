@@ -80,8 +80,6 @@ public class NumbersEntry extends Entry {
         this.numbers = numbers;
     }
 
-    
-    
     /**
      * Overriding of default toString method to print according to
      * design spec.
@@ -101,14 +99,13 @@ public class NumbersEntry extends Entry {
     public String getEntriesString() {
         String numbs = "";
         Iterator<Integer> iter = getNumbers().iterator();
+        
         while (iter.hasNext()) {
             numbs += String.format(" %2d", iter.next());
         }
-        
         if (auto){
             numbs += " [Auto]";
         }
-        
         return numbs;
     }
 

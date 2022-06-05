@@ -1,3 +1,4 @@
+/** Custom error exception for when seaarching for a member in the data base that does not exist. */
 public class MemberDoesNotExist extends Exception{
     public MemberDoesNotExist(){
         super("Member doesnt exist\n");

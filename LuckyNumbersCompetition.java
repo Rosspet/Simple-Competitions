@@ -23,7 +23,7 @@ public class LuckyNumbersCompetition extends Competition {
 	/**
 	 * Standard constructor from user input
 	 * 
-	 * @param compName    competitions name
+	 * @param compName    competition's name
 	 * @param compID      competiton ID
 	 * @param testingMode true iff competition should be run in testing mode
 	 */
@@ -42,39 +42,36 @@ public class LuckyNumbersCompetition extends Competition {
 
 		boolean finishedAddingEntries = false;
 		String billId;
-		;
 		Bill bill;
 		String memberId;
 
 		while (!finishedAddingEntries) {
 			ArrayList<NumbersEntry> theseEntries = new ArrayList<NumbersEntry>(); // arrList for this batch of entrys
-			billId = getBillIDFromInputForEntry();
-			// have a bill id that is valid and in the list of bill_ids and has a member!.
+			billId = getBillIDFromInputForEntry(); // get valid bill ID
 			bill = data.getBillThatExists(billId); // returns a copy of the bill
 			memberId = bill.getMemberId();
 			data.setBillToUsed(billId);
-			int numEntries = bill.getNumEntries();
 
+			int numEntries = bill.getNumEntries();
 			int numManualEntries = getNumManualEntries(bill);
 			int numAutoEntires = numEntries - numManualEntries;
-			// now do each manual entry
+			
+			// Fill manual entries
 			for (int i = 0; i < numManualEntries; i++) {
 				theseEntries.add(new NumbersEntry(getNumEntries() + theseEntries.size() + 1, billId, memberId, false));
 			}
 
+			// fill auto entries accoridng to testing mode.
 			for (int i = 0; i < numAutoEntires; i++) {
 				if (getTestingMode()) {
 					theseEntries.add(new AutoNumbersEntry(getNumEntries() + theseEntries.size() + 1, billId, memberId,
 							getNumEntries() + theseEntries.size()));
-
 				} else {
 					theseEntries.add(new AutoNumbersEntry(getNumEntries() + theseEntries.size() + 1, billId, memberId,
 							random.nextInt())); // random seed
 				}
-				// the number of entries in the currently active competition to generate
-				// automated customers' entries.
 			}
-			// addEntries((ArrayList<Entry>)theseEntries); // added all entries
+
 			for (NumbersEntry entry : theseEntries) {
 				addEntry((Entry) entry);
 			}
@@ -107,15 +104,17 @@ public class LuckyNumbersCompetition extends Competition {
 		} else {
 			seed = random.nextInt();
 		}
-		System.out.println(this);
-		AutoNumbersEntry luckyEntry = new AutoNumbersEntry(seed); // the entry to matching with.
+
+		System.out.println(this); // print this comp data
+		AutoNumbersEntry luckyEntry = new AutoNumbersEntry(seed); //generate lucky entry to match with.
 		System.out.print("Lucky Numbers:");
 		System.out.println(luckyEntry.getEntriesString());
+		
 		System.out.println("Winning entries:");
-
 		setWinningEntries((NumbersEntry) luckyEntry);
 		displayWinners(getWinners());
-		return true;
+
+		return true; // winners drawn successfully
 	}
 
 	/**
@@ -124,9 +123,11 @@ public class LuckyNumbersCompetition extends Competition {
 	 * @param luckyEntry The entry to match players entry with.
 	 */
 	private void setWinningEntries(NumbersEntry luckyEntry) {
+
 		ArrayList<Winner> winners = new ArrayList<Winner>();
 		ArrayList<NumbersEntry> entries = (getNumbersEntries());
 		Iterator<NumbersEntry> entryIter = entries.iterator();
+		
 		NumbersEntry entry;
 		Winner existingWinner;
 		int points;
@@ -136,8 +137,7 @@ public class LuckyNumbersCompetition extends Competition {
 			points = getPoints(entry, luckyEntry); // find points awarded for this entry
 
 			if (points != 0) {
-				// we have a winner.
-				// check if already exist,
+				// we have a winner - check if already exist,
 				if (alreadyWinningMember(winners, entry.getMemberId())) {
 					// update there entry incase they win more now.
 					existingWinner = getExistingWinner(winners, entry.getMemberId());

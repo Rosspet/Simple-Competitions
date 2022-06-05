@@ -12,14 +12,16 @@ public class DataAccessException extends Exception {
     /**
      * Default constructor
      */
-    public DataAccessException(){
+    public DataAccessException() {
         super("Failed to access Data. Does the file exist?\n");
     }
+
     /**
      * Default constructor with fileName.
+     * 
      * @param fileName
      */
-    public DataAccessException(String fileName){
+    public DataAccessException(String fileName) {
         super("Failed to access Data. Does the file '" + fileName + "' exist?\n");
     }
 
