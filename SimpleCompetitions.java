@@ -227,9 +227,11 @@ public class SimpleCompetitions {
         try {
             compInStream = new ObjectInputStream(new FileInputStream(fileName));
         } catch (FileNotFoundException e) {
-            System.out.print(e.getMessage());
+            System.out.println(e.getMessage());
+            System.exit(1);
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            System.exit(1);
         }
 
         // Read Competition objects from file.
@@ -242,18 +244,19 @@ public class SimpleCompetitions {
             // Done reading
         } catch (ClassNotFoundException e) {
             System.out.println("Class not Found. Error: " + e.getMessage());
+            System.exit(1);
         } catch (InvalidClassException e) {
-            System.out.println("Invalid class: " + e.getMessage());
+            System.out.println("Invalid class error: " + e.getMessage());
+            System.exit(1);
         } catch (IOException e) {
-            System.out.println("IO ERR: " + e.getMessage());
-        } finally {
+            System.out.println("IO error: " + e.getMessage());
+            System.exit(1);
+        }
 
-            // close connection to file.
-            try {
-                compInStream.close();
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
+        try {
+            compInStream.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 

@@ -20,7 +20,6 @@ public class Bill {
     private String memberId;
     private float totalBillAmount;
     private boolean used;
-    private static final int COST_PER_ENTRY = 50;
     private static final int BILL_ID_LENGTH = 6;
 
     /**
@@ -55,9 +54,9 @@ public class Bill {
     public int getNumEntries() {
         int numEntries = 0;
         float billAmount = totalBillAmount;
-        while (billAmount >= COST_PER_ENTRY) {
+        while (billAmount >= Competition.COST_PER_ENTRY) {
             numEntries += 1;
-            billAmount -= COST_PER_ENTRY;
+            billAmount -= Competition.COST_PER_ENTRY;
         }
         return numEntries;
     }

@@ -31,6 +31,7 @@ public abstract class Competition implements Serializable {
     private boolean testingMode;
     private ArrayList<Entry> entries = new ArrayList<Entry>();
     private ArrayList<Winner> winners = new ArrayList<Winner>();
+    public static final int COST_PER_ENTRY = 50;
 
     private static final String INVALID_INT_RESPONSE = "-1";
 
@@ -107,6 +108,12 @@ public abstract class Competition implements Serializable {
                 System.out.println("This bill has already been used for a competition. Please try again.");
                 continue;
             }
+
+            /* if(data.getBillThatExists(billID).getNumEntries() == 0) {
+                System.out.println("This bill is not eligible for entries. Please try again.");
+                continue;
+            } */
+
             validResponse = true;
         }
         if (billID == INVALID_INT_RESPONSE) {

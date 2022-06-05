@@ -162,14 +162,22 @@ public class DataProvider {
         members = new ArrayList<Member>();
         String memberLine;
         String[] memberData;
-
+        int lineNum =0;
         while (memberStream.hasNextLine()) { // while still members to add.
+            lineNum++;
             memberLine = memberStream.nextLine();
             memberData = memberLine.split(",");
             if (memberData.length != NUM_MEMBER_DATA) {
                 throw new DataFormatException("Expecting exactly " + NUM_MEMBER_DATA +
-                        "piececs of information per member. Got " + memberData.length);
+                        " piececs of information per member. Got " + memberData.length + " in line " + lineNum + 
+                        ". DataProvider requires a Member ID, name, and adress");
             }
+
+            if (emptyFieldFound(memberData)){
+                throw new DataFormatException("Empty field found in line " + lineNum + ". DataProvider" +
+                " requires a Member ID, name, and adress");
+            }
+
             // else, got 3 strings.
             members.add(new Member(
                     memberData[0], // memberID
@@ -331,5 +339,15 @@ public class DataProvider {
             }
         }
         billOut.close();
+    }
+
+    private boolean emptyFieldFound(String[] data){
+        for (String str : data){
+            if (str==""){
+                return true;
+            }
+        }
+        return false;
+
     }
 }

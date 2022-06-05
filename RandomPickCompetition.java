@@ -53,9 +53,17 @@ public class RandomPickCompetition extends Competition {
 
             bill = data.getBillThatExists(billId); // returns a copy of the bill
             memberId = bill.getMemberId();
-            data.setBillToUsed(billId);
+            
             int numEntries = bill.getNumEntries();
-
+            if (numEntries == 0) {
+                System.out.println(String.format(
+                    "This bill ($%f) is not eligible for an entry. The total amount is smaller than $%d",
+                    bill.getTotalAmount(), Competition.COST_PER_ENTRY
+                    ));
+                    continue;
+                }
+            data.setBillToUsed(billId);
+                
             System.out.println("This bill ($" + bill.getTotalAmount() + ") is eligible for " +
                     bill.getNumEntries() + " entries.");
 

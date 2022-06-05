@@ -13,6 +13,7 @@ import java.util.Random;
  * LuckyNumbersCompetion's.
  * It is an extension of the base competition and allows for manual and auto
  * generation of entrys to the competition.
+ * 
  * @author Ross Petridis
  */
 public class LuckyNumbersCompetition extends Competition {
@@ -27,7 +28,6 @@ public class LuckyNumbersCompetition extends Competition {
 	private static final int FIVE_NUM_PRIZE = 1000;
 	private static final int SIX_NUM_PRIZE = 5000;
 	private static final int SEVEN_NUM_PRIZE = 50000;
-
 
 	/**
 	 * Standard constructor from user input
@@ -58,9 +58,17 @@ public class LuckyNumbersCompetition extends Competition {
 			billId = getBillIDFromInputForEntry(); // get valid bill ID
 			bill = data.getBillThatExists(billId); // returns a copy of the bill
 			memberId = bill.getMemberId();
-			data.setBillToUsed(billId);
+			
 
 			int numEntries = bill.getNumEntries();
+			if (numEntries == 0) {
+				System.out.println(String.format(
+						"This bill ($%f) is not eligible for an entry. The total amount is smaller than $%d",
+						bill.getTotalAmount(), Competition.COST_PER_ENTRY
+				));
+				continue;
+			}
+			data.setBillToUsed(billId);
 			int numManualEntries = getNumManualEntries(bill);
 			int numAutoEntires = numEntries - numManualEntries;
 
@@ -95,6 +103,7 @@ public class LuckyNumbersCompetition extends Competition {
 	 * Facilitates the high level drawing of winners accoridng to the specificaiton
 	 * and whether or not
 	 * this competition is done in testing or normal mode.
+	 * 
 	 * @return true iff winners are drawn. False otherwise (if no entries)
 	 */
 	public boolean drawWinners() { // use compID as seed for generating the lucky entry.
