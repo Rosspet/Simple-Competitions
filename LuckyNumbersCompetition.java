@@ -49,7 +49,6 @@ public class LuckyNumbersCompetition extends Competition {
 	 */
 	public DataProvider addEntries(DataProvider data) { // can this be done in parent Competition class?
 
-		boolean finishedAddingEntries = false;
 		String billId;
 		Bill bill;
 		String memberId;
