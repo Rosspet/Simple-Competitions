@@ -176,6 +176,8 @@ public class DataProvider{
         String billLine;
         String[] billData;
         while (billStream.hasNextLine()){
+
+            // read this bill
             billLine = billStream.nextLine();
             billData = billLine.split(","); 
             
@@ -212,10 +214,11 @@ public class DataProvider{
     }
 
     /**
-     * 
-     * @param billID
-     * @return
-     * @throws BillDoesNotExist
+     * Given a bill ID, retrieve the assocaited bill object, or throw a
+     * Bill does not exist error
+     * @param billID The inputed ID to find the associated bill for
+     * @return The associated bill object
+     * @throws BillDoesNotExist if the bill being searched for does not exist
      */
     public Bill getBill(String billID) throws BillDoesNotExist{
         Iterator<Bill> iter = bills.iterator();
@@ -230,6 +233,11 @@ public class DataProvider{
         throw new BillDoesNotExist(billID);
     }
     
+    /**
+     * Returns 
+     * @param billID
+     * @return true iff the inputted bill ID has a member associated with it 
+     */
     public boolean billHasMember(String billID){
         Bill bill=null;
         try {
@@ -242,6 +250,10 @@ public class DataProvider{
         return bill.hasMember();
     }
     
+    /**
+     * 
+     * @return a copy of the Bills
+     */
     public ArrayList<Bill> getBills(){
         ArrayList<Bill> bills_copy = new ArrayList<Bill>();
         Iterator<Bill> iter = bills.iterator();
@@ -251,6 +263,10 @@ public class DataProvider{
         return bills_copy;
     }
 
+    /**
+     * 
+     * @return a copy of the members
+     */
     public ArrayList<Member> getMembers(){
         ArrayList<Member> members_copy = new ArrayList<Member>();
         Iterator<Member> iter = members.iterator();
@@ -260,6 +276,10 @@ public class DataProvider{
         return members_copy;
     }
 
+    /**
+     * Writes updates to file. The same file used for reading. This is to help
+     * kepe track of bills that has been used.
+     */
     public void updateBillsFile(){
         
         PrintWriter billOut=null;
