@@ -63,7 +63,7 @@ public class SimpleCompetitions {
 
         competitions = new ArrayList<Competition>();
 
-        if (loadFromFile()) {
+        if (askUserForLoadFromFile()) {
             System.out.println("File name:");
 
             loadCompetitionsFromFile(sc.nextLine());
@@ -489,7 +489,7 @@ public class SimpleCompetitions {
      * 
      * @return true iff desired to load gamefrom file.
      */
-    private boolean loadFromFile() {
+    private boolean askUserForLoadFromFile() {
         boolean notValidResp = true;
         String cmd = null;
         while (notValidResp) {
