@@ -28,8 +28,7 @@ public class SimpleCompetitions {
 
     private static Scanner sc = new Scanner(System.in);
     private boolean testingMode;
-    private static DataProvider data; // Contains ArrayLists of members and bills. Static to ensure databases do not
-                                      // diverge if multiple games are running simulatenously in the future.
+    private DataProvider data; // Contains ArrayLists of members and bills
     private ArrayList<Competition> competitions;
     private Competition activeComp = null; // Quick access to the current activeComp.
 
@@ -153,7 +152,7 @@ public class SimpleCompetitions {
 
                     // Attempt to draw winners (if failed because no entrie exist, dont deactivate
                     // the active comp)
-                    boolean success = activeComp.drawWinners();
+                    boolean success = activeComp.drawWinners(new DataProvider(data));
                     if (success) {
                         activeComp.deactivate();
                         activeComp = null;
@@ -334,18 +333,6 @@ public class SimpleCompetitions {
             System.out.print(e.getMessage());
             System.exit(1);
         }
-    }
-
-    /**
-     *
-     * @return Copy of the object containing relevant game data. Static because the
-     *         data object is static. (Justification at instatiation of data object)
-     */
-    public static DataProvider getData() {
-        if (data==null){
-            System.out.println("NULLLLL");
-        }
-        return new DataProvider(data);
     }
 
     /**

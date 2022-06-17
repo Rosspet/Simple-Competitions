@@ -117,7 +117,7 @@ public class LuckyNumbersCompetition extends Competition {
 	 * 
 	 * @return true iff winners are drawn. False otherwise (if no entries)
 	 */
-	public boolean drawWinners() { // use compID as seed for generating the lucky entry.
+	public boolean drawWinners(DataProvider data) { // use compID as seed for generating the lucky entry.
 
 		if (getNumEntries() == 0) {
 			System.out.println("The current competition has no entries yet!");
@@ -137,7 +137,7 @@ public class LuckyNumbersCompetition extends Competition {
 		System.out.println(luckyEntry.getEntriesString());
 
 		System.out.println("Winning entries:");
-		setWinningEntries((NumbersEntry) luckyEntry);
+		setWinningEntries((NumbersEntry) luckyEntry, data);
 		displayWinners(getWinners());
 
 		return true; // winners drawn successfully
@@ -148,7 +148,7 @@ public class LuckyNumbersCompetition extends Competition {
 	 * 
 	 * @param luckyEntry The entry to match players entry with.
 	 */
-	private void setWinningEntries(NumbersEntry luckyEntry) {
+	private void setWinningEntries(NumbersEntry luckyEntry, DataProvider data) {
 
 		ArrayList<Winner> winners = new ArrayList<Winner>();
 		ArrayList<NumbersEntry> entries = (getNumbersEntries());
@@ -171,7 +171,7 @@ public class LuckyNumbersCompetition extends Competition {
 				} else {
 					// make new winner
 					try {
-						DataProvider data = SimpleCompetitions.getData();
+						//DataProvider data = SimpleCompetitions.getData();
 						winners.add(new Winner(
 								data.getMember(entry.getMemberId()),
 								(Entry) entry, // added cast here.

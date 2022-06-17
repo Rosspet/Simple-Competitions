@@ -98,7 +98,7 @@ public class RandomPickCompetition extends Competition {
      * @return true iff the competition draw was successfully executed. (False if
      *         there were no entries to begin with.)
      */
-    public boolean drawWinners() {
+    public boolean drawWinners(DataProvider data) {
 
         if (getNumEntries() == 0) {
             System.out.println("The current competition has no entries yet!");
@@ -138,7 +138,7 @@ public class RandomPickCompetition extends Competition {
 
             // make a winner to help keep track of things.
             try {
-                DataProvider data = SimpleCompetitions.getData();
+                //DataProvider data = SimpleCompetitions.getData();
                 Winner winner = new Winner(data.getMember(memberID),
                         winningEntry,
                         prizes[winningEntryCount],

@@ -55,7 +55,7 @@ public abstract class Competition implements Serializable {
      * @return true iff the competition draw succesfully took place. (usually false
      *         if there were no entries.)
      */
-    public abstract boolean drawWinners();
+    public abstract boolean drawWinners(DataProvider data);
 
     /**
      * Default constructor to set important values of the competition
