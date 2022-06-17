@@ -63,6 +63,7 @@ public class DataProvider {
      * @param data The data class to return a copy of.
      */
     public DataProvider(DataProvider data) {
+        
         this.billFile = data.billFile;
         this.memberFile = data.memberFile;
         this.members = data.getMembers();

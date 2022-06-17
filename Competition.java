@@ -82,11 +82,11 @@ public abstract class Competition implements Serializable {
      * 
      * @return A bill ID of valid format.
      */
-    public String getBillIDFromInputForEntry() {
+    public String getBillIDFromInputForEntry(DataProvider data) {
         Scanner scanner = SimpleCompetitions.getScanner();
         boolean validResponse = false;
         String billID = null;
-        DataProvider data = SimpleCompetitions.getData();
+        //DataProvider data = SimpleCompetitions.getData();
 
         while (!validResponse) {
             System.out.println("Bill ID: ");

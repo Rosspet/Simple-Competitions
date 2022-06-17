@@ -94,7 +94,7 @@ public class Bill {
      * instatiated.
      * 
      * @param billId
-     * @return
+     * @return true iff a valid bill ID is recieved.
      */
     public static boolean validBillID(String billId) {
         if (billId.length() != BILL_ID_LENGTH || !billId.matches(SimpleCompetitions.DIGITS_ONLY_REGEX)) {

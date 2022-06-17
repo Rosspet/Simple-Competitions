@@ -77,6 +77,7 @@ public class SimpleCompetitions {
 
         // read data from mandatory files then start game.
         readInData();
+        
         runMenuAndGame();
     }
 
@@ -141,7 +142,7 @@ public class SimpleCompetitions {
                     }
                     // Add entries to the active comp and return an updated version of the members
                     // and bills used.
-                    data = activeComp.addEntries(data);
+                    data = activeComp.addEntries(new DataProvider(data));
                     break;
 
                 case DRAW_WINNERS:
@@ -341,6 +342,9 @@ public class SimpleCompetitions {
      *         data object is static. (Justification at instatiation of data object)
      */
     public static DataProvider getData() {
+        if (data==null){
+            System.out.println("NULLLLL");
+        }
         return new DataProvider(data);
     }
 

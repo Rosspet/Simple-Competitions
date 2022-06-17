@@ -65,7 +65,7 @@ public class LuckyNumbersCompetition extends Competition {
 		do {
 			// get bill and member data
 			ArrayList<NumbersEntry> theseEntries = new ArrayList<NumbersEntry>(); // arrList for this batch of entrys
-			billId = getBillIDFromInputForEntry(); // get valid bill ID
+			billId = getBillIDFromInputForEntry(data); // get valid bill ID
 			bill = data.getBillThatExists(billId); // returns a copy of the bill
 			memberId = bill.getMemberId();
 

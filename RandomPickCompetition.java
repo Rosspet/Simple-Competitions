@@ -49,7 +49,7 @@ public class RandomPickCompetition extends Competition {
 
         do {
             ArrayList<Entry> theseEntries = new ArrayList<Entry>(); // arrList for this batch of entrys
-            billId = getBillIDFromInputForEntry(); // retirve valid bill ID from user
+            billId = getBillIDFromInputForEntry(data); // retirve valid bill ID from user
 
             bill = data.getBillThatExists(billId); // returns a copy of the bill
             memberId = bill.getMemberId();
