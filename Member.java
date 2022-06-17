@@ -1,15 +1,17 @@
-import java.io.Serializable;
 
 /*
- * Student name: Ross Petridis
- * Student ID: 1080249
- * LMS username: rpetridis
- */
+* Student name: Ross Petridis
+* Student ID: 1080249
+* LMS username: rpetridis
+*/
+
+import java.io.Serializable;
 
 /**
- * Mebmer class for keeping track of members and the links to other data
- * sourcecs,
+ * Mebmer class for keeping track of members' data and the links to other data
+ * assocaited data sourcecs, such as a bill or entry.
  * such as bills and entry
+ * 
  * @author Ross Petridis
  */
 public class Member implements Serializable {
@@ -31,9 +33,9 @@ public class Member implements Serializable {
         this.address = address;
     }
 
-    // copy constructor
     /**
-     * Creates a safe copy of a member. 
+     * Creates a safe copy of a member.
+     * 
      * @param member
      */
     public Member(Member member) {

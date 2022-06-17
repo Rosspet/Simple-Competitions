@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
- * Class for fascilitating general logic and methodsologies of
+ * Class for fascilitating general logic and methodologies of
  * competitions broadly. This forms the foundation of lucky numbers and random
  * pick competition which must each employ there own addEntries() and
  * drawWinners() functionalities according to their own competition rules.
@@ -18,11 +18,12 @@ import java.util.Iterator;
  * Many methods are public as they are required to be directly accessible in the
  * subclasses, this is was not done at the expense of a data leak as the
  * functions mostly handle internal data and return a statement about the
- * internal data which is never exposed. 
+ * internal data which is never exposed.
  * 
  * @author Ross Petridis
  */
 public abstract class Competition implements Serializable {
+
     private String name; // competition name
     private String type;
     private int id; // competition identifier
@@ -31,9 +32,8 @@ public abstract class Competition implements Serializable {
     private boolean testingMode;
     private ArrayList<Entry> entries = new ArrayList<Entry>();
     private ArrayList<Winner> winners = new ArrayList<Winner>();
-    public static final int COST_PER_ENTRY = 50;
 
-    private static final String INVALID_INT_RESPONSE = "-1";
+    public static final int COST_PER_ENTRY = 50; // public as used by other classes
 
     /**
      * Method to add entries to the given competition subtype which can vary
@@ -85,7 +85,7 @@ public abstract class Competition implements Serializable {
     public String getBillIDFromInputForEntry() {
         Scanner scanner = SimpleCompetitions.getScanner();
         boolean validResponse = false;
-        String billID = INVALID_INT_RESPONSE;
+        String billID = null;
         DataProvider data = SimpleCompetitions.getData();
 
         while (!validResponse) {
@@ -109,17 +109,9 @@ public abstract class Competition implements Serializable {
                 continue;
             }
 
-            /* if(data.getBillThatExists(billID).getNumEntries() == 0) {
-                System.out.println("This bill is not eligible for entries. Please try again.");
-                continue;
-            } */
-
             validResponse = true;
         }
-        if (billID == INVALID_INT_RESPONSE) {
-            System.out.print("FAILED TO GET PROPER BILL ID");
-            System.exit(1);
-        }
+
         return billID;
 
     }
@@ -130,10 +122,12 @@ public abstract class Competition implements Serializable {
      * 
      * @return true iff user wants to keep adding entriesd
      */
-    public boolean moreEntries() {
+    public boolean userWantsMoreEntries() {
+
         boolean validResponse = false;
         String cmd = null;
         Scanner sc = SimpleCompetitions.getScanner();
+
         while (!validResponse) {
             System.out.println("Add more entries (Y/N)?");
             cmd = sc.nextLine();
@@ -143,6 +137,7 @@ public abstract class Competition implements Serializable {
                 System.out.println("Unsupported option. Please try again!");
             }
         }
+
         return cmd.equalsIgnoreCase("Y");
     }
 
@@ -157,11 +152,13 @@ public abstract class Competition implements Serializable {
      */
     public boolean alreadyWinningMember(ArrayList<Winner> winners, String memberID) {
         Iterator<Winner> winnerIter = winners.iterator();
+
         while (winnerIter.hasNext()) {
             if (winnerIter.next().hasID(memberID)) {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -169,8 +166,10 @@ public abstract class Competition implements Serializable {
      * Method to output report (key statistics) on this competition
      */
     public void report() {
+
         System.out.println("Competition ID: " + id + ", name: " + name + ", active: " + (isActive ? "yes" : "no"));
         System.out.println("Number of entries: " + entries.size());
+
         if (!isActive) {
             System.out.println("Number of winning entries: " + winners.size());
             System.out.println("Total awarded prizes: " + totalPrizesAwarded);
@@ -182,10 +181,12 @@ public abstract class Competition implements Serializable {
      * @return A copy of the entries currently in this competitions.
      */
     public ArrayList<Entry> getEntries() {
+
         ArrayList<Entry> entriesCopy = new ArrayList<Entry>();
         for (Entry entry : entries) {
             entriesCopy.add(new Entry(entry));
         }
+
         return entriesCopy;
     }
 
@@ -195,10 +196,12 @@ public abstract class Competition implements Serializable {
      *         objects.
      */
     public ArrayList<NumbersEntry> getNumbersEntries() {
+
         ArrayList<NumbersEntry> entriesCopy = new ArrayList<NumbersEntry>();
         for (Entry entry : entries) {
             entriesCopy.add(new NumbersEntry((NumbersEntry) entry));
         }
+
         return entriesCopy;
     }
 

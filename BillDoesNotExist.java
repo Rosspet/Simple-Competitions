@@ -4,7 +4,7 @@
  */
 public class BillDoesNotExist extends Exception {
     public BillDoesNotExist() {
-        super("Bill doesn't exist\n");
+        super("Bill doesn't exist.\n");
     }
 
     public BillDoesNotExist(String BillID) {

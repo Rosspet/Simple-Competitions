@@ -4,6 +4,7 @@
  * Student ID: 1080249
  * LMS username: rpetridis
  */
+
 /**
  * This class fascilitates automatic generation of customer entries to
  * LuckyNumbers games, as well as the lucky entry for choosing winners.
@@ -42,6 +43,7 @@ public class AutoNumbersEntry extends NumbersEntry {
      * @param seed     Seed to generate the numbers with
      */
     public AutoNumbersEntry(int entryId, String billId, String memberId, int seed) {
+
         super(entryId, billId, memberId, true);
         setNumbers(createNumbers(seed));
 
@@ -54,16 +56,19 @@ public class AutoNumbersEntry extends NumbersEntry {
      * @return the automatically generated numbers.
      */
     private ArrayList<Integer> createNumbers(int seed) {
+
         // new list to add generated numbers to.
         ArrayList<Integer> validList = new ArrayList<Integer>();
         int[] tempNumbers = new int[NUMBER_COUNT];
         for (int i = 1; i <= MAX_NUMBER; i++) {
             validList.add(i);
         }
+
         Collections.shuffle(validList, new Random(seed));
         for (int i = 0; i < NUMBER_COUNT; i++) {
             tempNumbers[i] = validList.get(i);
         }
+
         Arrays.sort(tempNumbers);
         return arrayToArrayList(tempNumbers);
     }

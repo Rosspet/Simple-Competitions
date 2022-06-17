@@ -1,14 +1,15 @@
 
 /**
  * Class used to facilitate storing of winners seperate to an Entry and a normal
- * Member Winner objects act like links between members and a winning entry.
+ * Member Winner objects represent links between members and a winning entry.
+ * 
  * @author Ross Petridis
  */
 public class Winner extends Member implements Comparable<Winner> {
 
     private Entry winningEntry;
     private int points;
-    private int entryID;
+    private int entryId;
 
     /**
      * Constructor used during competition drawing for creating new found winners.
@@ -22,39 +23,32 @@ public class Winner extends Member implements Comparable<Winner> {
         super(member);
         this.winningEntry = winningEntry;
         this.points = points;
-        this.entryID = entryId;
+        this.entryId = entryId;
     }
 
     /**
      * Copy Constructor
      * 
-     * @param winner The object to safely duplicate
+     * @param winner The winner object to safely duplicate
      */
     public Winner(Winner winner) {
         super(winner.getMemberID(), winner.getMemberName(), winner.getAdress());
         this.points = winner.points;
-        this.entryID = winner.entryID;
+        this.entryId = winner.entryId;
         this.winningEntry = winner.winningEntry;
     }
 
     /**
      * Overiding to default compareTo method to sort an Arraylist of Winners by
      * their entryId's
+     * 
      * @param otherWinner - the otherwinner being compared with this
-     * @return 1 if this winner is greater than otherWinner, -1 if this winner is less than other winner. else, 0.
+     * @return 1 if this winner is greater than otherWinner, -1 if this winner is
+     *         less than other winner. else, 0.
      */
     @Override
     public int compareTo(Winner otherWinner) {
-        return otherWinner.entryID < this.entryID ? 1 : otherWinner.entryID > this.entryID ? -1 : 0;
-    }
-
-    /**
-     * Set the winning entry of this winner
-     * 
-     * @param winningEntry
-     */
-    public void setWinningEntry(NumbersEntry winningEntry) {
-        this.winningEntry = winningEntry;
+        return otherWinner.entryId < this.entryId ? 1 : otherWinner.entryId > this.entryId ? -1 : 0;
     }
 
     /**
@@ -68,16 +62,17 @@ public class Winner extends Member implements Comparable<Winner> {
      * @param entryId      The entryId of the new prize
      */
     public void updatePrize(NumbersEntry winningEntry, int points, int entryId) {
-        if (points > this.points || (points == this.points && entryId < this.entryID)) {
+        if (points > this.points || (points == this.points && entryId < this.entryId)) {
             // if more poitns or same points but earlier entryId, then update
             this.winningEntry = winningEntry;
             this.points = points;
-            this.entryID = entryId;
+            this.entryId = entryId;
         }
     }
 
     /**
      * Overiding of default toString for displaying winners.
+     * 
      * @return The string representing this object.
      */
     @Override
@@ -91,7 +86,7 @@ public class Winner extends Member implements Comparable<Winner> {
      */
     public void printEntry() {
         System.out.println(
-                "--> Entry ID: " + entryID + ", Numbers:" + ((NumbersEntry) winningEntry).getEntriesString());
+                "--> Entry ID: " + entryId + ", Numbers:" + ((NumbersEntry) winningEntry).getEntriesString());
     }
 
     /**
@@ -100,7 +95,7 @@ public class Winner extends Member implements Comparable<Winner> {
      * @return the winning entry's id
      */
     public int getEntryId() {
-        return entryID;
+        return entryId;
     }
 
     /**

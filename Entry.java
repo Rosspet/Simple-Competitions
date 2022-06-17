@@ -14,6 +14,7 @@ import java.io.Serializable;
  * @author Ross Petridis
  */
 public class Entry implements Serializable {
+
     private int entryId;
     private String billId;
     private String memberId;
@@ -36,15 +37,6 @@ public class Entry implements Serializable {
         this.entryId = entryId;
         this.billId = billId;
         this.memberId = memberId;
-
-    }
-
-    public int getPrize() {
-        return prize;
-    }
-
-    public void setPrize(int prize) {
-        this.prize = prize;
     }
 
     /**
@@ -56,6 +48,14 @@ public class Entry implements Serializable {
         this.entryId = entry.getEntryiD();
         this.billId = entry.getBillId();
         this.memberId = entry.getMemberId();
+    }
+
+    public int getPrize() {
+        return prize;
+    }
+
+    public void setPrize(int prize) {
+        this.prize = prize;
     }
 
     /**

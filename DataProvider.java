@@ -14,13 +14,11 @@ import java.util.Scanner;
 
 /**
  * This class allows an instation of the bills and member data into a datastore
- * object.
+ * object, it also facilitates organisation and maintenance of data.
  * Many methods in this class are used extensively by other classes and so are
- * public - but not at the expense of data privacy.
- * This class is essentially a collection of helper functions for accesdsing and
- * maintaining game data by other game classes.
- * This class includes methods for reading and updating data in the store and
- * ultimately in the files upon end of program if desired.
+ * public - but not at the expense of data security.
+ * All direct modificaitons to the data are peformed internally to this class
+ * for security.
  * 
  * @author Ross Petridis
  */
@@ -32,6 +30,14 @@ public class DataProvider {
     private ArrayList<Bill> bills;
     private static final int NUM_MEMBER_DATA = 3;
     private static final int NUM_BILL_DATA = 4;
+
+    private static final int MEMBER_ID_IDX = 0;
+    private static final int MEMBER_NAME_IDX = 1;
+    private static final int MEMBER_ADRESS_IDX = 2;
+    private static final int BILL_ID_IDX = 0;
+    private static final int BILL_MEMBER_ID_IDX = 1;
+    private static final int BILL_TOTAL_IDX = 2;
+    private static final int BILL_USED_IDX = 3;
 
     /**
      * 
@@ -71,6 +77,7 @@ public class DataProvider {
      * @throws MemberDoesNotExist if caanot find a member with ID memberID
      */
     public Member getMember(String memberID) throws MemberDoesNotExist {
+
         Iterator<Member> iter = members.iterator();
         Member thisMember;
         while (iter.hasNext()) {
@@ -116,7 +123,7 @@ public class DataProvider {
                 return thisBill; // not returning copy as this is a private helper for this class only
             }
         }
-        System.out.println("failed to find bill that was assumed to exist. existing 1.");
+        System.out.println("failed to find bill that was assumed to exist. Exiting (1).");
         System.exit(1);
         return thisBill;
     }
@@ -162,27 +169,27 @@ public class DataProvider {
         members = new ArrayList<Member>();
         String memberLine;
         String[] memberData;
-        int lineNum =0;
+        int lineNum = 0;
         while (memberStream.hasNextLine()) { // while still members to add.
             lineNum++;
             memberLine = memberStream.nextLine();
             memberData = memberLine.split(",");
             if (memberData.length != NUM_MEMBER_DATA) {
                 throw new DataFormatException("Expecting exactly " + NUM_MEMBER_DATA +
-                        " piececs of information per member. Got " + memberData.length + " in line " + lineNum + 
+                        " piececs of information per member. Got " + memberData.length + " in line " + lineNum +
                         ". DataProvider requires a Member ID, name, and adress");
             }
 
-            if (emptyFieldFound(memberData)){
+            if (emptyFieldFound(memberData)) {
                 throw new DataFormatException("Empty field found in line " + lineNum + ". DataProvider" +
-                " requires a Member ID, name, and adress");
+                        " requires a Member ID, name, and adress");
             }
 
             // else, got 3 strings.
             members.add(new Member(
-                    memberData[0], // memberID
-                    memberData[1], // member name
-                    memberData[2] // member address
+                    memberData[MEMBER_ID_IDX],
+                    memberData[MEMBER_NAME_IDX], // member name
+                    memberData[MEMBER_ADRESS_IDX] // member address
             ));
         }
         memberStream.close();
@@ -222,11 +229,12 @@ public class DataProvider {
             try { // try parse entry to make a bill.
                 bills.add(
                         new Bill(
-                                billData[0],
-                                billData[1], // by keeping string, can avoid errors of parsing into Int '""' and also
-                                             // might want t use chars in id
-                                Float.parseFloat(billData[2]),
-                                Boolean.parseBoolean(billData[3])));
+                                billData[BILL_ID_IDX],
+                                billData[BILL_MEMBER_ID_IDX], // by keeping string, can avoid errors of parsing into Int
+                                                              // '""' and also
+                                // might want t use chars in id
+                                Float.parseFloat(billData[BILL_TOTAL_IDX]),
+                                Boolean.parseBoolean(billData[BILL_USED_IDX])));
             } catch (Exception e) { // weird format recieved
                 throw new DataFormatException(
                         "Error parsing Bill data. BillLine = " + billLine + "\nError:" + e.getMessage());
@@ -343,12 +351,13 @@ public class DataProvider {
 
     /**
      * Recieves an array of string and returns true if there is an empty field
+     * 
      * @param data array of string to check for empty fields in
      * @return true iff theres an empty string in data.
      */
-    private boolean emptyFieldFound(String[] data){
-        for (String str : data){
-            if (str==""){
+    private boolean emptyFieldFound(String[] data) {
+        for (String str : data) {
+            if (str == "") {
                 return true;
             }
         }

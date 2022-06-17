@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Random;
+
 /*
  * Student name: Ross Petridis
  * Student ID: 1080249
@@ -21,7 +22,7 @@ public class LuckyNumbersCompetition extends Competition {
 	private Random random = new Random();
 
 	// Constants
-	private static final int MIN_NUM_MANUAL = 0;
+	private static final int MIN_NUM_MANUAL_ALLOWED = 0;
 	private static final int TWO_NUM_PRIZE = 50;
 	private static final int THREE_NUM_PRIZE = 100;
 	private static final int FOUR_NUM_PRIZE = 500;
@@ -29,12 +30,20 @@ public class LuckyNumbersCompetition extends Competition {
 	private static final int SIX_NUM_PRIZE = 5000;
 	private static final int SEVEN_NUM_PRIZE = 50000;
 
+	private static final int TWO_IN_COMMON = 2;
+	private static final int THREE_IN_COMMON = 3;
+	private static final int FOUR_IN_COMMON = 4;
+	private static final int FIVE_IN_COMMON = 5;
+	private static final int SIX_IN_COMMON = 6;
+	private static final int SEVEN_IN_COMMON = 7;
+
 	/**
 	 * Standard constructor from user input
 	 * 
 	 * @param compName    competition's name
 	 * @param compID      competiton ID
-	 * @param testingMode true iff competition should be run in testing mode
+	 * @param testingMode true iff competition should be run in testing mode i.e,
+	 *                    (deterministic randomness)
 	 */
 	public LuckyNumbersCompetition(String compName, int compID, boolean testingMode) {
 		super(compName, compID, "LuckyNumbersCompetition", testingMode);
@@ -54,20 +63,21 @@ public class LuckyNumbersCompetition extends Competition {
 		String memberId;
 
 		do {
+			// get bill and member data
 			ArrayList<NumbersEntry> theseEntries = new ArrayList<NumbersEntry>(); // arrList for this batch of entrys
 			billId = getBillIDFromInputForEntry(); // get valid bill ID
 			bill = data.getBillThatExists(billId); // returns a copy of the bill
 			memberId = bill.getMemberId();
-			
 
+			// check number of elidgible entries and ensure atleast 1.
 			int numEntries = bill.getNumEntries();
 			if (numEntries == 0) { // check this here as thread 450 says to.
 				System.out.println(String.format(
 						"This bill ($%.1f) is not eligible for an entry. The total amount is smaller than $%d",
-						bill.getTotalAmount(), Competition.COST_PER_ENTRY
-				));
+						bill.getTotalAmount(), Competition.COST_PER_ENTRY));
 				continue;
 			}
+
 			data.setBillToUsed(billId);
 			int numManualEntries = getNumManualEntries(bill);
 			int numAutoEntires = numEntries - numManualEntries;
@@ -77,7 +87,7 @@ public class LuckyNumbersCompetition extends Competition {
 				theseEntries.add(new NumbersEntry(getNumEntries() + theseEntries.size() + 1, billId, memberId, false));
 			}
 
-			// fill auto entries accoridng to testing mode.
+			// Fill auto entries accoridng to testing mode.
 			for (int i = 0; i < numAutoEntires; i++) {
 				if (getTestingMode()) {
 					theseEntries.add(new AutoNumbersEntry(getNumEntries() + theseEntries.size() + 1, billId, memberId,
@@ -88,21 +98,22 @@ public class LuckyNumbersCompetition extends Competition {
 				}
 			}
 
+			// add new entries
 			for (NumbersEntry entry : theseEntries) {
 				addEntry((Entry) entry);
 			}
 
+			// display new entries
 			System.out.println("The following entries have been added:");
 			displayEntries(theseEntries);
 
-		} while (moreEntries());
-		return data; // return the updated data
+		} while (userWantsMoreEntries()); // leep going while user wants to add more!
+		return data; // return the updated data.
 	}
 
 	/**
 	 * Facilitates the high level drawing of winners accoridng to the specificaiton
-	 * and whether or not
-	 * this competition is done in testing or normal mode.
+	 * and whether or not this competition is done in testing or normal mode.
 	 * 
 	 * @return true iff winners are drawn. False otherwise (if no entries)
 	 */
@@ -223,17 +234,17 @@ public class LuckyNumbersCompetition extends Competition {
 		}
 
 		switch (numInCommon) {
-			case (2):
+			case (TWO_IN_COMMON):
 				return (TWO_NUM_PRIZE);
-			case (3):
+			case (THREE_IN_COMMON):
 				return (THREE_NUM_PRIZE);
-			case (4):
+			case (FOUR_IN_COMMON):
 				return (FOUR_NUM_PRIZE);
-			case (5):
+			case (FIVE_IN_COMMON):
 				return (FIVE_NUM_PRIZE);
-			case (6):
+			case (SIX_IN_COMMON):
 				return (SIX_NUM_PRIZE);
-			case (7):
+			case (SEVEN_IN_COMMON):
 				return (SEVEN_NUM_PRIZE);
 			default:
 				return (0);
@@ -261,7 +272,7 @@ public class LuckyNumbersCompetition extends Competition {
 
 		Scanner scanner = SimpleCompetitions.getScanner();
 		boolean validResponse = false;
-		String inputErrMsg = "The number must be in the range from " + MIN_NUM_MANUAL + " to " +
+		String inputErrMsg = "The number must be in the range from " + MIN_NUM_MANUAL_ALLOWED + " to " +
 				bill.getNumEntries() + ". Please try again.";
 		int intResp = -1;
 
@@ -270,9 +281,10 @@ public class LuckyNumbersCompetition extends Competition {
 
 		while (!validResponse) {
 			String resp = scanner.nextLine().trim();
-			if (resp.matches("[0-9]+")) { // digits only!
+			if (resp.matches(SimpleCompetitions.DIGITS_ONLY_REGEX)) { // digits only!
 				intResp = Integer.parseInt(resp);
-				if (MIN_NUM_MANUAL <= intResp && intResp <= bill.getNumEntries()) { // digits in acceptable range.
+				if (MIN_NUM_MANUAL_ALLOWED <= intResp && intResp <= bill.getNumEntries()) { // digits in acceptable
+																							// range.
 					validResponse = true; // can return anyway.
 					return intResp;
 				}

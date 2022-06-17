@@ -17,11 +17,11 @@ import java.util.Random;
  */
 public class RandomPickCompetition extends Competition {
 
-    private final int FIRST_PRIZE = 50000;
-    private final int SECOND_PRIZE = 5000;
-    private final int THIRD_PRIZE = 1000;
-    private final int[] prizes = { FIRST_PRIZE, SECOND_PRIZE, THIRD_PRIZE };
-    private final int MAX_WINNING_ENTRIES = 3;
+    private static final int FIRST_PRIZE = 50000;
+    private static final int SECOND_PRIZE = 5000;
+    private static final int THIRD_PRIZE = 1000;
+    private static final int[] prizes = { FIRST_PRIZE, SECOND_PRIZE, THIRD_PRIZE };
+    private static final int MAX_WINNING_ENTRIES = 3;
 
     /**
      * Standard constructor for building a competition form user input
@@ -42,12 +42,12 @@ public class RandomPickCompetition extends Competition {
      * @param data : game data to read from containing bill and member information
      */
     public DataProvider addEntries(DataProvider data) {
-        // boolean finishedAddingEntries = false;
+
         String billId;
         Bill bill;
         String memberId;
 
-        do { // while user wants to keep adding entrys
+        do {
             ArrayList<Entry> theseEntries = new ArrayList<Entry>(); // arrList for this batch of entrys
             billId = getBillIDFromInputForEntry(); // retirve valid bill ID from user
 
@@ -76,7 +76,7 @@ public class RandomPickCompetition extends Competition {
             displayEntries(theseEntries); // display entries added in this batch
             addEntriesOfArralyList(theseEntries); // add this batch to total batch of entries.
 
-        } while (moreEntries()); // user wants more entries.
+        } while (userWantsMoreEntries()); 
         return data;
     }
 

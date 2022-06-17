@@ -1,5 +1,5 @@
 /**
- * Custom error exception for when seaarching for a member in the data base that
+ * This class represents a custom error exception for when searching for a member in the data base that
  * does not exist.
  * @author Ross Petridis
  */

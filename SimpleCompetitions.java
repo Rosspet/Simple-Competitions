@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- * Game Engine for facilitating Competitions.
- * Keeps track of important data and provides access to copys of data.
- * Methodologies include high level game logic which is responsible for
+ * This class implements the Game Engine for facilitating Simple Competitions.
+ * The game engine includes methodologies containing high level game logic which
+ * is responsible for
  * initiating lower level functions of the program.
  * 
  * @author Ross Petridis
@@ -27,10 +27,10 @@ import java.util.Scanner;
 public class SimpleCompetitions {
 
     private static Scanner sc = new Scanner(System.in);
-    private boolean testingMode; // true if running in testingMode.
+    private boolean testingMode;
     private static DataProvider data; // Contains ArrayLists of members and bills. Static to ensure databases do not
                                       // diverge if multiple games are running simulatenously in the future.
-    private ArrayList<Competition> competitions; // ArrayList of all past and present competitions
+    private ArrayList<Competition> competitions;
     private Competition activeComp = null; // Quick access to the current activeComp.
 
     // Constants
@@ -40,6 +40,7 @@ public class SimpleCompetitions {
     private static final int DRAW_WINNERS = 3;
     private static final int SUMMARY = 4;
     private static final int EXIT = 5;
+    public static final String DIGITS_ONLY_REGEX = "[0-9]+";
 
     /**
      * Main program that uses the main SimpleCompetitions class to start
@@ -80,8 +81,36 @@ public class SimpleCompetitions {
     }
 
     /**
-     * Logic for running the main menu to implement high level
-     * game play logic. To create competitions, add entrys, and draw winners.
+     * Prompts user for file names, then initiates reading in of data (members and
+     * bills) from files
+     */
+    private void readInData() {
+        boolean success = false;
+        while (!success) {
+            String memberFileName = getMemberFileName();
+            String billFileName = getBillFileName();
+            try {
+                data = new DataProvider(memberFileName, billFileName);
+                success = true;
+            } catch (DataAccessException e) {
+                System.out.println("Data access Error: " + e.getMessage());
+                System.exit(1);
+            } catch (DataFormatException e) {
+                System.out.println("Invalid data format in file. Error: " + e.getMessage());
+                System.exit(1);
+            } catch (Exception e) {
+                System.out.println("An unhandled exception occured. Error: " + e.getMessage());
+                System.exit(1);
+            }
+        }
+        return;
+    }
+
+    /**
+     * This method contains crucial logic for running the main menu. The method
+     * recieves user input and actions the users command by calling the appropriate
+     * functions.
+     * For example, To create competitions, add entrys, and draw winners.
      */
     private void runMenuAndGame() {
 
@@ -308,36 +337,11 @@ public class SimpleCompetitions {
 
     /**
      *
-     * @return Copy of the object containing relevant game data.
+     * @return Copy of the object containing relevant game data. Static because the
+     *         data object is static. (Justification at instatiation of data object)
      */
     public static DataProvider getData() {
         return new DataProvider(data);
-    }
-
-    /**
-     * Initiate reading in of data (members and bills) from files
-     */
-    private void readInData() {
-        boolean success = false;
-        while (!success) {
-            // getMemberAndBillFileNames();
-            String memberFileName = getMemberFileName();
-            String billFileName = getBillFileName();
-            try {
-                data = new DataProvider(memberFileName, billFileName);
-                success = true;
-            } catch (DataAccessException e) {
-                System.out.println("Data access Error: " + e.getMessage());
-                System.exit(1);
-            } catch (DataFormatException e) {
-                System.out.println("Invalid data format in file. Error: " + e.getMessage());
-                System.exit(1);
-            } catch (Exception e) {
-                System.out.println("An unhandled exception occured. Error: " + e.getMessage());
-                System.exit(1);
-            }
-        }
-        return;
     }
 
     /**
@@ -392,15 +396,13 @@ public class SimpleCompetitions {
         int option = -1;
         String input;
         boolean validInput = false;
-        // System.out.println("Please enter an integer number between 1 and "+
-        // NUM_OPTIONS);
 
         while (!validInput) {
 
             input = sc.nextLine().trim();
 
             // check if integer type
-            if (!input.matches("[0-9]+")) {
+            if (!input.matches(DIGITS_ONLY_REGEX)) {
                 System.out.println("A number is expected. Please try again.");
                 displayMenu();
                 continue;
@@ -410,7 +412,7 @@ public class SimpleCompetitions {
             option = Integer.parseInt(input);
             if (option >= 1 && option <= NUM_OPTIONS) {
                 validInput = true;
-                break; // not required but include for extra safety.
+                break;
             } else { // out of range.
                 System.out.println("Unsupported option. Please try again!");
                 displayMenu();
@@ -425,12 +427,12 @@ public class SimpleCompetitions {
      */
     private void displayMenu() {
         System.out.println(
-                "Please select an option. Type 5 to exit.\n" +
-                        "1. Create a new competition\n" +
-                        "2. Add new entries\n" +
-                        "3. Draw winners\n" +
-                        "4. Get a summary report\n" +
-                        "5. Exit");
+                "Please select an option. Type " + EXIT + " to exit.\n" +
+                        NEW_COMP + ". Create a new competition\n" +
+                        NEW_ENTRIES + ". Add new entries\n" +
+                        DRAW_WINNERS + ". Draw winners\n" +
+                        SUMMARY + ". Get a summary report\n" +
+                        EXIT + ". Exit");
     }
 
     /**
@@ -538,6 +540,8 @@ public class SimpleCompetitions {
 
     /**
      * Checks if inputted string is valid yes or no anser
+     * Static to make this useful (general) method accessible to oter classes that
+     * call upon uer input.
      * 
      * @param cmd the input
      * @return true if cmd is valid yes or no answer by comparing to
