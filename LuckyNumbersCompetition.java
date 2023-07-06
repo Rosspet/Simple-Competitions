@@ -215,7 +215,7 @@ public class LuckyNumbersCompetition extends Competition {
 	}
 
 	/**
-	 * Calculate and return the number of points this entry deserves
+	 * Calculate and return the number of points this entry deserves 
 	 * 
 	 * @param entry      the entry to find points for
 	 * @param luckyEntry the lucky entry to compare this entry with
