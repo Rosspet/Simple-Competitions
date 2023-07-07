@@ -213,7 +213,7 @@ public class LuckyNumbersCompetition extends Competition {
 		}
 		return null;
 	} 
-
+ 
 	/**
 	 * Calculate and return the number of points this entry deserves 
 	 * 
